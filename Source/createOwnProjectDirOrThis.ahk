@@ -41,7 +41,19 @@ while(!folderExist && A_Index < 11){
     ExitApp
   }
 
+;/¯¯¯¯ try_faster_reload_if_created ¯¯ 181025152605 ¯¯ 25.10.2018 15:26:05 ¯¯\
+; I hope the with this method is reloaded after creating a new list (much faster). 25.10.2018 15:25
+; no success 25.10.2018 15:30
+globalActionListDir := "..\ActionLists"
+; globalActionList := globalActionListDir "\_globalActionListsGenerated\_global.ahk"
+globalActionList := globalActionListDir   "\_globalActionListsGenerated\isNotAProject.ahk"
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionListNEW, %globalActionList% ; RegWrite , RegSave , Registry
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, %globalActionList% ; RegWrite , RegSave , Registry
+;\____ try_faster_reload_if_created __ 181025152609 __ 25.10.2018 15:26:09 __/
+
 FileAppend,"temporary empty file. if exist next view dont use the super _global.ahk", %d1%\_create_own_project.flag
+IfNotExist,%d1%\_global.ahk
+    FileAppend,"_global.ahk", %d1%\_global.ahk
 ; MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,1 ; thats only trick. so it should reload another wordklist.
 MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,99 ; thats only trick. so it should reload another wordklist.
 ; it not need to be closed active bevor 13.05.2018 19:23. now we close it active. so its litle faster then a second . thats nice
@@ -84,11 +96,16 @@ if( FileExist( ActionListNEWAddress ) ){
     Msgbox,ups ActionListNEW = >>>>%ActionListNEW%<<< `n exist already ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
     EXIT
 }
+
 if( !FileExist( globalClassTxtAddress ) ){
     Msgbox,ups ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
     EXIT
 }
-     FileAppend,% contend,   % ActionListNEWAddress
+if(1 && InStr(A_ComputerName,"SL5")){
+    ToolTip5sec("FileAppend (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    msgBox,% "FileAppend : (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+}
+ FileAppend,% contend,   % ActionListNEWAddress
 if( !FileExist(ActionListNEWAddress) ){
     Msgbox,ups ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 EXIT

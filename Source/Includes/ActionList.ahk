@@ -1,9 +1,23 @@
 ﻿; These functions and labels are related maintenance of the ActionList
 
 
+;
 
-
-
+setTrayIcon(status := "loaded" ){
+    if(status == "RecomputeMatches" ){
+       Menu, Tray, Icon, shell32.dll, 240 ; pretty green clock
+        return
+    }
+    if(status <> "loaded" ){
+        Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
+    ;  Menu, Tray, Icon, shell32.dll, 44 ; star
+        return
+    }
+    ScriptNameLetter2 := SubStr(A_ScriptName, 1 , 2)
+    iconAdress=%A_ScriptDir%\icon\abc123\%ScriptNameLetter2%.ico
+    Menu, Tray, Icon, %iconAdress%
+}
+;
 
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -18,8 +32,32 @@ ReadActionList(){
 	global ActionList
 	global g_ActionListID
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	global g_config
+    ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 
+	; global g_config ; ["FuzzySearch"]["enable"]
+
+    ;/¯¯¯¯ \.ahk ¯¯ 181025172431 ¯¯ 25.10.2018 17:24:31 ¯¯\
+    if(	InStr( ActionList, "\.ahk")){ ; without file name is bullshit 25.10.2018 17:18 ; Please check outside
+        log =
+        (
+        Oops: InStr( ActionList, "\.ahk")
+        This may happen for example with Java applications. JetBrains IDE Search Window or so.
+        A_ThisFunc = %A_ThisFunc%
+        Log:
+        ActionListNewTemp[30 of 259]: ..\ActionLists\AutoHotkey\.ahk
+        ActionListOLD[33 of 63]: ..\ActionLists\noName\Cortana.ahk
+        )
+        log .= "`n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        if(1 && InStr(A_ComputerName,"SL5"))
+            feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" A_LineNumber, log )
+            ;msgBox,% log " ==> RETURN `n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    }
+    ;\____ \.ahk __ 181025172444 __ 25.10.2018 17:24:44 __/
+
+    setTrayIcon(status := "isLoading" )
+
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 	ParseWordsCount :=0
    ;mark the ActionList as not done
@@ -184,7 +222,7 @@ from: ActionList.ahk~%A_LineNumber%
 	if (LoadActionList) {
       ; Progress, M, Please wait..., Loading ActionList, %g_ScriptTitle%
 
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 		g_ActionListDB.BeginTransaction()
       ;reads list of words from file
@@ -194,7 +232,7 @@ from: ActionList.ahk~%A_LineNumber%
 
 		ParseWords := addListOpenAction_ifNotAlreadyInTheList(ParseWords,ActionList)
 
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 		if(false){ ; todo: braucht man für die aktualliserung der listen niht. gerade getestet. gerade was hinzugefügt
 			foundOpenLibLine := 0
@@ -235,7 +273,7 @@ from: ActionList.ahk~%A_LineNumber%
 		if(false && ParseWordsCount>0)
 			Msgbox, %ParseWordsCount%  (line:%A_LineNumber%)
 
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
         isIndexedAhkBlock := false
         doCollectAhkBlock := false
@@ -255,6 +293,10 @@ from: ActionList.ahk~%A_LineNumber%
 			}
 			IfEqual, A_LoopField, `;LEARNEDWORDS`;
 			{
+
+
+                if(1 && InStr(A_ComputerName,"SL5"))
+                    msgBox,% "never visited??? " ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 				if (DatabaseRebuilt)
 				{
 					LearnedWordsCount=0
@@ -269,24 +311,45 @@ from: ActionList.ahk~%A_LineNumber%
                    if(RegExMatch( A_LoopField , "i)\bGi\s*\:\s*do_indexFollowingLines4search\s*[\:]?=\s*true\b" )) { ; do_indexFollowingLines4search
                         ; Gi: do_indexFollowingLines4search := true
     				    ; AddWordToList(AddWordBlock,0,"ForceLearn",LearnedWordsCount) ;
-    				    AddWordToList(ALoopField,0,"ForceLearn",LearnedWordsCount) ; ^- line above does the same
     				    doCollectAhkBlock := false
     				    isIndexedAhkBlock := true
     				    ; MsgBox,% ":-) found: " A_LoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" ; __
 				}  }
+               ;if( isIndexedAhkBlock )  ; do_indexFollowingLines4search
+               ;     AddWordToList(ALoopField,0,"ForceLearn",LearnedWordsCount) ; ^- line above does the same
 
 				ALoopField := A_LoopField
 
-                if(!doCollectAhkBlock)
+
+                if(!doCollectAhkBlock){
+                    is_multiline_r := false
+                    doCollectAhkBlock := false
                     ALoopField  := RegExReplace(ALoopField, "^\s+" , "" ) ; like ltrim or the same? 06.11.2017 18:28
-                else{
-                    if(trim(ALoopField)){
+                }else{
+                    if(is_multiline_r){
+                        if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|(r|rr)\|)",  m )){
+                            is_multiline_r := false
+                            doCollectAhkBlock := false
+                            AddWordToList(rtrim(AddWordBlock),0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
+                            if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"])
+                                addFuzzySearch_in_generatedList(trim(AddWordBlock), ActionList,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+                            AddWordBlock := ""
+                        }else{
+                            if(isIndexedAhkBlock)
+                                AddWordToList(ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
+                            AddWordBlock := AddWordBlock ALoopField "`r`n"
+                            ; ALoopFieldLast := ALoopField
+                            continue
+                        }
+                    }else if(trim(ALoopField)){
                         AddWordBlock := AddWordBlock "`n" ALoopField
                         ALoopFieldLast := ALoopField
+                        if(isIndexedAhkBlock)
+                            AddWordToList(ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
                         continue
                     }else{
                         doCollectAhkBlock := false
-                        if(codePrefixChar == "("){
+                        if(codePrefixChar == "(" || codePrefixChar == "["){
                             ; AddWordBlock .= "`nsend,`% it`n"
                             if(trim(ALoopFieldLast) == ")"){
                                 AddWordBlock .= "`nsend,`% it`n"
@@ -303,7 +366,9 @@ from: ActionList.ahk~%A_LineNumber%
                     doCollectAhkBlock := true
                     isIndexedAhkBlock := false ; maybe its set in next line
                     if(m2){
-                        if(m2 == "("){
+                        if(m2 == "(" || m2 == "["){
+                            if(m2 == "[")
+                                isIndexedAhkBlock := true
                             codePrefixChar := m2
                             m2 := "`nit = `n("
                             ; MsgBox,% codePrefixChar "=codePrefixChar(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -313,11 +378,33 @@ from: ActionList.ahk~%A_LineNumber%
                     ; MsgBox,% codePrefixChar "=m1 , " ALoopField "`n" AddWordBlock "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
                     continue
                 }else{
-                    regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
-                    if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
-                        rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
-                        ; create a working synonym:
-                        ALoopField := rX["key"] "|rr|"
+
+                    if(1){
+                		 regIs_multiline_r  := "^([^\|\n]+?)\|r\|([ ]*?)$"
+                        ; regIs_multiline_r := "i)^([^; ]*\w[^\n]+\|(r|rr)\|)([^\s]+)[ ]*$"
+                        if(RegExMatch( ALoopField , regIs_multiline_r ,  m )){
+                            doCollectAhkBlock := true
+                            is_multiline_r := true
+                            AddWordBlock := rtrim(ALoopField)
+                            ; msgBox,% AddWordBlock  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+                            continue
+                            ; rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
+                            ; create a working synonym:
+                            ; ALoopField := rX["key"] "|rr||ahk|"
+                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                        }
+
+
+                    }else{
+                        ; deprecated since 22.10.2018 12:13
+                        regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
+                        if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
+                            rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
+                            ; create a working synonym:
+                            ALoopField := rX["key"] "|rr||ahk|"
+                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                        }
                     }
                 }
 
@@ -327,15 +414,28 @@ from: ActionList.ahk~%A_LineNumber%
                     isIndexedAhkBlock := false
 				}
 
-				; LearnedWordsCount := addFuzzySearch_in_generatedList(ALoopField, ActionList,LearnedWordsCount)
+                ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				; LearnedWordsCount := addFuzzySearch_in_generatedList(ALoopField , ActionList,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+				if(!CheckValid(ALoopField))
+				    continue
+                ; msgBox,% "Valid:" ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 				if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"])
-					addFuzzySearch_in_generatedList(ALoopField, ActionList,LearnedWordsCount)
-				;     AddWordToList("rübennase" A_now,1,"ForceLearn", g_config["FuzzySearch"]["keysMAXperEntry"], g_config["FuzzySearch"]["doValueCopy"])
+					addFuzzySearch_in_generatedList(ALoopField, ActionList,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+				;     AddWordToList("rübennase" A_now,1,"ForceLearn", g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"], g_config["FuzzySearch"]["doValueCopy"])
 
-			}
-		}
+			} ; end of never used?? else blokc
 
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+            ; msgBox,% " inside loop :" ALoopField " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+		} ; ENDof Loop
+        if(doCollectAhkBlock && is_multiline_r){
+            doCollectAhkBlock := false
+            is_multiline_r := false
+            AddWordToList(AddWordBlock,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
+            AddWordBlock := ""
+        }
+
+
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 
 
@@ -380,14 +480,18 @@ from: ActionList.ahk~%A_LineNumber%
 		if(InStr(ActionListLearnedTXTaddress,"ActionListLearned.ahk")){
 			tip=thats deprecated `n ordlistLearnedTXTaddress = `n %ActionListLearnedTXTaddress% `n (%A_LineFile%~%A_LineNumber%)
 			ToolTip3sec(tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "")  " " Last_A_This)
+
+        setTrayIcon()
+
+
 			Return ParseWordsCount
 		}else
 			FileRead, ParseWords, %ActionListLearnedTXTaddress%
 ; -- here we are inside ReadActionList()
 		if(InStr(A_ComputerName,"SL5"))
-			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress``n" ActionListLearnedTXTaddress "``n (" A_LineFile ">" A_LineNumber ") `n Sleep,2000 `n }  ")
+			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress``n" ActionListLearnedTXTaddress "``n (" RegExReplace(A_LineFile,".*\\") ">" A_LineNumber ") `n Sleep,2000 `n }  ")
 		else
-			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress ``n" ActionListLearnedTXTaddress "``n (" A_LineFile ">" A_LineNumber ") `n Sleep,100 `n }  ")
+			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress ``n" ActionListLearnedTXTaddress "``n (" RegExReplace(A_LineFile,".*\\") ">" A_LineNumber ") `n Sleep,100 `n }  ")
 ; Msgbox, n (line:%A_LineNumber%) Msgbox, `n (line:%A_LineNumber%)
 ;Msgbox, n (line:%A_LineNumber%) ; SciTEWindow\_global.txt
 ; SciTEWindow\_global.txt
@@ -397,7 +501,7 @@ from: ActionList.ahk~%A_LineNumber%
 ; ___open library|rr||ahk|FileReadLine,ActionListFileAdress, ActionList.txt.status.txt, 1 `n ActionListFileAdress := RegExReplace(ActionListFileAdress, "\._Generated\.txt\s*$", "") `n run,% ActionListFileAdress
 ;
         ; inside function ReadActionList
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 		Loop, Parse, ParseWords, `n, `r
 		{
@@ -414,7 +518,7 @@ from: ActionList.ahk~%A_LineNumber%
 		ParseWords =
 		g_ActionListDB.EndTransaction()
 
-      INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+      INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 ;      Progress, 50, Please wait..., Converting learned words, %g_ScriptTitle%
 
@@ -436,6 +540,9 @@ from: ActionList.ahk~%A_LineNumber%
    ; DynaRun("#" . "NoTrayIcon `n Tooltip,|SL5|`n Sleep,2300")
     ;DynaRun("#" "NoTrayIcon `; `n``n Tooltip,||SL5|| `; `n``n Sleep,2300 `; " A_LineNumber)
    ; tooltip,%ParseWordsCount%`n (from: %A_LineFile%~%A_LineNumber%)
+
+           setTrayIcon()
+
 	Return ParseWordsCount
 }
 ;>>>>>>>>>>>>>>>>>>  ReadActionList >>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -443,7 +550,7 @@ from: ActionList.ahk~%A_LineNumber%
 ;------------------------------------------------------------------------
 
 addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 ; thats a way how you could add ActionList lines vocabularies inside onlive 12.08.2017 23:24
 ; if you may destroy your path to your config file, thats a way to find it again.
@@ -459,7 +566,7 @@ addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
     itsAGeneratedList := ( postFixGenerated == ActionListPostFix )
         ; MsgBox,% msg "its a " postFixGenerated "`n ==> leave it hidden (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 	if(!itsAGeneratedList && !RegExMatch(contentActionList432indes, pattern ) ){
-		ToolTip,% ActionList "`n`n " A_LineNumber   " "   A_LineFile   " "   Last_A_This
+		ToolTip,% ActionList "`n`n " A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")   " "   Last_A_This
 		SplitPath, ActionList, , , , OutNameNoExt
 		temp := "___open " OutNameNoExt "(ActionList.ahk~" A_LineNumber "|rr||ahk|run," OutNameNoExt ".ahk"
 
@@ -480,10 +587,9 @@ addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
 
 
 ; addFuzzySearch_in_generatedList(ALoopField)
-addFuzzySearch_in_generatedList(ActionStr, ActionList, ByRef LearnedWordsCount, addKeysMAX := 6, doValueCopy := true){
+addFuzzySearch_in_generatedList(ActionStr, ActionList, ByRef LearnedWordsCount, addKeysMAX := 7, minKeysLen := 4, doValueCopy := true){
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
-
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
     ; || !instr(ActionList,"Generated.ahk")
 	if( !ActionStr ){ ;_ahk_global.ahk._Generated.ahk
@@ -542,7 +648,7 @@ addFuzzySearch_in_generatedList(ActionStr, ActionList, ByRef LearnedWordsCount, 
 		keyTemp := Match.Value(1)
 		if(0 && instr(ActionList,"Notepad_Administrator"))
 			MsgBox,% keyTemp "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-		if(strlen(keyTemp)-1 < 3){
+		if(strlen(keyTemp)-1 < minKeysLen ){
 			if(0 && instr(ActionList,"Notepad_Administrator"))
 				MsgBox,% keyTemp "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 			continue
@@ -551,16 +657,25 @@ addFuzzySearch_in_generatedList(ActionStr, ActionList, ByRef LearnedWordsCount, 
 		; MsgBox,% key " , " keyTemp "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 
         ; global g_config := { FuzzySearch:{ enable: true, keysMAXperEntry : 6, doValueCopy : false } } ; difficult to implement symlink copy for not rr lines doValueCopy. todo: issue . doValueCopy : false  is not fully implemented
-		if(ActionStrVal)
-			newListSynonym := key "|rr|" ; <=== eigentlich sollte es ja so gehen
+		if(ActionStrVal){
+
+			; MsgBox,% substr(ActionStrVal,1,4) "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+
+		    if(substr(ActionStrVal,1,4)=="|rr|")
+			    newListSynonym := key "" ActionStrVal ; <=== eigentlich sollte es ja so gehen
+			else
+			    newListSynonym := key "|rr|ahk|" ActionStrVal ; <=== eigentlich sollte es ja so gehen
+			; newListSynonym := key "|rr|ahk|" ActionStr ; <=== eigentlich sollte es ja so gehen
 		;	newListSynonym := key ActionStrVal
-		else{
+		}else{
 			newListSynonym := key "|r|" ActionStr
 			; MsgBox,% newListSynonym "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         }
         ; newListSynonym := key "|rr|" ; <=== eigentlich sollte es ja so gehen
 
-        ; Msgbox,% a_index ":`n" ActionStr "`n`n" newListSynonym "`n`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        ; Msgbox,% a_index ":`n" newListSynonym "`n ^- newListSynonym`n" newListSynonym "`n`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        ; Msgbox,% a_index ":`n" ActionStr "`n ^-ActionStr`n" newListSynonym "`n`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 		if(0)
 			msg =
 		(
@@ -603,7 +718,7 @@ ReverseWordNums(LearnedWordsCount){
 	global ActionList
 	global g_ActionListID
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	LearnedWordsCount+= (prefs_LearnCount - 1)
 
 	sql := "SELECT word FROM Words WHERE count IS NOT NULL ActionList = '" ActionList "';"
@@ -642,7 +757,7 @@ AddWordToList(AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef LearnedWordsCo
 	global g_ActionListDB
 	global ActionList
 ;  foundPos := RegExMatch( "str" , "i)" )
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    ;AddWord = Word to add to the list
 	if(0 && AddWord)
@@ -686,6 +801,7 @@ AddWordToList(AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef LearnedWordsCo
 
     if(!CheckValid(AddWord,ForceLearn, isIndexedAhkBlock))
 		return false
+    ; msgBox,% "is valid: " AddWord "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 
    ; TransformWord normalizes the word, converting it to uppercase and removing certain accented characters.
 	TransformWord(AddWord, AddWordReplacement, AddWordDescription, AddWordTransformed, AddWordIndexTransformed, AddWordReplacementTransformed, AddWordDescriptionTransformed)
@@ -774,7 +890,7 @@ AddWordToList(AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef LearnedWordsCo
 
 CheckValid(Word,ForceLearn:= false, isIndexedAhkBlock := false){
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 	Ifequal, Word,  ;If we have no word to add, skip out.
 	    Return
@@ -821,7 +937,7 @@ CheckValid(Word,ForceLearn:= false, isIndexedAhkBlock := false){
 ;<<<<<<<< TransformWord <<<< 180319190854 <<<< 19.03.2018 19:08:54 <<<<
 TransformWord(AddWord, AddWordReplacement, AddWordDescription, ByRef AddWordTransformed, ByRef AddWordIndexTransformed, ByRef AddWordReplacementTransformed, ByRef AddWordDescriptionTransformed) {
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
     ; TransformWord normalizes the word, converting it to uppercase and removing certain accented characters.
 
@@ -852,7 +968,7 @@ DeleteWordFromList(DeleteWord){
 	global g_ActionListDB
 	global ActionList
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	Ifequal, DeleteWord,  ;If we have no word to delete, skip out.
 	Return
 
@@ -877,7 +993,7 @@ UpdateWordCount(word,SortOnly)
 
 	global prefs_LearnMode
 	global g_ActionListDB
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ;Word = Word to increment count for
    ;SortOnly = Only sort the words, don't increment the count
 
@@ -899,7 +1015,7 @@ UpdateWordCount(word,SortOnly)
 ;<<<<<<<< CleanupActionListOfThisActionList <<<<
 CleanupActionListOfThisActionList(ActionList){
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    ;Function cleans up all words from given ActionList
 	Msgbox,not yet implemented `n (%A_LineFile%~%A_LineNumber%)
@@ -917,7 +1033,7 @@ CleanupActionListAll_ofLittleWordCount(LearnedWordsOnly := false){
 	global ActionList
 	global prefs_LearnCount
 ;   Progress, M, Please wait..., Cleaning ActionList, %g_ScriptTitle%
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	if (LearnedWordsOnly) {
 		g_ActionListDB.Query("DELETE FROM Words WHERE count < " . prefs_LearnCount . " AND count IS NOT NULL AND ActionListID = '" . g_ActionListID . "';")
 	} else {
@@ -990,7 +1106,7 @@ StrUnmark(string) {
 
 	global g_OSVersion
 	global g_NormalizationKD
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	if (g_OSVersion < 6.0)
 	{
 		return string
@@ -1030,7 +1146,7 @@ getActionListID(ActionList){
 
 	global g_ActionListDB
 	global g_ActionList_UsedByUser_since_midnight
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	if(!g_ActionListDB)
 		g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", A_ScriptDir . "\ActionListLearned.db" ) ;
 	if(!g_ActionListDB){
@@ -1053,14 +1169,14 @@ ActionList = '%ActionList%' ;
 		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
 		lll(A_LineNumber, A_LineFile, tip)
 		tooltip, `% tip
-		; feedbackMsgBox(A_LineFile . ">" . A_LineNumber, tip )
+		; feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, tip )
 		; Clipboard := tip
 
 
         sqlLastError := SQLite_LastError()
         if( instr(sqlLastError, "no such column") || instr(sqlLastError, "no such table") ){
             RebuildDatabase()
-            tooltip,% "  RebuildDatabase() ==> (" A_LineFile "~" A_LineNumber ")"
+            tooltip,% "  RebuildDatabase() ==> (" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
             sleep,5000
             reload
         }
@@ -1079,10 +1195,10 @@ ActionList = '%ActionList%' ;
 	} catch e{
 		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
 		sqlLastError := SQLite_LastError()
-		tip .= "`n sqlLastError=" sqlLastError " `n( " A_LineFile "~" A_LineNumber ")"
+		tip .= "`n sqlLastError=" sqlLastError " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 		lll(A_LineNumber, A_LineFile, tip)
 		tooltip, `% tip
-		feedbackMsgBox(A_LineFile . ">" . A_LineNumber, tip )
+		feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, tip )
 		Clipboard := tip
 	}
 	For each, row in result.Rows
@@ -1102,7 +1218,7 @@ ActionList = '%ActionList%' ;
           ; 
         if(  instr(sqlLastError, "no such table") ){
             ;if(A_TickCount < 1000){
-                tip := "`n sqlLastError=" sqlLastError "`n g_ActionListDB=" g_ActionListDB " `n( " A_LineFile "~" A_LineNumber ")"
+                tip := "`n sqlLastError=" sqlLastError "`n g_ActionListDB=" g_ActionListDB " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
                 tooltip, % tip
                 RebuildDatabase() ; works ? 22.10.2018 05:23 todo:
                 sleep,10
@@ -1113,7 +1229,7 @@ ActionList = '%ActionList%' ;
         else if( instr(sqlLastError, "no such column") ){
             RebuildDatabase()
             msgbox,% "done: RebuildDatabase()`n `n " msg " (" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ")"
-            tooltip,% "  RebuildDatabase() ==> (" A_LineFile "~" A_LineNumber ")"
+            tooltip,% "  RebuildDatabase() ==> (" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
             sleep,5000
             reload
         }else{
@@ -1124,16 +1240,28 @@ ActionList = '%ActionList%' ;
         exitapp
 	}
 
+if(A_TickCount - g_StartTime_TickCountMilli > 900 ){ ; its ok if happens at the very beginning
     m =
     (
+    ERROR: this line should never visited
+
     ActionList = %ActionList%
+    ActionListID = %ActionListID%
+    sqlLastError = %sqlLastError%
+
+    %sqlGetWLid%
     )
-    tooltip,% m "`n`n`n:( ERROR: this line should never visited(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+
+    tooltip,% m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    lll(A_LineNumber, A_LineFile, m)
+    msgbox,% m "`n `n (" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ")"
+}
 	; g_ActionList_UsedByUser_since_midnight[g_ActionListID] := lastUsedByUser_since_midnight
     ; g_ActionListDB.Query("UPDATE ActionList SET lastUsedByUser_since_midnight = " g_ActionList_UsedByUser_since_midnight[g_ActionListID] " WHERE id = " g_ActionListID ";")
 	return ActionListID
 }
-;>>>>>>>> getActionListID >>>> 180324230528 >>>> 24.03.2018 23:05:28 >>>>
+;\____ getActionListID __ 181025115249 __ 25.10.2018 11:52:49 __/
 
 
 INSERT_INTO_ActionLists_ifNotExist(ActionList, ActionListModified, ActionListSize ){
@@ -1152,7 +1280,7 @@ INSERT_INTO_ActionLists_ifNotExist(ActionList, ActionListModified, ActionListSiz
 INSERT_INTO_ActionLists(ActionList, ActionListModified, ActionListSize ){
 
 	global g_ActionListDB
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	sql := "INSERT INTO ActionLists "
 	sql .= " (id, ActionList, ActionListmodified, ActionListsize) VALUES "
 	sql .= " (null, '" ActionList "', '" ActionListModified "', '" ActionListSize "' );"
@@ -1163,10 +1291,10 @@ INSERT_INTO_ActionLists(ActionList, ActionListModified, ActionListSize ){
 	} catch e{
 		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
 		sqlLastError := SQLite_LastError()
-		tip .= "`n sqlLastError=" sqlLastError "`n sql=" sql " `n( " A_LineFile "~" A_LineNumber ")"
+		tip .= "`n sqlLastError=" sqlLastError "`n sql=" sql " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 		lll(A_LineNumber, A_LineFile, tip)
 		tooltip, `% tip
-		feedbackMsgBox(A_LineFile . ">" . A_LineNumber, tip )
+		feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, tip )
 		Clipboard := tip
 		msgbox, % tip
 	}

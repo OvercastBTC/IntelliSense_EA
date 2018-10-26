@@ -1,5 +1,6 @@
 ﻿;These functions and labels are related to the active window
 
+;/¯¯¯¯ EnableWinHook ¯¯ 181024134525 ¯¯ 24.10.2018 13:45:25 ¯¯\
 ; DisableWinHook()
 EnableWinHook(){
    ; tooltip,EnableWinHook => return`n (%A_LineFile%~%A_LineNumber%)
@@ -12,10 +13,7 @@ EnableWinHook(){
 ; if (g_PauseState == "Paused"){
 ; Msgbox,g_PauseState == "Paused"`n (%A_LineFile%~%A_LineNumber%)
 
-
-
-
-global g_EVENT_SYSTEM_FOREGROUND
+    global g_EVENT_SYSTEM_FOREGROUND
    global g_NULL
    global g_WINEVENT_SKIPOWNPROCESS
    global g_WinChangedEventHook
@@ -27,19 +25,20 @@ global g_EVENT_SYSTEM_FOREGROUND
       g_WinChangedEventHook := DllCall("SetWinEventHook", "Uint", g_EVENT_SYSTEM_FOREGROUND, "Uint", g_EVENT_SYSTEM_FOREGROUND, "Ptr", g_NULL, "Uint", g_WinChangedCallback, "Uint", g_NULL, "Uint", g_NULL, "Uint", g_WINEVENT_SKIPOWNPROCESS)
       
       if !(g_WinChangedEventHook){
-		
-lll(A_LineNumber, A_LineFile, "Failed to register Event Hook! `n  g_WinChangedEventHook=" . g_WinChangedEventHook . "`n 17-07-16_16-21" )
-
-         tip=A_LineNumber . " " .  A_LineFile . " " . Last_A_This
-         tooltip,% tip
+        msg := "Failed to register Event Hook! `n  g_WinChangedEventHook=" . g_WinChangedEventHook . "`n 17-07-16_16-21"
+        ToolTip5sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " )
+        msgbox, % msg
+        lll(A_LineNumber, A_LineFile, msg )
          return false
          ;ExitApp
       }
    }
-   
    Return
 }
+;\____ EnableWinHook __ 181024134530 __ 24.10.2018 13:45:30 __/
 
+
+;/¯¯¯¯ DisableWinHook ¯¯ 181024141107 ¯¯ 24.10.2018 14:11:07 ¯¯\
 DisableWinHook(){
    global g_WinChangedEventHook
    
@@ -56,7 +55,14 @@ DisableWinHook(){
    }
    return
 }
+;\____ DisableWinHook __ 181024141113 __ 24.10.2018 14:11:13 __/
 
+
+
+
+
+
+;/¯¯¯¯ WinChanged ¯¯ 181022212344 ¯¯ 22.10.2018 21:23:44 ¯¯\
 ; Hook function to detect change of focus (and remove ListBox when changing active window) 
 WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsEventTime){
    global g_inSettings
@@ -102,8 +108,10 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
    Return
 }
 
-SwitchOffListBoxIfActive()
-{   
+
+
+;/¯¯¯¯ SwitchOffListBoxIfActive ¯¯ 181022212325 ¯¯ 22.10.2018 21:23:25 ¯¯\
+SwitchOffListBoxIfActive(){
    global g_Active_Id
    global g_ListBox_Id
    global g_ManualActivate
@@ -121,10 +129,12 @@ SwitchOffListBoxIfActive()
    }
    return, false
 }
-   
-   
-;------------------------------------------------------------------------
+;\____ WinChanged __ 181022212351 __ 22.10.2018 21:23:51 __/
 
+
+
+
+;/¯¯¯¯ GetIncludedActiveWindow ¯¯ 181022212408 ¯¯ 22.10.2018 21:24:08 ¯¯\
 ; Wrapper function to ensure we always enable the WinEventHook after waiting for an active window
 ; Returns true if the current window is included
 GetIncludedActiveWindow() {
@@ -176,7 +186,11 @@ GetIncludedActiveWindow() {
    EnableWinHook()
    Return, CurrentWindowIsActive
 }
+;\____ GetIncludedActiveWindow __ 181022212417 __ 22.10.2018 21:24:17 __/
 
+
+
+;/¯¯¯¯ GetIncludedActiveWindowGuts ¯¯ 181022212430 ¯¯ 22.10.2018 21:24:30 ¯¯\
 GetIncludedActiveWindowGuts() {
    global g_Active_Id
    global g_Active_Pid
@@ -216,8 +230,8 @@ GetIncludedActiveWindowGuts() {
          InactivateAll_Suspend_ListBox_WinHook()
          ;Wait for any window to be active
 
-         tip="WinWaitActive, , , , ZZZYouWillNeverFindThisStringInAWindowTitleZZZ`n" A_LineNumber . " " .  A_LineFile . " " . Last_A_This
-         ToolTip4sec(tip " (" A_LineNumber " " A_LineFile " " Last_A_This)
+         tip="WinWaitActive, , , , ZZZYouWillNeverFindThisStringInAWindowTitleZZZ`n" A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") . " " . Last_A_This
+         ToolTip4sec(tip " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
          ; msgbox,% tip
          WinWaitActive, , , , ZZZYouWillNeverFindThisStringInAWindowTitleZZZ
          Continue
@@ -352,11 +366,13 @@ CheckForActive(ActiveProcess,ActiveTitle)
 
    Return, 
 }
+;\____ GetIncludedActiveWindowGuts __ 181022212448 __ 22.10.2018 21:24:48 __/
 
-;------------------------------------------------------------------------
-      
-ReturnWinActive()
-{
+
+
+
+;/¯¯¯¯ ReturnWinActive ¯¯ 181022212502 ¯¯ 22.10.2018 21:25:02 ¯¯\
+ReturnWinActive(){
    global g_Active_Id
    global g_Active_Title
    global g_InSettings
@@ -381,3 +397,4 @@ ReturnWinActive()
    StringReplace, Temp_Title, Temp_Title,-,,All
    Return, (( g_Active_Id == Temp_id ) && ( Last_Title == Temp_Title ))
 }
+;\____ ReturnWinActive __ 181022212545 __ 22.10.2018 21:25:45 __/

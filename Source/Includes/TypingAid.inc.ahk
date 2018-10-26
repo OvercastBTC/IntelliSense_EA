@@ -9,9 +9,10 @@ global activeTitleOLD
 global activeTitle
 global activeClassOLD
 global activeClass
+global g_StartTime_TickCountMilli := A_TickCount
 
 Receive_ActionListAddress(CopyOfData){
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    msgbox, Received:`n%CopyOfData% `n ( %A_LineFile%(inc)~%A_LineNumber% ) `n
    msgbox, Received:`n%CopyOfData% `n ( %A_LineFile%(inc)~%A_LineNumber% ) `n
@@ -45,7 +46,7 @@ Receive_ActionListAddress(CopyOfData){
 
        CloseListBox()
 
-       msgbox,% A_LineNumber " " A_LineFile "`n SuspendOn()`n"
+       msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
 
        SuspendOn()
 
@@ -290,8 +291,15 @@ global g_doSaveLogFiles
 
 
 
-;<<<<<<<< RecomputeMatches <<<< 180319210937 <<<< 19.03.2018 21:09:37 <<<<
+
+
+
+;/¯¯¯¯ RecomputeMatches ¯¯ 181025105946 ¯¯ 25.10.2018 10:59:46 ¯¯\
 RecomputeMatches(){
+
+    ; Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
+    setTrayIcon("RecomputeMatches")
+
    ; This function will take the given word, and will recompile the list of matches and redisplay the ActionList.
    global g_MatchTotal
    global g_SingleMatch
@@ -309,9 +317,10 @@ RecomputeMatches(){
    global prefs_SuppressMatchingWord
 
    ;Msgbox,g_Word = %g_Word% (%A_LineFile%~%A_LineNumber%)
-   if(!g_Word) ; if g_Word is empty and you run, it shows the complete list. you want it? maybe sometimes its helpful 25.03.2018 19:42 18-03-25_19-42
+   if(!g_Word){ ; if g_Word is empty and you run, it shows the complete list. you want it? maybe sometimes its helpful 25.03.2018 19:42 18-03-25_19-42
+        setTrayIcon()
         Return
-
+    }
    ; LoopCount := StrLen(g_Word)
    ; if(LoopCount < 2 ) ; 18-03-31_22-43 addet TOD: proof
       ; return
@@ -321,7 +330,8 @@ RecomputeMatches(){
 
    ;Match part-word with command 
    g_MatchTotal = 0 
-   
+
+   if(false){
    IfEqual, prefs_ArrowKeyMethod, Off
    {
       IfLess, prefs_ListBoxRows, 10
@@ -330,7 +340,9 @@ RecomputeMatches(){
    } else {
       LimitTotalMatches = 200
    }
-   
+   }
+   LimitTotalMatches := 10 ; 25.10.2018 11:08
+
    StringUpper, WordMatchOriginal, g_Word
    
    WordMatch := StrUnmark(WordMatchOriginal)
@@ -428,14 +440,16 @@ RecomputeMatches(){
    IfEqual, g_MatchTotal, 0
    {
       ClearAllVars(false)
-      Return 
+        setTrayIcon()
+      Return
    } 
    
    SetupMatchPosition()
    RebuildMatchList()
    ShowListBox()
+    setTrayIcon()
 }
-;>>>>>>>> RecomputeMatches >>>> 180319210950 >>>> 19.03.2018 21:09:50 >>>>
+;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
 
 
 CheckForCaretMove(MouseButtonClick, UpdatePosition := false){
@@ -447,7 +461,7 @@ CheckForCaretMove(MouseButtonClick, UpdatePosition := false){
    global g_Word
    global prefs_DetectMouseClickMove
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ;If we aren't using the DetectMouseClickMoveScheme, skip out
    IfNotEqual, prefs_DetectMouseClickMove, On
       Return
@@ -624,7 +638,7 @@ CheckWord(Key) {
    global g_Word
    global prefs_ListBoxRows
    global prefs_NumPresses
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ; 0000123
    ; StringRight, Key, Key, 1 ;Grab just the number pushed, trim off the "$"
    Key := SubStr(Key, 2)
@@ -670,7 +684,7 @@ if(!g_ListBox_Id){ ; lines addet to reenable numbers without special functions. 
 foundPos := RegExMatch( Key , "\d" )
 if(foundPos){
     ;Suspend,On ; 01.08.2017 04:28 17-08-01_04-28 with this effect, the first number is normal litle slow, but number later are fast again.
-   ;msgbox,% A_LineNumber " " A_LineFile "`n SuspendOn()`n"
+   ;msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
 }
 
 
@@ -736,7 +750,7 @@ global g_doSaveLogFiles
 lll(A_LineNumber, A_LineFile,"SuspendOn()`n" . Key " = Key `n" . WordIndex " = WordIndex `n"  . prefs_NumPresses . " = prefs_NumPresses `n " . "`n 17-07-16_14-16" )
 
 ;      lll(A_LineNumber, A_LineFile, "SuspendOn()")
-      msgbox,% A_LineNumber " " A_LineFile "`n SuspendOn()`n"
+      msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
       SuspendOn()
   }
 
@@ -951,7 +965,7 @@ EvaluateUpDown(Key){
    global prefs_ArrowKeyMethod
    global prefs_DisabledAutoCompleteKeys
    global prefs_ListBoxRows
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    IfEqual, prefs_ArrowKeyMethod, Off
    {
@@ -1221,6 +1235,8 @@ lll(A_LineNumber, A_LineFile, "CloseListBox()")
    ;msgbox,done: DisableWinHook()  (%A_LineFile%~%A_LineNumber%) :-)
 }
 
+
+;/¯¯¯¯ SuspendOn ¯¯ 181024140026 ¯¯ 24.10.2018 14:00:26 ¯¯\
 SuspendOn(){
    global g_ScriptTitle
    ;ToolTip2sec("Suspend deaktivad TEST " A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
@@ -1235,7 +1251,9 @@ SuspendOn(){
       ;Menu, tray, Icon, %A_ScriptDir%\%g_ScriptTitle% - Inactive.ico, ,1
    }
 }
+;\____ SuspendOn __ 181024140031 __ 24.10.2018 14:00:31 __/
 
+;/¯¯¯¯ SuspendOff ¯¯ 181024140102 ¯¯ 24.10.2018 14:01:02 ¯¯\
 SuspendOff(){
    global g_ScriptTitle
    Suspend, Off
@@ -1252,8 +1270,11 @@ SuspendOff(){
    }
    ;DynaRun("#" "NoTrayIcon `; `n``n Tooltip,||SL5|| `; `n``n Sleep,2300 `; " A_LineNumber)
 }
+;\____ SuspendOff __ 181024140111 __ 24.10.2018 14:01:11 __/
 
 
+
+;/¯¯¯¯ BuildTrayMenu ¯¯ 181024140140 ¯¯ 24.10.2018 14:01:40 ¯¯\
 BuildTrayMenu(){
 ;feedbackMsgBox("BuildTrayMenu test 17-11-22_13-52","test 17-11-22_13-52",1,1)
 
@@ -1271,13 +1292,15 @@ BuildTrayMenu(){
    ;Initialize Tray Icon
    Menu, Tray, Icon
 }
+;\____ BuildTrayMenu __ 181024140152 __ 24.10.2018 14:01:52 __/
 
 
+;/¯¯¯¯ ClearAllVars ¯¯ 181024140212 ¯¯ 24.10.2018 14:02:12 ¯¯\
 ; This is to blank all vars related to matches, ListBox and (optionally) word 
 ClearAllVars(ClearWord){
 
    global
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
        ; lll(A_LineNumber, A_LineFile, "CloseListBox()")
        ; run,log\%A_LineFile%.log.txt ; this line woks :) but to often ;) may we dont need any more to check it ;) 04.08.2017 15:20
 
@@ -1301,10 +1324,11 @@ ClearAllVars(ClearWord){
    g_OriginalMatchStart=
    Return
 }
+;\____ ClearAllVars __ 181024140219 __ 24.10.2018 14:02:19 __/
 
 
 FileAppendDispatch(Text,FileName,ForceEncoding=0){
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    IfEqual, A_IsUnicode, 1
    {
@@ -1414,27 +1438,28 @@ GetOSVersion(){
    return ((r := DllCall("GetVersion") & 0xFFFF) & 0xFF) "." (r >> 8)
 }
 
+;/¯¯¯¯ MaybeCoInitializeEx ¯¯ 181024135038 ¯¯ 24.10.2018 13:50:38 ¯¯\
 MaybeCoInitializeEx(){
    global g_NULL
    global g_ScrollEventHook
    global g_WinChangedEventHook
    
-   if (!g_WinChangedEventHook && !g_ScrollEventHook)
-   {
+   if (!g_WinChangedEventHook && !g_ScrollEventHook){
       DllCall("CoInitializeEx", "Ptr", g_NULL, "Uint", g_NULL)
    }
-   
 }
+;\____ MaybeCoInitializeEx __ 181024135044 __ 24.10.2018 13:50:44 __/
 
 
+;/¯¯¯¯ MaybeCoUninitialize ¯¯ 181024135055 ¯¯ 24.10.2018 13:50:55 ¯¯\
 MaybeCoUninitialize(){
    global g_WinChangedEventHook
    global g_ScrollEventHook
-   if (!g_WinChangedEventHook && !g_ScrollEventHook)
-   {
+   if (!g_WinChangedEventHook && !g_ScrollEventHook){
       DllCall("CoUninitialize")
    }
 }
+;\____ MaybeCoUninitialize __ 181024135059 __ 24.10.2018 13:50:59 __/
 
 
 setLength(ParseWordsCount, maxLinesOfCode4length1){

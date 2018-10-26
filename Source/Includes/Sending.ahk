@@ -1,6 +1,6 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/Einrückungsstil#SL5small-Stil
 SendKey(Key){
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	IfEqual, Key, $^Enter
 	{
@@ -52,7 +52,7 @@ getWordIndex(word) {
     ;~ erste zeile mit eintrag im wörterbuch: g_SingleMatch[1] 10.07.2017 12:13
 	global ActionListFileName
 	global ActionList
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
   ;ActionListFileName = ActionList.txt
 	ActionListFileName := ActionList
 	if(!FileExist(ActionListFileName))
@@ -90,7 +90,7 @@ getLineOfWord(word) {
 	
 	global ActionListFileName
 	global ActionList
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
   ;ActionListFileName = ActionList.txt
 	ActionListFileName := ActionList
 	if(!FileExist(ActionListFileName))
@@ -225,7 +225,7 @@ UPDATE_ActionList_UsedByUser_since_midnight(){
     		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
     		lll(A_LineNumber, A_LineFile, tip)
     		tooltip, `% tip
-    		feedbackMsgBox(A_LineFile . ">" . A_LineNumber, tip )
+    		feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, tip )
     		Clipboard := tip
     	}
 }
@@ -259,14 +259,17 @@ SendWord(WordIndex){
     global g_ActionListID
 
 
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	ActionListFolderOfThisActionListRELATIVE := RegExReplace(ActionList,"\\[^\\]+$","")
-	ActionListFolderOfThisActionList := A_ScriptDir  "\" RegExReplace(ActionList,"\\[^\\]+$","")
+	ActionListFolderOfThisActionList := RegExReplace(ActionList,"\\[^\\]+$","") ; deleted A_ScriptDir "\"  23.10.2018 11:14
 	ActionListFolderOfThisActionList := removesSymbolicLinksFromFileAdress(ActionListFolderOfThisActionList) ; user should could includes direcly from his ahk ActionList, without editing the address 05.03.2018 08:15
 	if(!FileExist(ActionListFolderOfThisActionList)){ ; Checks for the existence of a file or folder
 		clipboard := ActionListFolderOfThisActionList
-		tooltip,ups:`n ! FileExist(%ActionListFolderOfThisActionList% `n (%A_LineFile%~%A_LineNumber%)
+        msg := "`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+		msg = ups:`n ! FileExist(%ActionListFolderOfThisActionList% %msg%
+		tooltip,% msg
+		msgBox,% ":( ERROR: " msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 		return false
 	}
 	
@@ -408,7 +411,7 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 			rX := {key:m1, rr:m2, send:"", lang:"" ,code:""}
 			
 			if(!rX["lang"]){
-				tip := "found synonym `n ("   A_LineFile " ," A_LineNumber  ") "
+				tip := "found synonym `n ("   RegExReplace(A_LineFile,".*\\") " ," A_LineNumber  ") "
 				ToolTip3sec( tip )
             ; msgbox, % tip
 				id := getWordIndex(m1)
@@ -417,8 +420,21 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 				; deprecated: https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-46
 				; id -= 1 ; we are in synonym lets search up
                 ;\____ Synonym __ 181021060220 __ 21.10.2018 06:02:20 __/
-					id += 1 ; we are in synonym lets search DOWN ; new since 21.10.2018 06:03
-					lineOfIndex := getLineOfIndex(id)
+                    lineOfIndex := ""
+                  while(lineOfIndex == "" && A_index < 99){
+					  id += 1 ; we are in synonym lets search DOWN ; new since 21.10.2018 06:03
+                     lineOfIndex := getLineOfIndex(id)
+                     if(A_index>=30){
+                        msg := "WARNING: endless loop. Synonsm is at the end of file."
+                        ToolTip5sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+                        feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, msg )
+                        break
+                     }
+					if(0){
+					    sleep,2000
+					    tooltip,% lineOfIndex ":= getLineOfIndex(id) (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                    }
+                  }
                 ; dayTimeHello.ahk|rr|
 					RegExMatch( lineOfIndex , regIsXXXcode  ,  m )
 					rX := {key:m1, rr:m2, send:m3, lang:m4 ,code:m5}
@@ -438,7 +454,7 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 							sending := lineOfIndex
                     ;\____ SysnonymR __ 181011160954 __ 11.10.2018 16:09:54 __/
 						
-                     MsgBox,% rX["key"] "#" rX["rr"] "#" rX["send"]  "#" rX["code"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                     ; MsgBox,% rX["key"] "#" rX["rr"] "#" rX["send"]  "#" rX["code"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
                     ;pause
 						
 						break ; no code tag inside
@@ -446,7 +462,7 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 					if(rX["code"]){
 						tip=%lineOfIndex% `n (%A_LineFile%~%A_LineNumber%)
 						ToolTip3sec(tip)
-                        Msgbox,% "code inside `n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                        ; Msgbox,% "code inside `n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 						break ; code inside
 		}    }   }   }
 		
@@ -472,13 +488,22 @@ UPDATE_ActionList_UsedByUser_since_midnight()
                     ;\____ Synonym __ 181021060220 __ 21.10.2018 06:02:20 __/
 					id += 1 ; we are in synonym lets search DOWN ; new since 21.10.2018 06:03
 					lineOfIndex := getLineOfIndex(id)
-					if(!lineOfIndex)
+                    MsgBox,% lineOfIndex " - (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+					if(lineOfIndex =="") ; empty lines are allowed. when its terminating?
+					    continue
+					if(!lineOfIndex){
+					    msgBox,% "is this happen? or never happens? (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 					    break
+                    }
 					RegExMatch( lineOfIndex , regIsXXXcode ,  m )
 					m := {key:m1, rr:m2, send:m3, lang:m4 ,code:m5}
+        			if(rX["code"] || (!rX["rr"] && rX["code"] )){
+                        MsgBox,% lineOfIndex " - (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        			    break
+                    }
 
 				}
-                MsgBox,% id " - " A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                MsgBox,% lineOfIndex " - (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 
 			}
 			StringLower, mlang, % rX["lang"]
@@ -511,6 +536,10 @@ UPDATE_ActionList_UsedByUser_since_midnight()
     ; msgbox, % isAHKcode "`=isAHKcode`n`n " lineOfIndex "`n=lineOfIndex`n`n is_OpenA_edit_open_lib=`n" is_OpenA_edit_open_lib " `n`n isDeprecated_OpenA_edit_open_lib=`n" isDeprecated_OpenA_edit_open_lib "`n`n" AHKcode
 				
     ; Msgbox,% AHKcode "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    msg := ActionListFolderOfThisActionList "`n"
+    msg .= A_WorkingDir " = A_WorkingDir `n"
+    ; Msgbox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
 				was_a_Editor_open_command := openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib)
 				if(was_a_Editor_open_command)
 					return ; endOf function: SendWord(WordIndex)
@@ -582,7 +611,7 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 			}
     ;sleep,3000
 ;    Msgbox, '%sending%' = sending  `n `n AHKcode = %rX["send"]% (line:%A_LineNumber%)
-; (A_LineNumber   " "   A_LineFile   " "   Last_A_This)
+; (A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")   " "   Last_A_This)
 			
 			
 			
@@ -622,8 +651,8 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 
 
 		; toolTip2sec(msg" (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-		; toolTip5sec(msg" (" A_LineNumber " " A_LineFile " " Last_A_This)
-		; tooltip4sec(msg" (" A_LineNumber " " A_LineFile " " Last_A_This)
+		; toolTip5sec(msg" (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+		; tooltip4sec(msg" (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
 		; __
 
 				; msg msg __msg ms:( ERROR: " msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -884,7 +913,7 @@ SendFull(SendValue,ForceBackspace:= false){
 	
 	global g_doUseSendPlay
 	
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	SwitchOffListBoxIfActive()
 	
 	if(g_config["Send"]["RealisticDelayDynamic"]){
@@ -898,7 +927,7 @@ SendFull(SendValue,ForceBackspace:= false){
 		}
 		return ; endof SendFull(
 		
-		;  lTiToolTip2sec(msg " (" A_LineNumber " " A_LineFile " " Last_A_This)p
+		;  lTiToolTip2sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)p
 		
 	}	
 
@@ -937,7 +966,11 @@ SendFull(SendValue,ForceBackspace:= false){
 		}
 		SendValue := FirstLetter . SendValue
 	}
-	
+
+
+	; msgBox,% ":( ERROR: " SendValue "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+	; feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
 	
    ; if the user chose a word with accented characters, then we need to
    ; substitute those letters into the word
@@ -983,12 +1016,14 @@ SendFull(SendValue,ForceBackspace:= false){
 		}
 		
 		NewSendValue .= SubStr(SendValue, SendIndex, StrLen(SendValue) - SendIndex + 1)
-		
+	;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
 		SendValue := NewSendValue
 	}
 	
 	StringCaseSense, %StringCaseSenseOld%
-	
+	;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
    ; If we are not backspacing, remove the typed characters from the string to send
 	if !(BackSpaceWord)
 	{
@@ -998,7 +1033,8 @@ SendFull(SendValue,ForceBackspace:= false){
    ; if autospace is on, add a space to the string to send
 	IfEqual, prefs_AutoSpace, On
 	SendValue .= A_Space
-	
+	;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
       ; thats great :) here we find the complete line :) inside sending 17.03.2017 18:30 17-03-17_18-30
 ;      Msgbox, '%SendValue%' = SendValue  (line:%A_LineNumber%)  (line:%A_LineNumber%)
 	
@@ -1041,7 +1077,8 @@ SendFull(SendValue,ForceBackspace:= false){
             ; Send {Text}baby ^v {Clipboard} ; interpretiert nicht `r, `n, `t and `b usw
 			
 		}
-		
+	;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
 		if(!g_doUseSendPlay){
      ; just tested: words with ahk code goes here. but sending gets the value1 not the value2 with the script or ahk part 13.03.2018 14:43
     ; SendRaw, %sending% ; used till 13.03.2018 14:51
@@ -1082,7 +1119,8 @@ SendFull(SendValue,ForceBackspace:= false){
     ;SendLevel 0
 			} else
 				Send,{Text}%sending%
-			
+	; feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, SendValue  )
+
             ;lll(A_LineNumber, A_LineFile, "%sending% `n >" . sending . "<  `n token=18-03-13_14-44")
 			
         ; Msgbox,sending `n >%sending%< `n (%A_LineFile%~%A_LineNumber%)
@@ -1282,7 +1320,7 @@ SendCompatible(SendValue,ForceSendForInput) {
 	
 	global g_sending_is_buggy
 
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	if( g_sending_is_buggy )
 		lll(A_LineNumber, A_LineFile, " Send, %SendValue% `n Send, %" . SendValue . "% `n 17-07-29_12-10")
 ; regeregregreg
@@ -1346,7 +1384,7 @@ SendCompatible(SendValue,ForceSendForInput) {
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 getTypicalKeyLatency( key, factor = 1 ) {
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 ; recordet at 10.04.2017 17:45 from sl5net
 	time2keyPressLog := {}
@@ -1803,7 +1841,7 @@ getTypicalKeyLatency( key, factor = 1 ) {
 
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 convertSendCode2SendPlayCode(AHKcode){
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	AHKcode1 := AHKcode
 ; thats pseudo sendPlay . alternative ; However, SendPlay may have no effect at all on Windows Vista or later if User Account Control is enabled, even if the script is running as an administrator. mySendPlay
@@ -1833,7 +1871,7 @@ convertSendCode2SendPlayCode(AHKcode){
 
 ;/¯¯¯¯ getRealisticDelayDynamicSendAHKcode ¯¯ 181014005212 ¯¯ 14.10.2018 00:52:12 ¯¯\
 getRealisticDelayDynamicSendAHKcode( g_Word , AHKcode ){
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
 
 
@@ -1986,7 +2024,7 @@ getRealisticDelayDynamicSendAHKcode( g_Word , AHKcode ){
 
 
 getCorrectedStringUAOSS( sending  ) {
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	
 ; If Unicode is supported, Number is a Unicode character code between 0 and 0x10FFFF (or 0xFFFF prior to [v1.1.21]); otherwise it is an ANSI character code between 0 and 255.
@@ -2107,7 +2145,7 @@ getCorrectedStringUAOSS( sending  ) {
 
 JEE_StrUtf8BytesToText(ByRef vUtf8Bytes)
 {
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	if A_IsUnicode
 	{
@@ -2125,7 +2163,7 @@ JEE_StrUtf8BytesToText(ByRef vUtf8Bytes)
 
 JEE_StrTextToUtf8Bytes(ByRef vText)
 {
-	INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	VarSetCapacity(vTemp, StrPut(vText, "UTF-8"))
 	StrPut(vText, &vTemp, "UTF-8")

@@ -89,7 +89,7 @@ ReadPreferences(RestoreDefaults := false,RestorePreferences := false)
    global g_PrefsSections
    global g_XY
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    g_PrefsFile = %A_ScriptDir%\Preferences.ini
    Defaults = %A_ScriptDir%\Defaults.ini
@@ -479,7 +479,7 @@ SavePreferences(PrefsToSave)
    local KeyName
    local PrefsExist
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ValidatePreferences()
 
    IfExist, %g_PrefsFile%

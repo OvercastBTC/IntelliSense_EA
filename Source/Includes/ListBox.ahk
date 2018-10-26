@@ -17,10 +17,11 @@ InitializeListBox(){
    }
       ; to ms ms to
    ; Gui, ListBoxGui:Font, s%prefs_ListBoxFontSize%, %ListBoxFont% ;
-   Tooltip,%g_ListBoxFontSize% = size `n (from: %A_LineFile%~%A_LineNumber%) `
+   if(1 && InStr(A_ComputerName,"SL5"))
+    ToolTip5sec( g_ListBoxFontSize " = font size of ListBoxGui `n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
    Gui, ListBoxGui:Font, s%g_ListBoxFontSize%, %ListBoxFont%
 
-  INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+  INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    Loop, %prefs_ListBoxRows%
    {
@@ -32,19 +33,23 @@ InitializeListBox(){
       Gui, ListBoxGui: Add, ListBox, vg_ListBox%A_Index% R%A_Index% X0 Y0 T%g_ListBoxFontSize% T32 hwndg_ListBoxHwnd%A_Index%
    }
 
-  INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+  INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    Return
 }
    ; ______
-ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
 
+
+
+;/¯¯¯¯ ListBoxClickItem ¯¯ 181022211224 ¯¯ 22.10.2018 21:12:24 ¯¯\
+; needet becouse listbox is moveable by click
+ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
    global
    Local NewClickedItem
    Local TempRows
    static LastClickedItem
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    TempRows := GetRows()
    
@@ -119,11 +124,17 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
 
    Return
 }
+;\____ ListBoxClickItem __ 181022211307 __ 22.10.2018 21:13:07 __/
 
-SetSwitchOffListBoxTimer()
-{
+
+
+
+
+;/¯¯¯¯ SetSwitchOffListBoxTimer ¯¯ 181022211331 ¯¯ 22.10.2018 21:13:31 ¯¯\
+SetSwitchOffListBoxTimer(){
+    ; is for e.g. triggerd if listbox is scrolled 22.10.2018 21:21
    static DoubleClickTime
-   
+
    if !(DoubleClickTime)
    {
       DoubleClickTime := DllCall("GetDoubleClickTime")
@@ -132,15 +143,17 @@ SetSwitchOffListBoxTimer()
    ; before re-activating the edit window to allow double click to work
    SetTimer, SwitchOffListBoxIfActiveSub, -%DoubleClickTime%
 }
-   
+;\____ SetSwitchOffListBoxTimer __ 181022211336 __ 22.10.2018 21:13:36 __/
+
+
 
 SwitchOffListBoxIfActiveSub:
 SwitchOffListBoxIfActive()
 Return
 
-ListBoxScroll(Hook, Event, EventHwnd)
-{
 
+;/¯¯¯¯ ListBoxScroll ¯¯ 181022211707 ¯¯ 22.10.2018 21:17:07 ¯¯\
+ListBoxScroll(Hook, Event, EventHwnd){
    global
 
    Local MatchEnd
@@ -148,7 +161,7 @@ ListBoxScroll(Hook, Event, EventHwnd)
    Local TempRows
    Local Position
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    if (g_ListBox_Id)
    {
    
@@ -182,6 +195,9 @@ ListBoxScroll(Hook, Event, EventHwnd)
       SetSwitchOffListBoxTimer()   
    }
 }
+;\____ ListBoxScroll __ 181022211719 __ 22.10.2018 21:17:19 __/
+
+
 
 ; based on code by HotKeyIt
 ;  http://www.autohotkey.com/board/topic/78829-ahk-l-scrollinfo/
@@ -190,7 +206,7 @@ GetScrollInfo(ctrlhwnd) {
 
   global g_SB_VERT
   global g_SIF_POS
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
   SI:=new _Struct("cbSize,fMask,nMin,nMax,nPage,nPos,nTrackPos")
   SI.cbSize:=sizeof(SI)
   SI.fMask := g_SIF_POS
@@ -203,7 +219,7 @@ ListBoxChooseItem(Row)
 {
 
    global
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    GuiControl, ListBoxGui: Choose, g_ListBox%Row%, %g_MatchPos%
 }
 
@@ -418,7 +434,7 @@ AddToMatchList(position, MaxLength, HalfLength, LongestBaseLength, ComputeBaseLe
    global g_SingleMatchReplacement
    global prefs_ListBoxFontFixed
 
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    blankprefix = `t
    
    IfEqual, g_NumKeyMethod, Off
@@ -608,7 +624,7 @@ else
 ShowListBox(paraX:="",paraY:=""){
 
    global
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
     g_ListBoxTitle := "käsewurscht"
     g_ListBoxTitle_firstTimeInMilli := A_TickCount ; milliseconds
 
@@ -811,7 +827,7 @@ ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSize
    global g_ListBoxCharacterWidthComputed
    global g_ListBoxOffsetComputed
    global g_ListBoxMaxWordHeight
-    INSERT_function_call_time_millis_since_midnight( A_LineFile , A_ThisFunc , A_LineNumber)
+    INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ;Grab the number of non-dummy monitors
    SysGet, NumMonitors, %g_SM_CMONITORS%
    
