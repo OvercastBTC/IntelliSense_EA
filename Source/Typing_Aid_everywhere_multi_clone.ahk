@@ -22,7 +22,7 @@ lll(A_LineNumber, A_LineFile, "hi from " A_LineFile)
 ;<<<<<<<< IncludeI <<<< 171103161518 <<<< 03.11.2017 16:15:18 <<<<
 #Include *i ..\ActionLists\activeClassManipulation.inc.ahk
 ; ^- obiges funktioniert (weil funktion spï¿½ter ausgefï¿½hrt) bei `normalem` Aufruf. z.B. click von atuoload.ahk und darin ein:
-; workingDir := HardDriveLetter . ":\fre\private\HtmlDevelop\AutoHotKey\tools\TypingAid-master\"
+; workingDir := HardDriveLetter . ":\fre\private\HtmlDevelop\AutoHotKey\tools\gi-everywhere-master\"
 ;  run, Typing_Aid_everywhere_multi_clone.ahk, %workingDir%
 ; #Include *i ..\ActionLists\activeClassManipulation.inc.ahk
 ;>>>>>>>> IncludeI >>>> 171103161523 >>>> 03.11.2017 16:15:23 >>>>
@@ -85,17 +85,25 @@ if(!FileExist(sourceDir)){
     sourceDir :=""
 }
 
-typingAidSourcePath := sourceDir . "\Source"
-typingAidSourcePath := ""
-ActionListDirBase = %sourceDir%\..\ActionLists
-ActionListDirBase = %sourceDir%\..\ActionLists
-typingAidAHK := typingAidSourcePath  . "\gi-everywhere.ahk"
-typingAidAHK := typingAidSourcePath  . "gi-everywhere.ahk"
+; too __ cr cre cre
+
+gi_everywhereSourcePath := sourceDir "\Source"
+gi_everywhereSourcePath := ""
+ActionListDirBase := sourceDir "\..\ActionLists"
+if(0 && InStr(A_ComputerName,"SL5")){
+    ActionListDirBase := "E:\fre\private\HtmlDevelop\AutoHotKey\tools\TypingAid-master\ActionLists"
+    ActionListDirBase := "E:\fre\private\HtmlDevelop\AutoHotKey\global-IntelliSense-everywhere-Nightly-Build-NEU\ActionLists"
+    ; Oops. dieses is irgendiw leer: E:\fre\private\HtmlDevelop\AutoHotKey\global-IntelliSense-everywhere-Nightly-Build-works-18-10-26_16\ActionLists
+}
+
+
+gi_everywhereAHK := gi_everywhereSourcePath  . "\gi-everywhere.ahk"
+gi_everywhereAHK := gi_everywhereSourcePath  . "gi-everywhere.ahk"
 ; ActionListActive := sourceDir . "\ActionList.txt" ; we dont need it. deprecated 21.03.2018 09:09
 ActionListActive := ""
 ActionListOLD:=""
 
-checkFilePathExistens1704291222(ActionListDirBase, destinDir, sourceDir, typingAidAHK)
+checkFilePathExistens1704291222(ActionListDirBase, destinDir, sourceDir, gi_everywhereAHK)
 
 ; selfTestLoop1000(1)
 ; selfPerformanceTest()
@@ -105,23 +113,23 @@ checkFilePathExistens1704291222(ActionListDirBase, destinDir, sourceDir, typingA
 activeTitle:=""
 ;/¯¯¯¯ while ¯¯ 181023091625 ¯¯ 23.10.2018 09:16:25 ¯¯\
 while(true) {
-; IfWinNotExist,TypingAid - Active
+; IfWinNotExist,gi-everywhere - Active
 	DetectHiddenWindows,On ; if this is off it does not find in tray 27.04.2017
 ;<<<<<<<< IfWinNotExist <<<< 180323140132 <<<< 23.03.2018 14:01:32 <<<<
 	SetTitleMatchMode,2
-	IfWinNotExist,TypingAid
+	IfWinNotExist,gi-everywhere
 	{
-		if(!FileExist(typingAidAHK)){
-			msg = :-( FileNotExist %typingAidAHK% `n 08.07.2017 14:06 17-07-08_14-06
+		if(!FileExist(gi_everywhereAHK)){
+			msg = :-( FileNotExist %gi_everywhereAHK% `n 08.07.2017 14:06 17-07-08_14-06
 			Msgbox,%msg% `n (%A_LineFile%~%A_LineNumber%)
 			ExitApp
 		}
-    ; tooltip, RunWait %typingAidAHK%
+    ; tooltip, RunWait %gi_everywhereAHK%
 		
-		lll(A_LineNumber, A_LineFile, "Debuggging!  NOT Run % typingAidAHK (23.03.2018 14:24)" ) ; 18-01-20_18-56
+		lll(A_LineNumber, A_LineFile, "Debuggging!  NOT Run % gi_everywhereAHK (23.03.2018 14:24)" ) ; 18-01-20_18-56
 		
-    ; RunWait, % typingAidAHK 
-    ; lll(A_LineNumber, A_LineFile, "RunWait, % typingAidAHK")
+    ; RunWait, % gi_everywhereAHK
+    ; lll(A_LineNumber, A_LineFile, "RunWait, % gi_everywhereAHK")
 	}
 ;>>>>>>>> IfWinNotExist >>>> 180323140141 >>>> 23.03.2018 14:01:41 >>>>
 	SetTitleMatchMode,2 ; thats my default. do i need it later ? 08.07.2017 14:12
@@ -432,11 +440,11 @@ ActionListNEW = %activeTitle%
 	ahkSource .= "varInjects1 := mvarInjects(ActionListDir, ActionListNEW, activeClass, activeTitle) `n"
     ; ahkSource .= "ActionListDir = " . ActionListDir  . " `n"
 	ahkSource .= "ActionListOLD = " . ActionListOLD . " `n"
-	ahkSource .= "typingAidSourcePath = " . typingAidSourcePath . " `n"
+	ahkSource .= "gi_everywhereSourcePath = " . gi_everywhereSourcePath . " `n"
 	ahkSource .= "ActionListActive  = " . ActionListActive  . " `n"
 	temp =
 (
-TargetScriptTitle = TypingAid - Active ahk_class AutoHotkey
+TargetScriptTitle = gi-everywhere - Active ahk_class AutoHotkey
 stringToSend := (InStr(ActionListNEW,"\")) ? ActionListNEW : ActionListDir . "\" . ActionListNEW
 ; result := Send_WM_COPYDATA`(stringToSend, TargetScriptTitle`)
 if(false){  ; temporaly deactivated . for compatibiliti thinks 02.03.2018 17:10
@@ -501,8 +509,8 @@ if(1){
 	
     ; following lines are debrecated
     ; ahkSource .= "ActionListOLDbackup( ActionListDir , ActionListOLD)" . " `n"
-    ; ahkSource .= "ActionListOLDdisable( typingAidSourcePath, ActionListActive )" . " `n"
-	ahkSource .= "`n ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive, typingAidSourcePath, activeClass , activeTitle)" . " `n"
+    ; ahkSource .= "ActionListOLDdisable( gi_everywhereSourcePath, ActionListActive )" . " `n"
+	ahkSource .= "`n ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive, gi_everywhereSourcePath, activeClass , activeTitle)" . " `n"
 	
 	ahkSource .= "varInjects2 := mvarInjects(ActionListDir, ActionListNEW, activeClass, activeTitle) `n"
 	if(debugIt)
@@ -581,7 +589,7 @@ if(1){
 		MsgBox, '%activeTitle%' = activeTitle  `n %l% '%varInjects%' = varInjects  %l% `n (line:%A_LineNumber%) `n  '%ahkSource%' = ahkSource of temp.php `n (line:%A_LineNumber%) `n
 	}
 	
-	runTypingAidAHKifNotExist( typingAidAHK )
+	rungi_everywhereAHKifNotExist( gi_everywhereAHK )
 	
 	if(false){
 		FormatTime, timestampHHmmss, %A_now%,HH:mm:ss

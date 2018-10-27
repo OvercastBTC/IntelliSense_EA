@@ -1090,7 +1090,10 @@ SendFull(SendValue,ForceBackspace:= false){
 				
     ;DisableKeyboardHotKeys()
 ;sendClipboard(sending) ; funny not work here ; 01.04.2018 09:46 18-04-01_09-46
-				
+
+;
+
+        	if(1 && InStr(A_ComputerName,"SL5"))
 				ToolTip4sec("A_SendLevel = " A_SendLevel "`n`n" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This) ; The built-in variable A_SendLevel contains the current setting.
 				
 				ClipboardBackup := Clipboard

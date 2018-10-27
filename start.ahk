@@ -14,7 +14,7 @@ DetectHiddenWindows,on
 SetTitleMatchMode,2
 name=Typing_Aid_everywhere_multi_clone.ahk ahk_class AutoHotkey
 ;name := "Typing_Aid_everywhere_multi_clone" ; .ahk ; ahk_class AutoHotkey
-;name=TypingAid ahk_class AutoHotkey
+;name=gi-everywhere ahk_class AutoHotkey
 while(WinExist(name) && A_Index < 999){
 	; ToolTip, %A_Index%: WinClose `n (%A_LineFile%~%A_LineNumber%)
 	WinClose,% name
@@ -39,21 +39,21 @@ while(WinExist(name) && A_Index < 9)
 	WinKill,% name
 
 
-name=TypingAid ahk_class AutoHotkey
+name=gi-everywhere ahk_class AutoHotkey
 while(WinExist(name) && A_Index < 9)
 	WinClose,
 while(WinExist(name) && A_Index < 9)
 	WinKill,
 
 ; ahk_class AutoHotkey
-name=TypingAid - Active
+name=gi-everywhere - Active
 while(WinExist(name) && A_Index < 9)
 	WinClose,
 while(WinExist(name) && A_Index < 9)
 	WinKill,
 
 ; ahk_class AutoHotkey
-name=TypingAid - Inactive
+name=gi-everywhere - Inactive
 while(WinExist(name) && A_Index < 9)
 	WinClose,
 while(WinExist(name) && A_Index < 9)

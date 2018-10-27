@@ -1,4 +1,8 @@
 ﻿;<<<<<<<< openInEditor <<<< 1810111507 <<<< 01.10.2018 11:54:07 <<<<
+; called from 				was_a_Editor_open_command := openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib) if(was_a_Editor_open_command) return ; endOf function: SendWord(WordIndex)
+
+
+
 openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib){
     if(!AHKcode){
         return false
@@ -6,11 +10,20 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
         Msgbox,% ":( ups is empty: " AHKcode "=AHKcode `n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         ExitApp, 
     }
-    foundPos := RegExMatch( AHKcode , "^\s*(?:AHK-Studio|AutoGUI|run)\s*,?\s*(.+\.ahk)\s*$\b$" ,  m )
+    foundPos := RegExMatch( AHKcode , "^\s*(?:AHK-Studio|AutoGUI|openInEditor|run)\s*,?\s*(.+\.ahk)\s*$\b$" ,  m )
     ifIsIt := (isStartingUnderline && is_OpenA_edit_open_lib && foundPos ) 
-    if(!ifIsIt)
+    if(!ifIsIt){
+        m =
+        (
+        isStartingUnderline = %isStartingUnderline%
+        is_OpenA_edit_open_lib = %is_OpenA_edit_open_lib%
+        foundPos = %foundPos%
+        )
+        ; msgbox,% "return false `n" m "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
         return false
+    }
     ; edit open script
+    ; msgb tool ___ ___ ___
    ; ___global generated open|rr||ahk|run,..\_globalActionListsGenerated\_global.ahk
    ;
     m1CorrectedAhkFileAddress := ActionListFolderOfThisActionList "\" m1
@@ -45,8 +58,9 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
     editorName := "AutoGUI"
     isEditorExist_AutoGUI := FileExist("..\" editorName "\" editorName ".ahk")
 
-    ; ______
+    ; ___ ___
     if(false){
+        noOp := 1
     }else if(1 && isEditorExist_AHKStudio){
         ; 28.09.2018 15:48 2,6 MB opens with error warnings
         ; i got problems relacing some with umlaute (ue) 29.09.2018 12:04
@@ -75,6 +89,10 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
             return true
         loop,20
         {
+        	if(1 && InStr(A_ComputerName,"SL5"))
+        	    sleep,1
+
+
             winclose,% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
             winkill,% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
             winWaitClose,% winTitleError,Error,1

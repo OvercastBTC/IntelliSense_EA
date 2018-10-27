@@ -82,7 +82,7 @@ tests(){
   if(0){ ; its not working
     DetectHiddenWindows,On
     name=gi-everywhere.ahk
-    name=TypingAid - Active ahk_class AutoHotkey
+    name=gi-everywhere - Active ahk_class AutoHotkey
     WinShow,% name
     IfWinExist,% name
       Msgbox,`n (%A_LineFile%~%A_LineNumber%) 
@@ -91,8 +91,8 @@ tests(){
     return
     
     DetectHiddenWindows,on
-    WinWait,TypingAid - Active,,12
-    if(!winWaitLoop("TypingAid - Active"))
+    WinWait,gi-everywhere - Active,,12
+    if(!winWaitLoop("gi-everywhere - Active"))
       return
     DetectHiddenWindows,Off
 

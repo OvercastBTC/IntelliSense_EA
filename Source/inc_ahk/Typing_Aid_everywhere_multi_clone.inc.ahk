@@ -27,7 +27,7 @@
 
 ;/¯¯¯¯ ActionListNEWactivate( ¯¯ 181012014107 ¯¯ 12.10.2018 01:41:07 ¯¯\
 ; hier wird das active ueberschrieben: 12.07.2017 21:33
-ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive , typingAidSourcePath, activeClass := "" , activeTitle := "" ) {
+ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive , gi_everywhereSourcePath, activeClass := "" , activeTitle := "" ) {
 ; return, 1 ; return spielt keine rolle, quasi void 30.07.2017 12:52 17-07-30_12-52
 	
 	global g_lineNumberFeedback
@@ -78,7 +78,7 @@ ActionListDir = '%ActionListDir%'
 	if(!ActionListNEWarchivePath)
 		Msgbox,Oops !ActionListNEWarchivePath `n (Typing_Aid_everywhere_multi_clone.inc.ahk~%A_ThisFunc%~%LineNumber%) `
 	
-   ; ActionListActivePath := typingAidSourcePath .  "\" . ActionListActive
+   ; ActionListActivePath := gi_everywhereSourcePath .  "\" . ActionListActive
 	ActionListActivePath := A_ScriptDir . "\" . ActionListActive
 	if(!FileExist(ActionListActivePath))
 		MsgBox, :( '%ActionListActivePath%' = ActionListActivePath  `n (line:%A_LineNumber%) `n 18-01-20_17-12
@@ -407,7 +407,7 @@ ActionListDir = '%ActionListDir%'
 		FileCopy, % ActionListNEWarchivePath, % ActionListActivePath  , 1
 	}
 	return, 1
-} ; EndOf function ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive , typingAidSourcePath )
+} ; EndOf function ActionListNEWactivate( ActionListDir , ActionListNEW, ActionListActive , gi_everywhereSourcePath )
 ;\____ ActionListNEWactivate( __ 181012023243 __ 
 
 
@@ -473,39 +473,39 @@ ActionListOLDbackup( ActionListDir , ActionListOLD){
 
 
 
-ActionListOLDdisable( typingAidSourcePath, ActionListActive){
+ActionListOLDdisable( gi_everywhereSourcePath, ActionListActive){
       Return 1 ; Todo: dirtyBugFix  , deprecated 21.03.2018 11:33
  global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-   ActionListActive = % typingAidSourcePath . "\" . ActionListActive
-   ActionListDisable = % typingAidSourcePath . "\" . ActionListActive ".backup.ahk"
+   ActionListActive = % gi_everywhereSourcePath . "\" . ActionListActive
+   ActionListDisable = % gi_everywhereSourcePath . "\" . ActionListActive ".backup.ahk"
     lll(A_LineNumber, A_LineFile, ActionListActive " FileCopy too " ActionListDisable)
    FileCopy, % ActionListActive  , % ActionListDisable , 1
    return 1
 } 
-runTypingAidAHKifNotExist( typingAidAHK ){
+rungi_everywhereAHKifNotExist( gi_everywhereAHK ){
    DetectHiddenWindows,on
    SetTitleMatchMode,2
     IfWinNotExist,gi-everywhere.ahk
     {
         g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
-        IfWinNotExist,TypingAid
+        IfWinNotExist,gi-everywhere
         {
             g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-        ;   MsgBox,,TypingAid  is running, :( `n are you sure TypingAid  is running? `n  IfWinNotExist TypingAid  `n (line:%A_LineNumber%) `n   lets try start it   automatically, 2
+        ;   MsgBox,,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n   lets try start it   automatically, 2
         ; lets wait and try again. maybe its reload its self and needs only a second
             Sleep, 2000 ; 1 Sekunde
-            IfWinNotExist,TypingAid
+            IfWinNotExist,gi-everywhere
             {
 
                 ; gosub,couldIfindMyself
-                msg := "Run, typingAidAHK"
-                ; Run, % typingAidAHK
+                msg := "Run, gi_everywhereAHK"
+                ; Run, % gi_everywhereAHK
                 if(0){
-                    MsgBox, run TypingAid `n  `n (%A_LineFile%~%A_LineNumber%)
-                RunAs,Administrator, % typingAidAHK
+                    MsgBox, run gi-everywhere `n  `n (%A_LineFile%~%A_LineNumber%)
+                RunAs,Administrator, % gi_everywhereAHK
                 }
                 tooltip, '%msg%' = msg  `n (line:%A_LineNumber%)
 global g_doSaveLogFiles
@@ -517,18 +517,18 @@ lll(A_LineNumber, A_LineFile, msg )
             g_tooltipText = WinWait gi-everywhere.ahk
             g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
             WinWait,gi-everywhere.ahk,, 9
-            IfWinNotExist,TypingAid
+            IfWinNotExist,gi-everywhere
             {
 global g_doSaveLogFiles
 
-lll(A_LineNumber, A_LineFile, "IfWinNotExist,TypingAid -> exitapp")
+lll(A_LineNumber, A_LineFile, "IfWinNotExist,gi-everywhere -> exitapp")
                 exitapp
             }
         }
     }
     return
 }
-checkFilePathExistens1704291222(ActionListDir, destinDir, sourceDir, typingAidAHK ){
+checkFilePathExistens1704291222(ActionListDir, destinDir, sourceDir, gi_everywhereAHK ){
 
 
  global g_lineNumberFeedback
@@ -539,43 +539,43 @@ checkFilePathExistens1704291222(ActionListDir, destinDir, sourceDir, typingAidAH
 IfWinNotExist,gi-everywhere.ahk
 {
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
-   IfWinNotExist,TypingAid
+   IfWinNotExist,gi-everywhere
    {
     g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-;   MsgBox,,TypingAid  is running, :( `n are you sure TypingAid  is running? `n  IfWinNotExist TypingAid  `n (line:%A_LineNumber%) `n lets try start it automatically, 2
+;   MsgBox,,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n lets try start it automatically, 2
 ; lets wait and try again. maybe its reload its self and needs only a second
     Sleep, 2000 ; 1 Sekunde
-    IfWinNotExist,TypingAid
+    IfWinNotExist,gi-everywhere
     {
         ; gosub,couldIfindMyself
-        Run, % typingAidAHK
-;        lll(A_LineNumber, A_LineFile, "Run, % typingAidAHK")
+        Run, % gi_everywhereAHK
+;        lll(A_LineNumber, A_LineFile, "Run, % gi_everywhereAHK")
 global g_doSaveLogFiles
 
-lll(A_LineNumber, A_LineFile, "Debuggging!  NOT Run % typingAidAHK " )
+lll(A_LineNumber, A_LineFile, "Debuggging!  NOT Run % gi_everywhereAHK " )
 
     }
     g_tooltipText = WinWait gi-everywhere.ahk
     g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
-   WinWait,TypingAid,, 9
-    IfWinNotExist,TypingAid
+   WinWait,gi-everywhere,, 9
+    IfWinNotExist,gi-everywhere
     {
 global g_doSaveLogFiles
 
-lll(A_LineNumber, A_LineFile, "IfWinNotExist,TypingAid -> exitapp")
+lll(A_LineNumber, A_LineFile, "IfWinNotExist,gi-everywhere -> exitapp")
         exitapp
     }
     }
 } 
 DetectHiddenWindows,On
 SetTitleMatchMode,2
-IfWinNotExist,TypingAid
+IfWinNotExist,gi-everywhere
 {
  global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-   MsgBox,,NotExist?, :( IfWinNotExist '%typingAidAHK%' = typingAidAHK  `n (line:%A_LineNumber%) `n , 2
+   MsgBox,,NotExist?, :( IfWinNotExist '%gi_everywhereAHK%' = gi_everywhereAHK  `n (line:%A_LineNumber%) `n , 2
 }
 
    if(! FileExist(ActionListDir) )
@@ -596,10 +596,11 @@ IfWinNotExist,TypingAid
    msg = 
    (
    :-(
-   `n '%ActionListDir%' = ActionListDir  `n (line:%A_LineNumber%) `n
+   `n '%ActionListDir%' = ActionListDir
    do not exist.
    )
-   MsgBox, :( =>Reload  `n  ! Exist(ActionListDir) %msg%
+   MsgBox,% ":( =>Reload  `n  ! Exist(" ActionListDir ") " msg "`n("A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
    Reload
    }
    if(! FileExist(sourceDir) )
@@ -964,7 +965,7 @@ descriptions:
 "Word descriptions can be added to 'ActionList .ahk' that will appear in the ActionList next to the word. These descriptions should be in the form of
 <word>|d|<description>, e.g., Tylenol|d|Pain Reliever. 
 This could be used for things like definitions, translation aids, or function arguments. When Fixed Width fonts are used in the ActionList, the description columns will be tabbed evenly so they line up."
-04.03.017 16:16 from https://github.com/ManiacDC/TypingAid
+04.03.017 16:16 from https://github.com/ManiacDC/gi-everywhere
 
 replacements:
 <word>|rr|<description> todo: descrip
@@ -973,7 +974,7 @@ replacements:
 "Word replacements can be added to 'ActionList.ahk' that will appear in the ActionList next to the word. These replacements should be in the form of
 <word>|r|<description>, e.g., fire|r|fuego. 
 When the word is chosen, it will be backspaced out and replaced with the new word. If Case Correction is off, the first letter will be changed to match the case of the word being replaced. This could be used for spelling replacements, text expansion, or translation aids. Multiple replacements can be defined for a word (put each on a separate line)."
-04.03.017 16:16 from https://github.com/ManiacDC/TypingAid
+04.03.017 16:16 from https://github.com/ManiacDC/gi-everywhere
 
 problems:
 may have problems with cooding. may save your ActionLists as UTF-8 or convert it. for e.g. with notepad. codierung > convert to UTF-8
@@ -1168,7 +1169,7 @@ ActionListFileName := RegExReplace(ActionListNEWarchivePath,".*\\([^\\]+)$","$1"
 initialActionList =
 (
 ; #Include ..\_globalActionLists\examplesForBeginners.txt ; updated: 21.03.2018 07:33
-___open ActionList|rr||ahk|run,%ActionListFileName%
+___open ActionList|rr||ahk|openInEditor,%ActionListFileName%
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
 )

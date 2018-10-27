@@ -79,9 +79,9 @@ contend =
 #Include ..\%ActiveClass%\_global.ahk
 
 ; #Include ..\_globalActionLists\examplesForBeginners.txt
-___open _globalActionLists\_global|rr||ahk|run,..\_globalActionLists\_global.ahk
-___open _global|rr||ahk|run,_global.ahk
-___open ActionList|rr||ahk|run,%ActionListNEW%
+___open _globalActionLists\_global|rr||ahk|openInEditor,..\_globalActionLists\_global.ahk
+___open _global|rr||ahk|openInEditor,_global.ahk
+___open ActionList|rr||ahk|openInEditor,%ActionListNEW%
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
 )

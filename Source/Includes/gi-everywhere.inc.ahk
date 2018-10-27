@@ -67,7 +67,7 @@ Receive_ActionListAddress(CopyOfData){
 
          ;RebuildMatchList() ; line addet 19.03.2018 20:57
          ;InitializeListBox() ; line addet 19.03.2018 20:57^
-         RecomputeMatches() ; line addet 19.03.2018 21
+         RecomputeMatches() ; line addet 19.03.2018 21 ... in Receive_ActionListAddress
 
          SuspendOff()
     }
@@ -142,8 +142,13 @@ MainLoop(){
    }
 }
 
-ProcessKey(InputChar,EndKey) {
 
+
+
+
+
+;/¯¯¯¯ ProcessKey ¯¯ 181027194941 ¯¯ 27.10.2018 19:49:41 ¯¯\
+ProcessKey(InputChar,EndKey) {
    global g_Active_Id
    global g_Helper_Id
    global g_IgnoreSend
@@ -167,7 +172,7 @@ ProcessKey(InputChar,EndKey) {
    {
       EndKey = Max
    }
-   
+
    IfEqual, EndKey, NewInput
       Return
 
@@ -249,9 +254,14 @@ ProcessKey(InputChar,EndKey) {
          g_LastInput_Id := g_Active_Id
          Return
       }
-   
+
+      if(1 && InStr(A_ComputerName,"SL5"))
+           tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
+
       if InputChar in %prefs_ForceNewWordCharacters%
       {
+      if(1 && InStr(A_ComputerName,"SL5"))
+   tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
          ;AddWordToList(g_Word,0)
          ClearAllVars(true)
          g_Word := InputChar
@@ -266,13 +276,19 @@ ProcessKey(InputChar,EndKey) {
       
    } else IfNotEqual, g_LastInput_Id, %g_Active_Id%
    {
+      if(1 && InStr(A_ComputerName,"SL5"))
+   tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
       ;Don't do anything if we aren't in the original window and aren't starting a new word
       Return
    } else {
+      if(1 && InStr(A_ComputerName,"SL5"))
+        tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
       ;AddWordToList(g_Word,0)
       ClearAllVars(true)
       Return
    }
+
+; ___ ooo asfasfs ooo oo ooo
 
    ;Wait till minimum letters 
    IF ( true && StrLen(g_Word) < prefs_Length ) ; 04.08.2017 15:17 changed by sl5 Oops lets see what happens :D
@@ -285,6 +301,7 @@ global g_doSaveLogFiles
    }
    SetTimer, RecomputeMatchesTimer, -1
 }
+;\____ ProcessKey __ 181027194958 __ 27.10.2018 19:49:58 __/
 
 
 
@@ -316,7 +333,6 @@ RecomputeMatches(){
    global prefs_ShowLearnedFirst
    global prefs_SuppressMatchingWord
 
-   ;Msgbox,g_Word = %g_Word% (%A_LineFile%~%A_LineNumber%)
    if(!g_Word){ ; if g_Word is empty and you run, it shows the complete list. you want it? maybe sometimes its helpful 25.03.2018 19:42 18-03-25_19-42
         setTrayIcon()
         Return
@@ -324,6 +340,8 @@ RecomputeMatches(){
    ; LoopCount := StrLen(g_Word)
    ; if(LoopCount < 2 ) ; 18-03-31_22-43 addet TOD: proof
       ; return
+
+   ; Msgbox,g_Word = %g_Word% (%A_LineFile%~%A_LineNumber%)
 
 
    SavePriorMatchPosition()
@@ -397,13 +415,18 @@ RecomputeMatches(){
    
    WhereQuery := " WHERE wordindexed GLOB '" . WordMatchEscaped . "*' " . SuppressMatchingWordQuery . WordAccentQuery  " AND ActionListID = '" g_ActionListID "'"
    
-   NormalizeTable := g_ActionListDB.Query("SELECT MIN(count) AS normalize FROM Words" . WhereQuery . " AND count IS NOT NULL LIMIT " . LimitTotalMatches . ";")
-   
+   SELECT_MINcount := "SELECT MIN(count) AS normalize FROM Words" . WhereQuery . " AND count IS NOT NULL LIMIT " . LimitTotalMatches . ";"
+   NormalizeTable := g_ActionListDB.Query(SELECT_MINcount)
+
    for each, row in NormalizeTable.Rows
    {
       Normalize := row[1]
+      if(1 && InStr(A_ComputerName,"SL5"))
+      tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , Normalize=" Normalize  " , SELECT_MINcount=`n" SELECT_MINcount  "`nRecomputeMatches():  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
    }
-      
+
+; too
+
    IfEqual, Normalize,
    {
       Normalize := 0
@@ -420,8 +443,9 @@ RecomputeMatches(){
    }
    
    OrderByQuery .= " end, CASE WHEN count IS NOT NULL then ( (count - " . Normalize . ") * ( 1 - ( '0.75' / (LENGTH(word) - " . WordLen . ")))) end DESC, Word"
-      
-   Matches := g_ActionListDB.Query("SELECT word, worddescription, wordreplacement FROM Words" . WhereQuery . OrderByQuery . " LIMIT " . LimitTotalMatches . ";")
+
+   SELECT := "SELECT word, worddescription, wordreplacement FROM Words" . WhereQuery . OrderByQuery . " LIMIT " . LimitTotalMatches . ";"
+   Matches := g_ActionListDB.Query(SELECT)
    
    g_SingleMatch := Object()
    g_SingleMatchDescription := Object()
@@ -432,17 +456,38 @@ RecomputeMatches(){
       g_SingleMatch[++g_MatchTotal] := row[1]
       g_SingleMatchDescription[g_MatchTotal] := row[2]
       g_SingleMatchReplacement[g_MatchTotal] := row[3]
-      
+
+    tooltip,% ":-) row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" SELECT  "`nRecomputeMatches():(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
+
+    ; check if gui is opening
+    if(strlen(g_Word)>=3){
+        ; reload_IfNotExist_ListBoxGui()
+        SetTimer, show_ListBox_Id, 600 ; setinterval
+        Sleep,100
+        g_reloadIf_ListBox_Id_notExist := true
+        ; msgbox,% "g_reloadIf_ListBox_Id_notExist:= true(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+    }
+    ; ____ ___ msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+    ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    ; feed hallo msgbox,(%A_LineFile%~%A_LineNumber%)
+
       continue
    }
-   
+   ; too too too pro1 oooo ooo
+
    ;If no match then clear Tip 
    IfEqual, g_MatchTotal, 0
    {
       ClearAllVars(false)
-        setTrayIcon()
+    setTrayIcon()
+  if(1 && InStr(A_ComputerName,"SL5"))
+     tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" ActionList "`n" SELECT  "`nRecomputeMatches():(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
+      ; clipboard := SELECT
       Return
-   } 
+   }
+   ;
+   ;SELECT word, worddescription, wordreplacement FROM Words WHERE wordindexed GLOB 'TOO*'  AND ActionListID = '1' ORDER BY CASE WHEN count IS NULL then ROWID else 'z' end, CASE WHEN count IS NOT NULL then ( (count - 0) * ( 1 - ( '0.75' / (LENGTH(word) - 3)))) end DESC, Word LIMIT 10;
    
    SetupMatchPosition()
    RebuildMatchList()
@@ -452,6 +497,13 @@ RecomputeMatches(){
 ;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
 
 
+
+; SELECT word, worddescription, wordreplacement FROM Words WHERE wordindexed GLOB 'TOO*'  AND ActionListID = '2' ORDER BY CASE WHEN count IS NULL then ROWID else 'z' end, CASE WHEN count IS NOT NULL then ( (count - 0) * ( 1 - ( '0.75' / (LENGTH(word) - 3)))) end DESC, Word LIMIT 10;
+
+
+
+
+;/¯¯¯¯ CheckForCaretMove ¯¯ 181027205017 ¯¯ 27.10.2018 20:50:17 ¯¯\
 CheckForCaretMove(MouseButtonClick, UpdatePosition := false){
 
    global g_LastInput_Id
@@ -509,8 +561,12 @@ CheckForCaretMove(MouseButtonClick, UpdatePosition := false){
 
    Return
 }
+;\____ CheckForCaretMove __ 181027205042 __ 27.10.2018 20:50:42 __/
+
+
    
-   
+
+;/¯¯¯¯ InitializeHotKeys ¯¯ 181027205107 ¯¯ 27.10.2018 20:51:07 ¯¯\
 InitializeHotKeys() {
    global g_DelimiterChar
    global g_EnabledKeyboardHotKeys
@@ -591,7 +647,12 @@ InitializeHotKeys() {
    StringTrimRight, g_EnabledKeyboardHotKeys, g_EnabledKeyboardHotKeys, 1
    
 }
+;\____ InitializeHotKeys __ 181027205124 __ 27.10.2018 20:51:24 __/
 
+
+
+
+;/¯¯¯¯ EnableKeyboardHotKeys ¯¯ 181027205145 ¯¯ 27.10.2018 20:51:45 ¯¯\
 EnableKeyboardHotKeys(){
    global g_DelimiterChar
    global g_EnabledKeyboardHotKeys
@@ -602,11 +663,17 @@ EnableKeyboardHotKeys(){
    }
    Return
 }
+;\____ EnableKeyboardHotKeys __ 181027205226 __ 27.10.2018 20:52:26 __/
 
+
+
+
+
+;/¯¯¯¯ DisableKeyboardHotKeys ¯¯ 181027205321 ¯¯ 27.10.2018 20:53:21 ¯¯\
 DisableKeyboardHotKeys() {
-global g_doSaveLogFiles
+    global g_doSaveLogFiles
 
-lll(A_LineNumber, A_LineFile, "DisableKeyboardHotKeys() { ... 17-07-16_13-31 ")
+    lll(A_LineNumber, A_LineFile, "DisableKeyboardHotKeys() { ... 17-07-16_13-31 ")
 
    global g_DelimiterChar
    global g_EnabledKeyboardHotKeys
@@ -624,6 +691,9 @@ lll(A_LineNumber, A_LineFile, "DisableKeyboardHotKeys() { ... 17-07-16_13-31 ")
    }
    Return
 }
+;\____ DisableKeyboardHotKeys __ 181027205339 __ 27.10.2018 20:53:39 __/
+
+
    
 
 
@@ -670,7 +740,7 @@ lll(A_LineNumber, A_LineFile, Key " = Key `n" . WordIndex " = WordIndex `n"  . g
 ; if(g_ListBox_Id) ; addet by sl5net. hopefully a bugfix 16.07.2017 16:31
 ;    send,{backspace} ; addet by sl5net. hopefully a bugfix 16.07.2017 16:31
 
-if(false){  ; addet by sl5net. hopefully a bugfix 16.07.2017 16:31
+if(0){  ; addet by sl5net. hopefully a bugfix 16.07.2017 16:31
     ListBoxEnd() ; addet by sl5net. hopefully a bugfix 16.07.2017 20:54
     DisableKeyboardHotKeys() ; addet by sl5net. hopefully a bugfix 16.07.2017 20:54
     g_SingleMatchReplacement[WordIndex] := true ; so it hopefully sends a backspace later
@@ -681,11 +751,11 @@ if(!g_ListBox_Id){ ; lines addet to reenable numbers without special functions. 
     ;SendWord(Key)
     SetKeyDelay, 0, -1
 
-foundPos := RegExMatch( Key , "\d" )
-if(foundPos){
-    ;Suspend,On ; 01.08.2017 04:28 17-08-01_04-28 with this effect, the first number is normal litle slow, but number later are fast again.
-   ;msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
-}
+    foundPos := RegExMatch( Key , "\d" )
+    if(foundPos){
+        ;Suspend,On ; 01.08.2017 04:28 17-08-01_04-28 with this effect, the first number is normal litle slow, but number later are fast again.
+       ;msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
+    }
 
 
 ; // adsdf2131234567896541234565498 12345678965412365445612345654 ____
@@ -774,9 +844,9 @@ lll(A_LineNumber, A_LineFile,"SuspendOn()`n" . Key " = Key `n" . WordIndex " = W
    ; if(false)
    if ReturnLineWrong()
    { ;Make sure we are still on the same line
-global g_doSaveLogFiles
+        global g_doSaveLogFiles
 
-lll(A_LineNumber, A_LineFile,"SuspendOn()`n" . Key " = Key `n" . WordIndex " = WordIndex `n"  . "  `n " . "`n 17-07-16_15-26" )
+        lll(A_LineNumber, A_LineFile,"SuspendOn()`n" . Key " = Key `n" . WordIndex " = WordIndex `n"  . "  `n " . "`n 17-07-16_15-26" )
 
       SendCompatible(Key,0)
       ProcessKey(Key,"") 
@@ -1163,21 +1233,28 @@ disableCopyQ() ; enableCopyQ() ;
    enableCopyQ() ;
 }
 
+;/¯¯¯¯ DeleteSelectedWordFromList ¯¯ 181027193211 ¯¯ 27.10.2018 19:32:11 ¯¯\
 DeleteSelectedWordFromList(){
    global g_MatchPos
    global g_SingleMatch
-   
-   if !(g_SingleMatch[g_MatchPos] = "") ;only continue if g_SingleMatch is not empty
+   if !(g_SingleMatch[g_MatchPos] = "") ; only continue if g_SingleMatch is not empty
    {
-      
+
+      if(0 && InStr(A_ComputerName,"SL5"))
+        msgbox,18-10-27_19-29 in DeleteSelectedWordFromList()
+
       DeleteWordFromList(g_SingleMatch[g_MatchPos])
-      RecomputeMatches()
+      RecomputeMatches() ; in DeleteSelectedWordFromList()
       Return
    }
-   
 }
+;\____ DeleteSelectedWordFromList __ 181027193215 __ 27.10.2018 19:32:15 __/
 
 
+
+
+
+;/¯¯¯¯ EvaluateScriptPathAndTitle ¯¯ 181027193233 ¯¯ 27.10.2018 19:32:33 ¯¯\
 EvaluateScriptPathAndTitle(){
    ;relaunches to 64 bit or sets script title
    global g_ScriptTitle
@@ -1201,7 +1278,7 @@ global g_doSaveLogFiles
 
                 lll(A_LineNumber, A_LineFile, "Run, %" . ScriptPath64 . "%, %" . A_WorkingDir . "%")
                 Run, %ScriptPath64%, %A_WorkingDir%
-                feedbackMsgBox(ExitApp , A_LineNumber . " TypingAid.inc.ahk")
+                feedbackMsgBox(ExitApp , A_LineNumber . " gi-everywhere.inc.ahk")
                 ExitApp
    }  }  }  }
 
@@ -1212,13 +1289,18 @@ global g_doSaveLogFiles
       g_ScriptTitle := ScriptNoExtension
    }
 
-   if (InStr(g_ScriptTitle, "TypingAid"))
+   if (InStr(g_ScriptTitle, "gi-everywhere"))
    {
-      g_ScriptTitle = TypingAid
+      g_ScriptTitle = gi-everywhere
    }
    
    return
 }
+;\____ EvaluateScriptPathAndTitle __ 181027193258 __ 27.10.2018 19:32:58 __/
+
+
+
+
 
 
 InactivateAll_Suspend_ListBox_WinHook(){

@@ -83,6 +83,7 @@ MaybeConvertDatabase(){
 }
 
 
+;/¯¯¯¯ RebuildDatabase ¯¯ 181027180644 ¯¯ 27.10.2018 18:06:44 ¯¯\
 ; Rebuilds the Database from scratch as we have to redo the ActionList anyway.
 RebuildDatabase(){
 	if(0){
@@ -412,8 +413,9 @@ small_LineFile TEXT NOT NULL
 	CreateWordsTable(WordsTableName:="Words"){
 		lll(A_LineNumber, A_LineFile, "lin1 at CREATE_TABLE_wordS")
 		global g_ActionListDB
+		global g_ActionListDBfileAdress
 		if(!g_ActionListDB)
-			g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", A_ScriptDir . "\ActionListLearned.db" ) ;
+			g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
 ;
 		sql =
 (
@@ -456,8 +458,9 @@ ActionListID INTEGER NOT NULL
 	CREATE_TABLE_ActionLists(){
 		lll(A_LineNumber, A_LineFile, "lin1 at CREATE_TABLE_ActionLists")
 		global g_ActionListDB
+		global g_ActionListDBfileAdress
 		if(!g_ActionListDB)
-			g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", A_ScriptDir . "\ActionListLearned.db" ) ;
+			g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
 		
 		sql := "CREATE TABLE IF NOT EXISTS ActionLists (id INTEGER PRIMARY KEY AUTOINCREMENT, ActionList TEXT, ActionListmodified DATETIME, ActionListsize INTEGER, lastusedByUser_since_midnight INTEGER)"
 		IF not g_ActionListDB.Query(sql)
