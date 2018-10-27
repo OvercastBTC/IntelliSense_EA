@@ -79,33 +79,34 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
         return true
     }
 
+
     ToolTip,winWait `n (%A_LineFile%~%A_LineNumber%)
+    AHKcode =
+    (
     winTitleError := " ahk_class #32770"
     SetTitleMatchMode,2
-    loop,5
-    {
-        winWait,% winTitleError,Error,4
-        IfWinNotExist,% winTitleError, Error
-            return true
-        loop,20
+        loop,50
         {
+            winclose,`% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
+            winkill,`% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
+            winclose,`% winTitleError,Script file not found ; thats disturbing opening ahk-studio. if closed ahk-studio opens
+            winkill,`% winTitleError,Script file not found ; thats disturbing opening ahk-studio. if closed ahk-studio opens
         	if(1 && InStr(A_ComputerName,"SL5"))
-        	    sleep,1
-
-
-            winclose,% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
-            winkill,% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
-            winWaitClose,% winTitleError,Error,1
-            IfWinNotExist,% winTitleError, Error
-                break
-            tooltip,% A_Index  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-            sleep,200
+        	    Tooltip,`% A_index ", " A_LineNumber " " RegExReplace(A_LineFile,".*\\") , 30,30
+            sleep,50
         }
-    }
-    msg=%runString% `n %m1% `n deprecated: `n please open by using AHK-Studio instead run`n
+    )
+
+
+
+    DynaRun(AHKcode)
+    ;msg=%runString% `n %m1% `n deprecated: `n please open by using AHK-Studio instead run`n
     ;msgbox, % msg "`n" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")   " "   Last_A_This
-    ToolTip5sec(msg A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
+    ;ToolTip5sec(msg A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
     return true
+
+    ;  ___
+
 }
 ;>>>>>>>> openInEditor >>>> 18101115}417 >>>> 01.1.218 11:54:17 >>>>
 
