@@ -340,7 +340,7 @@ MainLoop()
 ~esc::
    toolTip2sec("esc::" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
    ; InactivateAll_Suspend_ListBox_WinHook()
-   CloseListBox()
+   CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
    DisableWinHook()
    DisableKeyboardHotKeys()
    g_Word := ""
@@ -813,6 +813,12 @@ return
 
 
 
+
+
+
+
+
+
 ;/¯¯¯¯ checkInRegistryChangedActionListAddress ¯¯ 181025104242 ¯¯ 25.10.2018 10:42:42 ¯¯\
 checkInRegistryChangedActionListAddress:
 
@@ -915,8 +921,6 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
 
     }
 
-; tppö tooltip tooltip
-; tooltip msgb
     if(fileExist(ActionListNewTemp_withoutExt ".ahk")){ ; addet 26.4.2018 12:58 becouse of mistourios things
         msg = pease use Action Lists without Extension `n thats not an error, a warning`n
         msg .= ActionListNewTemp_withoutExt "`n" ; inside checkInRegistryChangedActionListAddress
@@ -944,7 +948,6 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
     }
 }
 
-;
     ; takes a little time to read data von database. 19.10.2018 12:21
 	if(A_TickCount > 4000 && !g_ActionList_UsedByUser_since_midnight[g_ActionListID] && g_doAskBevoreChangingActionList && ActionListSize > g_minBytesNeedetToAskBevoreChangingActionList){
         AHKcodeMsgBox := "#" . "NoTrayIcon `n "
@@ -1008,6 +1011,9 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
 
     ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
 
+    ; tool too
+    if(ActionListOLD == ActionList) ; thats fixed that the list is lcoaed always to early with ClearAllVars
+        return
     ActionListOLD := ActionList
     g_ActionListID := getActionListID(ActionList) ; 24.03.2018 23:02
 
@@ -1019,7 +1025,7 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
     InactivateAll_Suspend_ListBox_WinHook() ; addet 24.10.2018 14:16
 
     ; This is to blank all vars related to matches, ListBox and (optionally) word
-    ClearAllVars(True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
+    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
     ; I think it might be handy if the search word is already on the next list. Therefore I commented this line out today 24.10.2018 14:48
     ;\____ very_happy __ 181024144106 __ 24.10.2018 14:41:06 __/
 
@@ -1030,6 +1036,14 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
     ; gosub onLink2ActionListChangedInRegistry ; ToolTip3sec(A_LineNumber . " " . RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This)
 return
 ;\____ checkInRegistryChangedActionListAddress __ 181025104318 __ 25.10.2018 10:43:18 __/
+
+
+
+
+
+
+
+
 
 
 
@@ -1373,7 +1387,7 @@ return
 
 
 
-; ___1 ___1 ___
+; too too too too toolt
 
 
 
@@ -1388,11 +1402,10 @@ show_ListBox_Id:
         g_show_ListBox_Id_EMTY_COUNT := 0
         return
     }
+    while(A_index < 100 && !g_ListBox_Id && g_reloadIf_ListBox_Id_notExist){
+        sleep,10 ; Gives listbox time to arise 28.10.2018 15:18
+    }
     if(!g_ListBox_Id && g_reloadIf_ListBox_Id_notExist){
-
-;    sleep,1000
-;    if(!g_ListBox_Id && g_reloadIf_ListBox_Id_notExist)
-
         g_show_ListBox_Id_EMTY_COUNT++
 
     ;/¯¯¯¯ happens ¯¯ 181024150019 ¯¯ 24.10.2018 15:00:19 ¯¯\
@@ -1404,7 +1417,7 @@ show_ListBox_Id:
 
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 1){
             InactivateAll_Suspend_ListBox_WinHook() ; addet 24.10.2018 14:16
-            ClearAllVars(True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
+            ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
         }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){ ; the only think that helps today 24.10.2018 15:11
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\")

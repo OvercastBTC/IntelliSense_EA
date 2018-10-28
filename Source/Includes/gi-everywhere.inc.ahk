@@ -44,7 +44,7 @@ Receive_ActionListAddress(CopyOfData){
                                        ActionList := CopyOfData
        tooltip,'%ActionListNEW%' = ActionListNEW `n ( %A_LineFile%(inc)~%A_LineNumber% ) `n
 
-       CloseListBox()
+       CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
 
        msgbox,% A_LineNumber " " RegExReplace(A_LineFile,".*\\") "`n SuspendOn()`n"
 
@@ -224,7 +224,7 @@ ProcessKey(InputChar,EndKey) {
             
          ; add the word if switching lines
          ;AddWordToList(g_Word,0)
-         ClearAllVars(true)
+         ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
          g_Word := InputChar
          Return         
       } 
@@ -243,7 +243,7 @@ ProcessKey(InputChar,EndKey) {
       StringLen, len, g_Word
       IfEqual, len, 1   
       {
-         ClearAllVars(true)
+         ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
       } else IfNotEqual, len, 0
       {
          StringTrimRight, g_Word, g_Word, 1
@@ -254,7 +254,7 @@ ProcessKey(InputChar,EndKey) {
       IfNotEqual, g_LastInput_Id, %g_Active_Id%
       {
          ;AddWordToList(g_Word,0)
-         ClearAllVars(true)
+         ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
          g_Word := InputChar
          g_LastInput_Id := g_Active_Id
          Return
@@ -268,13 +268,13 @@ ProcessKey(InputChar,EndKey) {
       if(1 && InStr(A_ComputerName,"SL5"))
    tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
          ;AddWordToList(g_Word,0)
-         ClearAllVars(true)
+         ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
          g_Word := InputChar
       } else if InputChar in %prefs_EndWordCharacters%
       {
          g_Word .= InputChar
          ;AddWordToList(g_Word, 1)
-         ClearAllVars(true)
+         ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
       } else { 
          g_Word .= InputChar
       }
@@ -289,7 +289,7 @@ ProcessKey(InputChar,EndKey) {
       if(1 && InStr(A_ComputerName,"SL5"))
         tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
       ;AddWordToList(g_Word,0)
-      ClearAllVars(true)
+      ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
       Return
    }
 
@@ -300,8 +300,8 @@ ProcessKey(InputChar,EndKey) {
    {
 global g_doSaveLogFiles
 
-      lll(A_LineNumber, A_LineFile, "g_Word=" . g_Word . " `n`n ==>j CloseListBox()")
-      CloseListBox()
+      lll(A_LineNumber, A_LineFile, "g_Word=" . g_Word . " `n`n ==>j CloseListBox(calledFromStr)")
+      CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
       Return
    }
    SetTimer, RecomputeMatchesTimer, -1
@@ -426,7 +426,7 @@ RecomputeMatches(calledFromStr ){
    for each, row in NormalizeTable.Rows
    {
       Normalize := row[1]
-      if(1 && InStr(A_ComputerName,"SL5"))
+      if(0 && InStr(A_ComputerName,"SL5"))
       tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , Normalize=" Normalize  " , SELECT_MINcount=`n" SELECT_MINcount  "`nRecomputeMatches(calledFromStr):  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
    }
 
@@ -462,19 +462,24 @@ RecomputeMatches(calledFromStr ){
       g_SingleMatchDescription[g_MatchTotal] := row[2]
       g_SingleMatchReplacement[g_MatchTotal] := row[3]
 
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(0 && InStr(A_ComputerName,"SL5"))
     tooltip,% ":-) row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
 
+; too too
+global prefs_Length
+if(!prefs_Length)
+    msgbox,% ":( Oops !prefs_Length (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     ; check if gui is opening
     ; if(strlen(g_Word)>=3){
-    if(!(StrLen(g_Word) < c)){
+    if(!g_reloadIf_ListBox_Id_notExist && StrLen(g_Word) == prefs_Length ){
+        toolTip, % StrLen(g_Word) "," prefs_Length "=prefs_Length:" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
         ; reload_IfNotExist_ListBoxGui()
         SetTimer, show_ListBox_Id, 600 ; setinterval ; 28.10.2018 02:39: fallback bugfix workaround help todo:
-        Sleep,100
+        ;Sleep,100
         g_reloadIf_ListBox_Id_notExist := true
         ; msgbox,% "g_reloadIf_ListBox_Id_notExist:= true(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     }
-    ; ____ ___ msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+    ; tool tool
     ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
     ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
     ; feed hallo msgbox,(%A_LineFile%~%A_LineNumber%)
@@ -486,14 +491,14 @@ RecomputeMatches(calledFromStr ){
    ;If no match then clear Tip 
    IfEqual, g_MatchTotal, 0
    {
-      ClearAllVars(false)
+      ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
     setTrayIcon()
-  if(1 && InStr(A_ComputerName,"SL5"))
+  if(0 && InStr(A_ComputerName,"SL5"))
      tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" ActionList "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
       ; clipboard := SELECT
       Return
    }
-   ;
+   ; tool too too
    ;SELECT word, worddescription, wordreplacement FROM Words WHERE wordindexed GLOB 'TOO*'  AND ActionListID = '1' ORDER BY CASE WHEN count IS NULL then ROWID else 'z' end, CASE WHEN count IS NOT NULL then ( (count - 0) * ( 1 - ( '0.75' / (LENGTH(word) - 3)))) end DESC, Word LIMIT 10;
    
    SetupMatchPosition()
@@ -561,7 +566,7 @@ CheckForCaretMove(MouseButtonClick, UpdatePosition := false){
          {
             ; add the word if switching lines
             ;AddWordToList(g_Word,0)
-            ClearAllVars(true)
+            ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
          }
       }
    }
@@ -1068,21 +1073,21 @@ EvaluateUpDown(Key){
    if !(ReturnWinActive())
    {
       SendKey(Key)
-      ClearAllVars(false)
+      ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
       Return
    }
 
    if ReturnLineWrong()
    {
       SendKey(Key)
-      ClearAllVars(true)
+      ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
       Return
    }   
    
    IfEqual, g_Word, ; only continue if word is not empty
    {
       SendKey(Key)
-      ClearAllVars(false)
+      ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
       Return
    }
    
@@ -1326,8 +1331,8 @@ InactivateAll_Suspend_ListBox_WinHook(){
    ;Force unload of Keyboard Hook and WinEventHook
    Input
    SuspendOn()
-    lll(A_LineNumber, A_LineFile, "CloseListBox()")
-   CloseListBox()
+    lll(A_LineNumber, A_LineFile, "CloseListBox(calledFromStr)")
+   CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
    ;MaybeSaveHelperWindowPos()
    DisableWinHook()
    ;msgbox,done: DisableWinHook()  (%A_LineFile%~%A_LineNumber%) :-)
@@ -1398,14 +1403,19 @@ BuildTrayMenu(){
 
 ;/¯¯¯¯ ClearAllVars ¯¯ 181024140212 ¯¯ 24.10.2018 14:02:12 ¯¯\
 ; This is to blank all vars related to matches, ListBox and (optionally) word 
-ClearAllVars(ClearWord){
+ClearAllVars(calledFromStr,ClearWord){
 
    global
+
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
+
+; too
+
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
-       ; lll(A_LineNumber, A_LineFile, "CloseListBox()")
+       ; lll(A_LineNumber, A_LineFile, "CloseListBox(calledFromStr)")
        ; run,log\%A_LineFile%.log.txt ; this line woks :) but to often ;) may we dont need any more to check it ;) 04.08.2017 15:20
 
-   CloseListBox()
+   CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
    Ifequal,ClearWord,1
    {
       g_Word =

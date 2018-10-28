@@ -221,11 +221,14 @@ ListBoxChooseItem(Row)
    GuiControl, ListBoxGui: Choose, g_ListBox%Row%, %g_MatchPos%
 }
 
+; tooo tool msgbo too
+
 ;------------------------------------------------------------------------
 ; SciTEWindow\_global.txt __SunAwtFrame\.txt
 ; __SciTEWindow\_global.txt
-CloseListBox(){
+CloseListBox(calledFromStr){
    global g_ListBox_Id
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
    IfNotEqual, g_ListBox_Id,
    {
    ; thats the place were listbox will be closed  17-03-17_17-12 17.03.2017 17:12

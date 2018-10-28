@@ -22,7 +22,7 @@ LaunchSettings:
 
     Menu, Tray, Disable, Settings
     g_InSettings := true
-    ClearAllVars(True)
+    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),True)
     Menu_OldLearnCount := prefs_LearnCount
     ; initialize this to make sure the object exists
     Menu_ChangedPrefs := Object()
