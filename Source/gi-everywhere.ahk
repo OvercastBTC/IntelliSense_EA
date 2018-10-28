@@ -21,6 +21,7 @@ FileEncoding, UTF-8
 lll(A_LineNumber, A_LineFile, "hi from " A_LineFile)
 
 
+CoordMode, ToolTip,Screen
 
 fnReceive_ActionListAddress := Func("Receive_ActionListAddress").Bind(1)
 ; OnMessage(0x4a, "Receive_WM_COPYDATA")  ; 0x4a is WM_COPYDATA  ; deprecated 15.02.2018 10:26
@@ -309,7 +310,7 @@ DisableKeyboardHotKeys()
 ; SetBatchLines, -1
 
 g_ActionListID := getActionListID(ActionList) ; 24.03.2018 23:02
-ReadInTheActionList()
+ReadInTheActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
 
 
 g_WinChangedCallback := RegisterCallback("WinChanged")
@@ -335,6 +336,17 @@ MainLoop()
 ;<<<<<<<<<<<<<<<<< workaround <<<<<<<<<<<<<<<<<
 ; https://stackoverflow.com/questions/52493547/autohotkey-read-of-two-underscore-keys
 ; https://github.com/sl5net/global-IntelliSense-everywhere/issues/4
+#IfWinActive,
+~esc::
+   toolTip2sec("esc::" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
+   ; InactivateAll_Suspend_ListBox_WinHook()
+   CloseListBox()
+   DisableWinHook()
+   DisableKeyboardHotKeys()
+   g_Word := ""
+   ; EnableKeyboardHotKeys() ; <== not usefull. disturbing 28.10.2018 09:59
+   ; InitializeHotKeys() ; <= if i use this ListBox never close 28.10.2018 09:56
+return
 #IfWinActive,alsdkfjasödklfjasdöklfasödf
 :b0*?:__:: ;does not delete the underscores
     ; ToolTip4sec(" (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
@@ -468,7 +480,7 @@ RecomputeMatchesTimer:
    Thread, NoTimers
    if(1 && InStr(A_ComputerName,"SL5"))
        tooltip,% "RecomputeMatchesTimer: (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")",1,1
-   RecomputeMatches() ; RecomputeMatchesTimer:
+   RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; RecomputeMatchesTimer:
 Return
 
 ; Msgbox,(`%A_LineFile`%~`%A_LineNumber`%)
@@ -599,8 +611,8 @@ Return
 
 ;<<<<<<<< reloadWordlost <<<< 180208163147 <<<< 08.02.2018 16:31:47 <<<<
 reloadWordlost:
-ParseWordsCount := ReadActionList()
-prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
  ;feedbackMsgBox("reloadWordlost:",A_LineNumber . " " .  A_LineFile,1,1)
 
 ; ToolTipSec(t,x=123,y=321,sec=1000); 75+ lines in Live Edit Live_Edit Pseudo Live Edit for Chrome Firefox PhpStorm.ahk
@@ -648,8 +660,8 @@ return
         SetTimer, ifActionListFileWasUpdatedChanged, Off
         SetTimer, ifActionListFileWasUpdatedChanged, 1500 ; one second is really slow. this line is a little obsulete. but better let it be. 31.07.2017 22:45
         ActionListOLD := ActionList
-        ParseWordsCount := ReadActionList()
-        prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+        ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+        prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
         ;GoSub, reloadWordlost
         WinGetActiveTitle, ActiveTitle
         if(ActiveTitleOLD <> ActiveTitle )
@@ -680,7 +692,7 @@ global g_doSaveLogFiles
 
 lll(A_LineNumber, A_LineFile, "`n Sleep,100 `n" . msg . "`n ==> Goto, doReload")
            ;feedbackMsgBox("ReadInTheActionList",A_LineNumber . " , " . A_ScriptName,1,1)
-            ReadInTheActionList() ; 07.02.2018 17:28
+            ReadInTheActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; 07.02.2018 17:28
          }
     }
     ;Msgbox, ActionList was changed (%A_LineFile%~%A_LineNumber%)
@@ -700,6 +712,10 @@ saveIamAllive:
 tooltip,% "FileAppend (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")"
    FileAppend,117_%timestampyyMMddHHmmssPretty%_line_%timestampyyMMddHHmmss% , gi-everywhere_programmCounter_LineAndTime.txt
 return
+
+
+
+
 
 
 ;/¯¯¯¯ checkActionListTXTfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
@@ -735,17 +751,46 @@ checkActionListTXTfile_sizeAndModiTime:
         break
     }
     ; doReadActionListTXTfile := (ActionListSize && ActionListModified && (ActionListSize <> ActionListLastSize || ActionListModified > ActionListLastModified))
-    doReadActionListTXTfile := (ActionListSize <> ActionListLastSize || ActionListModified <> ActionListLastModified || !ActionListLastSize || !ActionListLastSize)
+
+; tooltTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+
+    isSizeChanged := (ActionListSize <> ActionListLastSize)
+    isTimeChanged := (ActionListModified <> ActionListLastModified)
+    isSizeNull := (!ActionListLastSize || !ActionListLastSize)
+
+    doReadActionListTXTfile := (isSizeChanged || isTimeChanged || isSizeNull )
+    doReadActionListTXTfileSTR = %isSizeChanged%||%isTimeChanged%||%isSizeNull%
     if(doReadActionListTXTfile){
         ;msgbox, doReadActionListTXTfile 654654654
-        ReadInTheActionList()
-        ;ParseWordsCount := ReadActionList() ; there is also update and select of time of the ActionList
-        ;prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+
+        if(0 && isTimeChanged){
+            msg =
+             (
+             %isTimeChanged% = isTimeChanged ('%ActionListModified%' <> '%ActionListLastModified%')
+             %g_ActionListID% = g_ActionListID
+             %ActionList% = ActionList
+             )
+            msgbox,% msg "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+        }
+        if(0 && isSizeNull){
+            msg =
+             (
+             the old list and the new list is 0 size
+             %isSizeChanged% = isSizeChanged
+             %g_ActionListID% = g_ActionListID
+             %ActionList% = ActionList
+              (ActionListSize='%ActionListSize%' <> '%ActionListLastSize%'=ActionListLastSize)
+             )
+            msgbox,% msg "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+        }
+        ReadInTheActionList("checkActionListTXTfile_sizeAndModiTime:" doReadActionListTXTfileSTR " " A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+        ;ParseWordsCount := ReadActionList(calledFromStr) ; there is also update and select of time of the ActionList
+        ;prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
         ; RebuildDatabase()
         ; msgbox, have fun with :) `n %ActionList% 18-03-02_18-37  (%A_LineFile%~%A_LineNumber%)
 
-        RecomputeMatches() ; doReload:
-        tip:="doReadActionListTXTfile=" doReadActionListTXTfile " ReadInTheActionList()  ActionList=" ActionList " 4567984654888888 "
+        RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; doReload:
+        tip := "doReadActionListTXTfile=" doReadActionListTXTfile " ReadInTheActionList  ActionList=" ActionList " 4567984654888888 "
         sqlLastError := SQLite_LastError()
         tip .= "`n sqlLastError=" sqlLastError " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
         if( instr(sqlLastError, "no such table") ){
@@ -830,7 +875,7 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
             tooltip,Oops  `n should never happen BUG `n was not able to close ActionListChangedInRegistry `n`n  ==> reload in 9Seconds (%A_LineFile%~%A_LineNumber%) 20.03.2018 18:54
             sleep,9000
             ; reload
-            RecomputeMatches() ; in checkInRegistryChangedActionListAddress
+            RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; in checkInRegistryChangedActionListAddress
             return
         }
     }
@@ -950,6 +995,7 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
         ; Msgbox,% ":( ERROR: " msg "`n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         ; feedbackMsgBox(msg,msg,1,1)
         ActionList := globalActionListDir   "\_globalActionListsGenerated\isNotAProject.ahk"
+        sleep,1000
         ; ActionListOLD := "" ; probably programmer want a reloud soon. quck an dirty ???
         ; return
     }
@@ -979,7 +1025,7 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
 
 
         ;if(g_FLAGmsgbox == 0)
-            RecomputeMatches() ; in checkInRegistryChangedActionListAddress
+            RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; in checkInRegistryChangedActionListAddress
 
     ; gosub onLink2ActionListChangedInRegistry ; ToolTip3sec(A_LineNumber . " " . RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This)
 return
@@ -1011,20 +1057,20 @@ if(g_doListBoxFollowMouse)
     ;ToolTip4sec(ActionList " = ActionList `n"  ActionListModified  " `n" . A_LineNumber . " " . RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This,1,1)
     if(ActionListModiTime_OLD <> ActionListModiTime && ActionListModiTime_OLD ){
         ;Msgbox,ActionListModiTime_OLD <> ActionListModiTime `n (%A_LineFile%~%A_LineNumber%)
-        ; ParseWordsCount := ReadActionList()
-        ; prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+        ; ParseWordsCount := ReadActionList(calledFromStr)
+        ; prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
 
         g_ActionListID := getActionListID(ActionList) ; 24.03.2018 23:02
-        ReadInTheActionList()
-        prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+        ReadInTheActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+        prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
         ; RebuildDatabase()
 
         ;If(WinExist("ActionListChangedInRegistry"))
         winclose,ActionListChangedInRegistry
 
         ;SetTimer,checkInRegistryChangedActionListAddress,on
-        ;ToolTip4sec("RecomputeMatches() `n " ActionList " = ActionList `n"  ActionListModified  " `n" . A_LineNumber . " " . A_ScriptName . " " . Last_A_This,1,1)
-        ;RecomputeMatches() ; 27.03.2018 23:51
+        ;ToolTip4sec("RecomputeMatches(calledFromStr) `n " ActionList " = ActionList `n"  ActionListModified  " `n" . A_LineNumber . " " . A_ScriptName . " " . Last_A_This,1,1)
+        ;RecomputeMatches(calledFromStr) ; 27.03.2018 23:51
         return ; no update jet
     }
     ActionListModiTime_OLD := ActionListModiTime
@@ -1103,16 +1149,6 @@ ToolTip, i FOUND :-) myself yeaah `n not a totally idiot :) `n ( %scriptNameWith
 return
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-checkActiveTitleChanged:
-WinGetActiveTitle, ActiveTitle
-if(false && ActiveTitleOLD <> ActiveTitle){
-    ActiveTitleOLD := ActiveTitle
-    ; sleep,120 ; it needs a little time to copy the files 31.07.2017 21:30
-msg=`n (%A_LineFile%~%A_LineNumber%)
-feedbackMsgBox(msg,msg,1,1)
-    SetTimer, ifActionListFileWasUpdatedChanged, 100
-}
-return
 
 ;
 /*
@@ -1315,7 +1351,7 @@ check_ActionList_GUI_is_hanging_or_freezed:
      ;winclose, % g_ListBoxTitle
      ;winkill, % g_ListBoxTitle
      ; reload ; script hangs if gui was not used. here we could check if its hanging. 27.09.2018 19:21 if ListBox was not used and not closed. reload helps to get script running again.
-    RecomputeMatches() ; <=== dont know if this helps 19.10.2018 11:24 in check_ActionList_GUI_is_hanging_or_freezed
+    RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; <=== dont know if this helps 19.10.2018 11:24 in check_ActionList_GUI_is_hanging_or_freezed
      ;MsgBox, % tip "`n`n" elapsedMilli  "millisec = " elapsedSec "sec have elapsed. (" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
     AHKcode := "#" . "NoTrayIcon `n "
     AHKcode =
@@ -1370,10 +1406,11 @@ show_ListBox_Id:
             InactivateAll_Suspend_ListBox_WinHook() ; addet 24.10.2018 14:16
             ClearAllVars(True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
         }
-        if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2) ; the only think that helps today 24.10.2018 15:11
-            reload
+        if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){ ; the only think that helps today 24.10.2018 15:11
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+            reload ;  [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47
             ; run,% "..\start.ahk" ; deactivated. test 22.10.2018 05:54
-
+        }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){
             ; DisableWinHook() ; stoped. todo: test 23.10.2018 11:17
             try{
@@ -1384,7 +1421,7 @@ show_ListBox_Id:
             ;\____ ReturnWinActive __ 181022213051 __ 22.10.2018 21:30:51 __/
         }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 3)
-            RecomputeMatches() ; <=== hope it helps. not sure 22.10.2018 07:59
+            RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; <=== hope it helps. not sure 22.10.2018 07:59
 
 
         ;/¯¯¯¯ ;ToolTip1sec(g_ListBox_Id ¯¯ 181022055812 ¯¯ 22.10.2018 05:58:12 ¯¯\
@@ -1398,12 +1435,12 @@ show_ListBox_Id:
              RebuildMatchList() ; line addet 19.03.2018 20:57
              InitializeListBox() ; line addet 19.03.2018 20:57^
              }
-         ; RecomputeMatches() ; line addet 19.03.2018 21
+         ; RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; line addet 19.03.2018 21
         }
 
         ;\____ ;ToolTip1sec(g_ListBox_Id __ 181022055815 __ 22.10.2018 05:58:15 __/
 
-        ; RecomputeMatches() ; <=== hope it helps. not sure 19.10.2018 11:34 ... not helped 19.10.2018 11:37
+        ; RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; <=== hope it helps. not sure 19.10.2018 11:34 ... not helped 19.10.2018 11:37
         ; goto, lblTopOfScriptLine111 ; <=== hope it helps. ...  not helped 19.10.2018 11:37
     }
         ;reload

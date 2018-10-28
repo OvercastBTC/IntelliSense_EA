@@ -12,7 +12,10 @@ SetDbVersion(dBVersion = 7){
 ;<<<<<<<< MaybeConvertDatabase <<<< 180223091829 <<<< 23.02.2018 09:18:29 <<<<
 ; returns true if we need to rebuild the whole database
 MaybeConvertDatabase(){
-	ToolTip5sec("MaybeConvertDatabase() return false " A_LineNumber . " " . RegExReplace(A_LineFile,".*\\") )
+
+CoordMode, ToolTip, Screen
+
+	ToolTip5sec("MaybeConvertDatabase() return false " A_LineNumber . " " . RegExReplace(A_LineFile,".*\\") ,1,1)
 	return false
 
 	global g_ActionListDB

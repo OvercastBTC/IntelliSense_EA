@@ -59,15 +59,15 @@ Receive_ActionListAddress(CopyOfData){
         InitializeHotKeys()
         DisableKeyboardHotKeys()
         ; SetBatchLines, -1 ;Change the Running performance speed (Priority changed to High in GetIncludedActiveWindow)
-        ;feedbackMsgBox("ReadInTheActionList()",ActionList . "`n" . activeTitle . " = activeTitle  `n " .  A_ScriptName . "(inc)~" . A_LineNumber)
-        ReadInTheActionList()
-        ;prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+        ;feedbackMsgBox("ReadInTheActionList(calledFromStr)",ActionList . "`n" . activeTitle . " = activeTitle  `n " .  A_ScriptName . "(inc)~" . A_LineNumber)
+        ReadInTheActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+        ;prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
         ActionListOLD := ActionList
         ;MainLoop()
 
          ;RebuildMatchList() ; line addet 19.03.2018 20:57
          ;InitializeListBox() ; line addet 19.03.2018 20:57^
-         RecomputeMatches() ; line addet 19.03.2018 21 ... in Receive_ActionListAddress
+         RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; line addet 19.03.2018 21 ... in Receive_ActionListAddress
 
          SuspendOff()
     }
@@ -79,18 +79,23 @@ Receive_ActionListAddress(CopyOfData){
 ;InitializeHotKeys()
 ;DisableKeyboardHotKeys()
 ;SetBatchLines, -1 ;Change the Running performance speed (Priority changed to High in GetIncludedActiveWindow)
-;ReadInTheActionList()
+;ReadInTheActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
 MainLoop()
     return true  ; Returning 1 (true) is the traditional way to acknowledge this message.
 }
-; 
-ReadInTheActionList(){ ;Read in the ActionList
+;
+
+
+;/¯¯¯¯ ReadInTheActionList( ¯¯ 181028125821 ¯¯ 28.10.2018 12:58:21 ¯¯\
+ReadInTheActionList(calledFromStr){ ;Read in the ActionList
     global ParseWordsCount
     global prefs_Length
-    ParseWordsCount := ReadActionList()
-    prefs_Length := setLength(ParseWordsCount, maxLinesOfCode4length1)
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
+    ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+    prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
     return ParseWordsCount
 }
+;\____ ReadInTheActionList( __ 181028125831 __ 28.10.2018 12:58:31 __/
 
 
 
@@ -310,13 +315,9 @@ global g_doSaveLogFiles
 
 
 
-
+; test
 ;/¯¯¯¯ RecomputeMatches ¯¯ 181025105946 ¯¯ 25.10.2018 10:59:46 ¯¯\
-RecomputeMatches(){
-
-    ; Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
-    setTrayIcon("RecomputeMatches")
-
+RecomputeMatches(calledFromStr ){
    ; This function will take the given word, and will recompile the list of matches and redisplay the ActionList.
    global g_MatchTotal
    global g_SingleMatch
@@ -332,6 +333,10 @@ RecomputeMatches(){
    global prefs_NoBackSpace
    global prefs_ShowLearnedFirst
    global prefs_SuppressMatchingWord
+
+    ; Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
+    setTrayIcon("RecomputeMatches")
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, RecomputeMatches , % calledFromStr
 
    if(!g_Word){ ; if g_Word is empty and you run, it shows the complete list. you want it? maybe sometimes its helpful 25.03.2018 19:42 18-03-25_19-42
         setTrayIcon()
@@ -422,7 +427,7 @@ RecomputeMatches(){
    {
       Normalize := row[1]
       if(1 && InStr(A_ComputerName,"SL5"))
-      tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , Normalize=" Normalize  " , SELECT_MINcount=`n" SELECT_MINcount  "`nRecomputeMatches():  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
+      tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , Normalize=" Normalize  " , SELECT_MINcount=`n" SELECT_MINcount  "`nRecomputeMatches(calledFromStr):  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
    }
 
 ; too
@@ -457,12 +462,14 @@ RecomputeMatches(){
       g_SingleMatchDescription[g_MatchTotal] := row[2]
       g_SingleMatchReplacement[g_MatchTotal] := row[3]
 
-    tooltip,% ":-) row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" SELECT  "`nRecomputeMatches():(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
+        if(1 && InStr(A_ComputerName,"SL5"))
+    tooltip,% ":-) row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
 
     ; check if gui is opening
-    if(strlen(g_Word)>=3){
+    ; if(strlen(g_Word)>=3){
+    if(!(StrLen(g_Word) < c)){
         ; reload_IfNotExist_ListBoxGui()
-        SetTimer, show_ListBox_Id, 600 ; setinterval
+        SetTimer, show_ListBox_Id, 600 ; setinterval ; 28.10.2018 02:39: fallback bugfix workaround help todo:
         Sleep,100
         g_reloadIf_ListBox_Id_notExist := true
         ; msgbox,% "g_reloadIf_ListBox_Id_notExist:= true(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
@@ -482,7 +489,7 @@ RecomputeMatches(){
       ClearAllVars(false)
     setTrayIcon()
   if(1 && InStr(A_ComputerName,"SL5"))
-     tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" ActionList "`n" SELECT  "`nRecomputeMatches():(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
+     tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" ActionList "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
       ; clipboard := SELECT
       Return
    }
@@ -1208,6 +1215,8 @@ EvaluateUpDown(Key){
    Return
 }
 
+
+;/¯¯¯¯ ReturnLineWrong ¯¯ 181028100039 ¯¯ 28.10.2018 10:00:39 ¯¯\
 ReturnLineWrong(){
    global g_OldCaretY
    global prefs_DetectMouseClickMove
@@ -1217,9 +1226,14 @@ ReturnLineWrong(){
       
    Return, ( g_OldCaretY != CaretYorMouseYfallback() )
 }
-; tooltip tooltip
+;\____ ReturnLineWrong __ 181028100102 __ 28.10.2018 10:01:02 __/
+
+
+
+;/¯¯¯¯ AddSelectedWordToList ¯¯ 181028100159 ¯¯ 28.10.2018 10:01:59 ¯¯\
 AddSelectedWordToList(){
-disableCopyQ() ; enableCopyQ() ;
+    msgbox,% "probaly never happens? neever used this line??? 28.10.2018 10:03 ("A_ThisFunc " " A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+    disableCopyQ() ; enableCopyQ() ;
    ClipboardSave := ClipboardAll
    Clipboard =
    Sleep, 100
@@ -1232,11 +1246,16 @@ disableCopyQ() ; enableCopyQ() ;
    Clipboard = %ClipboardSave%
    enableCopyQ() ;
 }
+;\____ AddSelectedWordToList __ 181028100205 __ 28.10.2018 10:02:05 __/
+
+
+
 
 ;/¯¯¯¯ DeleteSelectedWordFromList ¯¯ 181027193211 ¯¯ 27.10.2018 19:32:11 ¯¯\
 DeleteSelectedWordFromList(){
    global g_MatchPos
    global g_SingleMatch
+    msgbox,% "probaly never happens? neever used this line??? 28.10.2018 10:03 ("A_ThisFunc " " A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
    if !(g_SingleMatch[g_MatchPos] = "") ; only continue if g_SingleMatch is not empty
    {
 
@@ -1244,7 +1263,7 @@ DeleteSelectedWordFromList(){
         msgbox,18-10-27_19-29 in DeleteSelectedWordFromList()
 
       DeleteWordFromList(g_SingleMatch[g_MatchPos])
-      RecomputeMatches() ; in DeleteSelectedWordFromList()
+      RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; in DeleteSelectedWordFromList()
       Return
    }
 }
@@ -1302,20 +1321,20 @@ global g_doSaveLogFiles
 
 
 
-
+;/¯¯¯¯ InactivateAll_Suspend_ListBox_WinHook ¯¯ 181028100506 ¯¯ 28.10.2018 10:05:06 ¯¯\
 InactivateAll_Suspend_ListBox_WinHook(){
    ;Force unload of Keyboard Hook and WinEventHook
    Input
-
    SuspendOn()
-
-lll(A_LineNumber, A_LineFile, "CloseListBox()")
-
+    lll(A_LineNumber, A_LineFile, "CloseListBox()")
    CloseListBox()
    ;MaybeSaveHelperWindowPos()
    DisableWinHook()
    ;msgbox,done: DisableWinHook()  (%A_LineFile%~%A_LineNumber%) :-)
 }
+;\____ InactivateAll_Suspend_ListBox_WinHook __ 181028100510 __ 28.10.2018 10:05:10 __/
+
+
 
 
 ;/¯¯¯¯ SuspendOn ¯¯ 181024140026 ¯¯ 24.10.2018 14:00:26 ¯¯\
@@ -1544,7 +1563,10 @@ MaybeCoUninitialize(){
 ;\____ MaybeCoUninitialize __ 181024135059 __ 24.10.2018 13:50:59 __/
 
 
-setLength(ParseWordsCount, maxLinesOfCode4length1){
+
+
+;/¯¯¯¯ getMinLength_Needetthat_ListBecomesVisible( ¯¯ 181028024531 ¯¯ 28.10.2018 02:45:31 ¯¯\
+getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1){
        if( ParseWordsCount > 0 ){
 ;~           Tooltip,%ParseWordsCount% = ParseWordsCount(`from: %A_LineFile%~%A_LineNumber%) `
     global prefs_Length
@@ -1558,6 +1580,10 @@ setLength(ParseWordsCount, maxLinesOfCode4length1){
 
    return prefs_Length
 }
+;\____ getMinLength_Needetthat_ListBecomesVisible( __ 181028024549 __ 28.10.2018 02:45:49 __/
+
+
+
 
 doReloadIfScriptDontMoveThisLine(sec := 5){
 if(0){ ; check if this is arrived 30.04.2017 09:43
@@ -1581,7 +1607,11 @@ global g_doSaveLogFiles
 lll(A_LineNumber, A_LineFile, "Reload")
 run,log\%A_LineFile%.log.txt
 }
-            Reload
+        ;if(1 && InStr(A_ComputerName,"SL5") )
+            ;msgbox,,reload (%A_LineNumber%), % "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",,1
+            ; ^--- goood for debugging maybe
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+            Reload  ; [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47
         }
         tooltip, %g_nextCriticalCommandTimeIdle% = g_nextCriticalCommandTimeIdle (1667)
     } else

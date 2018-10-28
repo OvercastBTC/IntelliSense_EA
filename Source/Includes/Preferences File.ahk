@@ -240,6 +240,7 @@ ValidatePreferences()
    if prefs_Length is not integer
    {
       prefs_Length := dft_Length
+      msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
    }
    
    if (prefs_Length < 1) {

@@ -183,8 +183,10 @@ while(true) {
 	if( !fileExist(ActionListFilterPathNEWdir) ){
 		ActiveClass := "_globalActionListsGenerated"
                 ; activeTitle := "_global" ; used till 07.10.2018 10:12 18-10-07_10-12
-		activeTitle := "isNotAProject" ; isNotAProject.ahk
-		
+		activeTitle := "isNotAProject" ; isNotAProject.ahk ; todo: not very pretty stly. 28.10.2018 11:33
+
+		; toolto msgbox
+
 		msg = !fileExist(ActionListFilterPathNEWdir === >%ActionListFilterPathNEWdir%<)  `n '%activeTitle%'=activeTitle , '%activeClass%' = activeClass
 		lineFileName := RegExReplace(A_LineFile, ".*\\([\w\s\.]+)$", "$1")
 		lineFileNameWithoutPATHandEXT := RegExReplace(A_LineFile, ".*\\([\w\s\._]+)\.\w+$", "$1")

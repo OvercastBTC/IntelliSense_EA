@@ -384,9 +384,18 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 	ActionListNEWAddress := "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
      if(FileExist(ActionListNEWAddress))
           return, % ActionListNEW
-     
-     
-     if(!FileExist("..\ActionLists\" . ActiveClass . "\_create_own_project.flag")){
+
+    RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir
+
+    if(!CreatedDir)
+        return
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir, % "" ; RegWrite , RegSave , Registry
+
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
+
+     if(0 && !FileExist("..\ActionLists\" . ActiveClass . "\_create_own_project.flag")){
            ; tooltip,ActionListNEWAddress = %ActionListNEWAddress% `n `n (%A_LineFile%~%A_LineNumber%) )
            ; MsgBox,% "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" ; happend 07.10.2018 10:33 18-10-07_10-33 inside notepad. dont knoow whey
           return, % "..\_globalActionListsGenerated\_global.ahk" ; ; i think it doesent makes since in some cases 13.05.2018 17:19
@@ -394,7 +403,7 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
           
 	
           ; created token=17-08-10_16-17
-	if(InStr(activeTitle, "token=17-08-10_16-17")){
+	if(1 && InStr(activeTitle, "token=17-08-10_16-17")){
 		msg= :( script was to slow with updating the `n action rejacted. reload `n 17-08-10_16-27
 		lll(A_LineNumber, A_LineFile, msg )
 		ToolTip,%msg% 17-08-10_16-33
@@ -405,7 +414,7 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 		return
 	}
 
-     FileDelete, % "..\ActionLists\" . ActiveClass . "\_create_own_project.flag"
+     FileDelete, % "..\ActionLists\" ActiveClass "\_create_own_project.flag"
 
 	contend =
 (

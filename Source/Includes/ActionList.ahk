@@ -23,8 +23,8 @@ setTrayIcon(status := "loaded" ){
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-ReadActionList(){
-
+;/¯¯¯¯ ReadActionList ¯¯ 181028133202 ¯¯ 28.10.2018 13:32:02 ¯¯\
+ReadActionList( calledFromStr ){
 	global g_LegacyLearnedWords
 	global g_ScriptTitle
 	global g_ActionListDone
@@ -57,6 +57,8 @@ ReadActionList(){
     ;\____ \.ahk __ 181025172444 __ 25.10.2018 17:24:44 __/
 
     setTrayIcon(status := "isLoading" )
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
+
 
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
@@ -185,15 +187,23 @@ from: ActionList.ahk~%A_LineNumber%
 	msg =
 	(
 	ActionList = %ActionList%
+	activeTitle = '%activeTitle%'
 	isTblWordsEmpty = %isTblWordsEmpty%
 	DatabaseRebuilt = %DatabaseRebuilt%
 	)
-	ToolTip4sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
+        if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+            ToolTip4sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
 	if (!isTblWordsEmpty && !DatabaseRebuilt) {
-    ; thats inside ReadActionList() ---------------------------------------------
+    ; thats inside ReadActionList(calledFromStr) ---------------------------------------------
+
+
+
+CoordMode, ToolTip,Screen
 
 		SELECT := "SELECT ActionListmodified, ActionListsize FROM ActionLists WHERE ActionList = '" . ActionList . "';"
-    	ToolTip4sec(msg "`n`n" SELECT "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
+        if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+                ToolTip4sec(msg "`n`n" SELECT "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", ""),1,1  )
+            ;ifwinactive,ahk_class SunAwtFrame
 		LearnedWordsTable := g_ActionListDB.Query(SELECT)
 
 		LoadActionList := "Insert"
@@ -204,8 +214,13 @@ from: ActionList.ahk~%A_LineNumber%
 			ActionListLastSize := row[2]
 
             diffSize := Abs(ActionListSize - ActionListLastSize)
-            diffModified := Abs(ActionListModified - ActionListLastModified)
-			if (isTblWordsEmpty || diffSize || diffModified) {
+            ;diffModified := Abs(ActionListModified - ActionListLastModified) ; <==== acnt diff timestams this way todo:
+            ;diffModified := ActionListModified - ActionListLastModified ; <==== acnt diff timestams this way todo:
+            isModified := (ActionListModified <> ActionListLastModified)
+            tooltip,isModified=%isModified% `n diffModified := %diffModified% := %ActionListModified% - %ActionListLastModified%
+            if(!ActionListModified && !ActionListLastModified)
+                msgbox,18-10-28_13-43
+			if (isTblWordsEmpty || diffSize || isModified) {
 				LoadActionList := "Update" ; updated?
             ;Msgbox,%ActionList% = ActionList `n LoadActionList = "%LoadActionList%"`n source TXT has changed. update database next. `n (%A_LineFile%~%A_LineNumber%)
 				tip =
@@ -223,6 +238,7 @@ from: ActionList.ahk~%A_LineNumber%
 				lll(A_LineNumber, A_LineFile, tip)
 				CleanupActionListAll_ofLittleWordCount() ; i dont konw what for that is. try it without 18-10-06_21-40
 			} else {
+
 				LoadActionList =
 				CleanupActionListAll_ofLittleWordCount(true) ; i dont konw what for that is. try it without 18-10-06_21-40
 			}
@@ -230,7 +246,7 @@ from: ActionList.ahk~%A_LineNumber%
 	} else {
 		LoadActionList := "Insert"
 	}
-
+; msgbox,% LoadActionList "= LoadActionList(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 
 	if (LoadActionList) {
       ; Progress, M, Please wait..., Loading ActionList, %g_ScriptTitle%
@@ -464,9 +480,25 @@ from: ActionList.ahk~%A_LineNumber%
       ;Progress, Off
 
 
-		if (LoadActionList == "Update") {
+		if ( LoadActionList == "Update") {
 			UPDATE := "UPDATE ActionLists SET ActionListmodified = '" . ActionListModified . "', ActionListsize = '" . ActionListSize . "' WHERE ActionList = '" . ActionList . "';"
-			g_ActionListDB.Query(UPDATE)
+				try{
+        			g_ActionListDB.Query(UPDATE)
+            	} catch e{
+            		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
+            		sqlLastError := SQLite_LastError()
+            		tip .= "`n sqlLastError=" sqlLastError "`n sql=" UPDATE " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+            		lll(A_LineNumber, A_LineFile, tip)
+            		tooltip, `% tip
+            		feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, tip )
+            		Clipboard := tip
+            		msgbox, % tip
+            	}
+
+    ; msgb msgbo tpp tool1 tool tooTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+
+			; msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+
         ;Msgbox, %UPDATE%  (line:%A_LineNumber%)
 		} else {
          ;g_ActionListDB.Query("INSERT INTO ActionLists (ActionList, ActionListmodified, ActionListsize) VALUES ('" . ActionList . "','" . ActionListModified . "','" . ActionListSize . "');")
@@ -504,7 +536,7 @@ from: ActionList.ahk~%A_LineNumber%
 			Return ParseWordsCount
 		}else
 			FileRead, ParseWords, %ActionListLearnedTXTaddress%
-; -- here we are inside ReadActionList()
+; -- here we are inside ReadActionList(calledFromStr)
 		if(InStr(A_ComputerName,"SL5"))
 			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress``n" ActionListLearnedTXTaddress "``n (" RegExReplace(A_LineFile,".*\\") ">" A_LineNumber ") `n Sleep,2000 `n }  ")
 		else
@@ -539,7 +571,7 @@ from: ActionList.ahk~%A_LineNumber%
 
 ;      Progress, 50, Please wait..., Converting learned words, %g_ScriptTitle%
 
-; -- here we are inside ReadActionList()
+; -- here we are inside ReadActionList(calledFromStr)
 
 
       ;reverse the numbers of the word counts in memory

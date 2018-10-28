@@ -3,6 +3,7 @@
 
 
 
+;/¯¯¯¯ openInEditor ¯¯ 181028104913 ¯¯ 28.10.2018 10:49:13 ¯¯\
 openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib){
     if(!AHKcode){
         return false
@@ -10,7 +11,7 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
         Msgbox,% ":( ups is empty: " AHKcode "=AHKcode `n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         ExitApp, 
     }
-    foundPos := RegExMatch( AHKcode , "^\s*(?:AHK-Studio|AutoGUI|openInEditor|run)\s*,?\s*(.+\.ahk)\s*$\b$" ,  m )
+    foundPos := RegExMatch( AHKcode , "^\s*(?:AHK-Studio|AutoGUI|openInEditor)\s*,?\s*(.+\.ahk)\s*$\b$" ,  m )
     ifIsIt := (isStartingUnderline && is_OpenA_edit_open_lib && foundPos ) 
     if(!ifIsIt){
         m =
@@ -80,12 +81,12 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
     }
 
 
-    ToolTip,winWait `n (%A_LineFile%~%A_LineNumber%)
+    ToolTip,`n (%A_LineFile%~%A_LineNumber%)
     AHKcode =
     (
     winTitleError := " ahk_class #32770"
     SetTitleMatchMode,2
-        loop,50
+        loop,70
         {
             winclose,`% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
             winkill,`% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
@@ -96,19 +97,16 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
             sleep,50
         }
     )
-
-
-
     DynaRun(AHKcode)
+
     ;msg=%runString% `n %m1% `n deprecated: `n please open by using AHK-Studio instead run`n
     ;msgbox, % msg "`n" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")   " "   Last_A_This
     ;ToolTip5sec(msg A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
     return true
-
-    ;  ___
-
 }
-;>>>>>>>> openInEditor >>>> 18101115}417 >>>> 01.1.218 11:54:17 >>>>
+;\____ openInEditor __ 181028104756 __ 28.10.2018 10:47:56 __/
+
+
 
 ; #Include %A_ScriptDir%\inc_ahk\copy2clipBoard.functions.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\functions_global.inc.ahk
