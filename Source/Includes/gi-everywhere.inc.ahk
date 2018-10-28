@@ -286,7 +286,7 @@ ProcessKey(InputChar,EndKey) {
       ;Don't do anything if we aren't in the original window and aren't starting a new word
       Return
    } else {
-      if(1 && InStr(A_ComputerName,"SL5"))
+      if(0 && InStr(A_ComputerName,"SL5"))
         tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
       ;AddWordToList(g_Word,0)
       ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)

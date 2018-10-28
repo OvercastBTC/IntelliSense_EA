@@ -386,12 +386,6 @@ SendWord(WordIndex){
 ; tool tool tool msgbox tooToolTip2sec lineFileName|rr|ToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ; msgMsgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 
-;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
-    ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
-    ; dont move the lie to beigning of fungion beocuse g_Word is deleted.
-    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
-;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
-
 
 
 UPDATE_ActionList_UsedByUser_since_midnight()
@@ -529,7 +523,14 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 				isKTScode := true
 				KTScode := rX["code"]
 			}
-			
+
+;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
+    ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
+    ; dont move the lie to beigning of fungion beocuse g_Word is deleted.
+    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
+;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
+
+; tooToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
 			
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ; enable to use quellenangaben in ahk pseudo code.
