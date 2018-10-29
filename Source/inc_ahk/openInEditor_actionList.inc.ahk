@@ -74,10 +74,22 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
 openInEditorFromIntern(m1CorrectedAhkFileAddress){
     editorName := "AHK-Studio"
     isEditorExist_AHKStudio := FileExist("..\" editorName "\" editorName ".ahk")
+
+    editorName := "Notepad++"
+    NotepadPPExe := "..\" editorName "\unicode\" editorName ".exe"
+    isEditorExist_NotepadPP := FileExist(NotepadPPExe)
+
     editorName := "AutoGUI"
     isEditorExist_AutoGUI := FileExist("..\" editorName "\" editorName ".ahk")
     if(false){
         noOp := 1
+    }else if(1 && isEditorExist_NotepadPP){
+        ; 28.09.2018 15:48 2,6 MB opens with error warnings
+        ; i got problems relacing some with umlaute (ue) 29.09.2018 12:04
+        runString = %NotepadPPExe% "%m1CorrectedAhkFileAddress%"
+        ;Msgbox,% runString " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        ;Pause
+        run,% runString
     }else if(1 && isEditorExist_AHKStudio){
         ; 28.09.2018 15:48 2,6 MB opens with error warnings
         ; i got problems relacing some with umlaute (ue) 29.09.2018 12:04
