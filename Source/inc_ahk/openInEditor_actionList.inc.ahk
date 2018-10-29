@@ -53,10 +53,22 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
         Msgbox,:( action list `n %m1CorrectedAhkFileAddress% `n is not exist. `n (%A_LineFile%~%A_LineNumber%)
         return false
     }
+
+    ; SaveLast5_to_BackupSL5.ahk "..\ActionLists\_globalActionListsGenerated\_ahk_global.ahk" "..\..\gi-ActionLists-Bakcups"
+    ; ActionList := removesSymbolicLinksFromFileAdress(ActionList)
+; SaveLast5_to_BackupSL5.ahk "..\ActionLists\_globalActionListsGenerated\_ahk_global.ahk" "..\..\gi-ActionLists-Bakcups"
+; SaveLast5_to_BackupSL5.ahk "G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\_ahk_global.ahk" "G:\fre\git\github\gi-ActionLists-Backups"
+
+    para1FileAddress := removesSymbolicLinksFromFileAdress( A_ScriptDir "\" m1CorrectedAhkFileAddress )
+    para2BackupFolder := removesSymbolicLinksFromFileAdress(A_ScriptDir "\..\..\gi-ActionLists-Backups")
+       commandLine := "SaveLast5_to_BackupSL5.ahk """ para1FileAddress """ """ para2BackupFolder """"
+    ; clipboard := commandLine
+    ; msgbox,% commandLine "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+    RunWait, % commandLine, % A_ScriptDir
     return openInEditorFromIntern(m1CorrectedAhkFileAddress)
 }
 ;\____ openInEditor __ 181028104756 __ 28.10.2018 10:47:56 __/
-
+;
 
 ;/¯¯¯¯ openInEditor ¯¯ 181028104913 ¯¯ 28.10.2018 10:49:13 ¯¯\
 openInEditorFromIntern(m1CorrectedAhkFileAddress){

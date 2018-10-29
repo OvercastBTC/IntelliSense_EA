@@ -315,7 +315,6 @@ global g_doSaveLogFiles
 
 
 
-; test
 ;/¯¯¯¯ RecomputeMatches ¯¯ 181025105946 ¯¯ 25.10.2018 10:59:46 ¯¯\
 RecomputeMatches(calledFromStr ){
    ; This function will take the given word, and will recompile the list of matches and redisplay the ActionList.
@@ -472,18 +471,13 @@ if(!prefs_Length)
     ; check if gui is opening
     ; if(strlen(g_Word)>=3){
     if(!g_reloadIf_ListBox_Id_notExist && StrLen(g_Word) == prefs_Length ){
-        toolTip, % StrLen(g_Word) "," prefs_Length "=prefs_Length:" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
+        toolTip, % g_Word "(" StrLen(g_Word) ")," prefs_Length "=prefs_Length:" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
         ; reload_IfNotExist_ListBoxGui()
         SetTimer, show_ListBox_Id, 600 ; setinterval ; 28.10.2018 02:39: fallback bugfix workaround help todo:
         ;Sleep,100
         g_reloadIf_ListBox_Id_notExist := true
         ; msgbox,% "g_reloadIf_ListBox_Id_notExist:= true(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     }
-    ; tool tool
-    ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-    ; toolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-    ; feed hallo msgbox,(%A_LineFile%~%A_LineNumber%)
-
       continue
    }
    ; too too too pro1 oooo ooo
@@ -498,7 +492,6 @@ if(!prefs_Length)
       ; clipboard := SELECT
       Return
    }
-   ; tool too too
    ;SELECT word, worddescription, wordreplacement FROM Words WHERE wordindexed GLOB 'TOO*'  AND ActionListID = '1' ORDER BY CASE WHEN count IS NULL then ROWID else 'z' end, CASE WHEN count IS NOT NULL then ( (count - 0) * ( 1 - ( '0.75' / (LENGTH(word) - 3)))) end DESC, Word LIMIT 10;
    
    SetupMatchPosition()
@@ -1403,7 +1396,7 @@ BuildTrayMenu(){
 
 ;/¯¯¯¯ ClearAllVars ¯¯ 181024140212 ¯¯ 24.10.2018 14:02:12 ¯¯\
 ; This is to blank all vars related to matches, ListBox and (optionally) word 
-ClearAllVars(calledFromStr,ClearWord){
+ClearAllVars( calledFromStr , ClearWord ){
 
    global
 
@@ -1425,15 +1418,7 @@ ClearAllVars(calledFromStr,ClearWord){
       g_ListBoxFlipped=
       g_ListBoxMaxWordHeight=
    }
-   
-   g_SingleMatch =
-   g_SingleMatchDescription =
-   g_SingleMatchReplacement =
-   g_Match= 
-   g_MatchPos=
-   g_MatchStart= 
-   g_OriginalMatchStart=
-   Return
+     Return
 }
 ;\____ ClearAllVars __ 181024140219 __ 24.10.2018 14:02:19 __/
 

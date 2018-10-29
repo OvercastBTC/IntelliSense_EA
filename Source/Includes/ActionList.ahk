@@ -394,6 +394,8 @@ CoordMode, ToolTip,Screen
 
                 if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )){
                     doCollectAhkBlock := true
+                    if(1 && InStr(A_ComputerName,"SL5") )
+                        ToolTip2sec(doCollectAhkBlock= "=doCollectAhkBlock (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
                     isIndexedAhkBlock := false ; maybe its set in next line
                     if(m2){
                         if(m2 == "(" || m2 == "["){
