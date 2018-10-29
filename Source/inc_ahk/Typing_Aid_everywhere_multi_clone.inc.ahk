@@ -130,13 +130,21 @@ ActionListDir = '%ActionListDir%'
 		StringReplace, lineFileRelative, A_LineFile , % A_ScriptDir,Source, All
 		;Msgbox,%LineFileRelative%`n (%A_LineFile%~%A_LineNumber%) )
 
-		    FileAppend, `; '%at%' `; (%LineFileRelative%~%A_LineNumber%) `n%initialActionList% `n, % ActionListNEWarchivePath
+        calledFromStr := A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+        Include := "Include"
+
+		    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, `#%Include% _global.ahk `n`; '%at%' `; (%LineFileRelative%~%A_LineNumber%) `n%initialActionList% `n, % ActionListNEWarchivePath
 		 Sleep,400
 		 ; Sleep,250 ; why sleeping ? todo sleeping?
 
 		; End of: if(!FileExist(ActionListNEWarchivePath))
 		lll(A_LineNumber, A_LineFile,A_ThisFunc ": "    "saved first time: >" . ActionListNEWarchivePath . "< = Now the new examples-template should be saved" )
 		; Now the new examples-template is saved inside of this file: ActionListNEWarchivePath
+
+         was_a_Editor_open_command := openInEditorFromIntern(ActionListNEWarchivePath)
+
+
 		;\____ !FileExist(ActionListNEWarchivePath) __ 181012011424 __ 12.10.2018 01:14:24 __/
 	} else {
 		; No example template was used. The content is already there. Inside on this file. And don't need to be generated. 12.07.2017 21:36
@@ -918,7 +926,8 @@ FileWrite(sayHelloCode, sayHelloFunctionInc){
    Sleep,100
    lll(A_LineNumber, A_LineFile, "FileAppend too " sayHelloFunctionInc)
     ;msgbox,% sayHelloCode
-   FileAppend, % sayHelloCode, % sayHelloFunctionInc
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, % sayHelloCode, % sayHelloFunctionInc
    return 1
 }
 mvarInjects(ActionListDir, ActionListNEW, ActiveClass, activeTitle){
@@ -1180,17 +1189,23 @@ if(!ActionListNEWarchivePath)
 
 ActionListFileName := RegExReplace(ActionListNEWarchivePath,".*\\([^\\]+)$","$1") ; 20.03.2018 00:15
 
+calledFromStr := A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 initialActionList =
 (
-; #Include ..\_globalActionLists\examplesForBeginners.txt ; updated: 21.03.2018 07:33
+; only meta info (not importand): %calledFromStr%
 ___open ActionList|rr||ahk|openInEditor,%ActionListFileName%
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
 )
 ; EndOf filling the template variable with useful examples 12.07.2017 21:18
+
+
 return initialActionList
 }
 ;>>>>>>>>>>>>>>>>>>>>> getInitialActionList >>>>>>>>>>>>>>>>>>>>>>>>>
+
+#include, inc_ahk\openInEditor_actionList.inc.ahk
+
 
 #Include *i %A_ScriptDir%\inc_ahk\functions_global.inc.ahk
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1280,12 +1295,14 @@ if(!ActionListNEWarchivePath){
         FileDelete, %ActionListGeneratedPath%
     Sleep,60
     lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListGeneratedPath)
-    FileAppend,% includeFileSContent, % ActionListGeneratedPath
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,% includeFileSContent, % ActionListGeneratedPath
     ; Sleep,20
     FileRead, fileContent, %ActionListNEWarchivePath%
     ;Sleep,20
     lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListGeneratedPath)
-    FileAppend,% fileContent, % ActionListGeneratedPath
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,% fileContent, % ActionListGeneratedPath
     if(false)lll(A_LineNumber, A_LineFile, "SAVED: " . ActionListGeneratedPath)
     Sleep,60
     return

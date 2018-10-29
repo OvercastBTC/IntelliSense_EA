@@ -1445,13 +1445,16 @@ FileAppendDispatch(Text,FileName,ForceEncoding=0){
    {
       IfNotEqual, ForceEncoding, 0
       {
-         FileAppend, %Text%, %FileName%, %ForceEncoding%
+         RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, %Text%, %FileName%, %ForceEncoding%
       } else
       {
-         FileAppend, %Text%, %FileName%, UTF-8
+         RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, %Text%, %FileName%, UTF-8
       }
    } else {
-            FileAppend, %Text%, %FileName%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, %Text%, %FileName%
          }
    Return
 }
@@ -1502,7 +1505,8 @@ MaybeFixFileEncoding(File,Encoding){
 
    FileCopy, %File%, %File%.preconvB.bak
    FileDelete, %File%
-   FileAppend, %Contents%, %File%, %Encoding%
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, %Contents%, %File%, %Encoding%
    ; tooltip,% File " was saved backup you find here: `n" %File%.preconvB.bak "`n______________`n"  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
 Return
 }
@@ -1530,7 +1534,8 @@ Return
                EncodingCheck =
                FileCopy, %File%, %File%.preconv.bak
                FileDelete, %File%
-               FileAppend, %Contents%, %File%, %Encoding%
+               RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, %Contents%, %File%, %Encoding%
                
                Contents =
 

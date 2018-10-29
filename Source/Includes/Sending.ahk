@@ -524,11 +524,6 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 				KTScode := rX["code"]
 			}
 
-;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
-    ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
-    ; dont move the lie to beigning of fungion beocuse g_Word is deleted.
-    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
-;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
 
 ; tooToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
 			
@@ -553,6 +548,16 @@ UPDATE_ActionList_UsedByUser_since_midnight()
     msg := ActionListFolderOfThisActionList "`n"
     msg .= A_WorkingDir " = A_WorkingDir `n"
     ; Msgbox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
+        if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+                ToolTip4sec("is this the right position? bakcspace is not ocrreclty deleing typed. may deleting to muhc??? (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+
+    ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
+    ; dont move the lie to beigning of fungion beocuse g_Word is deleted.
+    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
+;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
+
 
 				was_a_Editor_open_command := openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib)
 				if(was_a_Editor_open_command) {
@@ -826,13 +831,21 @@ UPDATE_ActionList_UsedByUser_since_midnight()
 		aWorkingDirBackUp := A_WorkingDir
 		SetWorkingDir,%A_WorkingDir%\..\ActionLists
          ; suspend,on ; if you do thi script sends nothing 13.03.2018 15:30
+
+         ;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
+                         ToolTip4sec("is this the right position? bakcspace is not ocrreclty deleing typed. may deleting to muhc??? (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+
+             ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
+             ; dont move the lie to beigning of fungion beocuse g_Word is deleted.
+             ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
+         ;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
+
 		DynaRun(AHKcode2)
         ; suspend,off
 		SetWorkingDir,%aWorkingDirBackUp%
 	}
    ;>>>>>>>> isAHKcode >>>> 180315221926 >>>> 15.03.2018 22:19:26 >>>>
-	
-	ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
+	; ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
    ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
    ; the following code was addet by Http://SL5.net 11.03.2017 17:54 17-03-11_17-54 . have fin & enjoy
 	sending:=trim( sending )

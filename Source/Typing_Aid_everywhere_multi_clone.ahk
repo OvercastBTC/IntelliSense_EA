@@ -732,7 +732,8 @@ global g_lineNumberFeedback
  lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListFilterPath)
 ;msgbox, % ActionListFilterPath " asdf77778"
 tooltip,% "FileAppend (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")"
- FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
+ RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
 } 
 return 
 }
@@ -761,7 +762,8 @@ lll(A_LineNumber, RegExReplace(A_LineFile,".*\\") ,m)
  if(!fileExist(ActionListFilterPath)) {
    ahkCodeInsideFile := getAhkCodeInsideFile(ActionListDir, ActionListFilterPath )
 tooltip,% "FileAppend (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")"
-   FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
 
 lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListFilterPath)
    if(!FileExist(ActionListFilterPath))
@@ -855,7 +857,8 @@ createIfFileNotExist_ActionListNameFilter_InNewDir(ActionListDir, ActionListFilt
     g_lineNumberFeedback  := "(" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")"
     if(1 && InStr(A_ComputerName,"SL5"))
         tooltip,% "FileAppend " g_lineNumberFeedback
-    FileAppend, % ahkCode , % ActionListFilterPath
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, % ahkCode , % ActionListFilterPath
 return true
 }
 ;\____ createIfFileNotExist_ActionListNameFilter_InNewDir __ 181023081850 __ 23.10.2018 08:18:50 __/

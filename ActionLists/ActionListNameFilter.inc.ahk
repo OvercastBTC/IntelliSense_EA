@@ -233,7 +233,8 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				FileCreateDir, % wLGeneratedDIR
 				Sleep, 60
 			}
-			FileAppend, _____global generated lib|r|%wl%`n , % wl
+			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, _____global generated lib|r|%wl%`n , % wl
 			FileAppend, _____global generated lib|rr||ahk|run,%wl%`n, % wl
 			FileAppend, _____global generated lib|rr||ahk|run,..\_globalActionListsGenerated\_ahk_global.ahk`n, % wl
 			
@@ -263,7 +264,8 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				MsgBox, :-( !fileContent `n f=%f% `n 17-03-19_15-21 exitApp
 				ExitApp
 			}
-			FileAppend, % fileContent1 . fileContent2  ,% wl
+			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend, % fileContent1 . fileContent2  ,% wl
 			Sleep, 300
 		}
 		return ,% wlRelative
@@ -426,7 +428,8 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 ; if this german au is readable your UTF8 is probalby correct: ä
 
 )
-     FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
 	if( FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,ups ActionListNEW = %ActionListNEW% exist already ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
@@ -435,7 +438,8 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 		Msgbox,ups ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
 	}
-     FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
 	if( !FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,:-( ups !FileExist %ActionListNEW% ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
