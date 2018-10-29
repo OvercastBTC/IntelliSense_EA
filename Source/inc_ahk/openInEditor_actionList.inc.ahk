@@ -84,12 +84,9 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
     if(false){
         noOp := 1
     }else if(1 && isEditorExist_NotepadPP){
-        ; 28.09.2018 15:48 2,6 MB opens with error warnings
-        ; i got problems relacing some with umlaute (ue) 29.09.2018 12:04
         runString = %NotepadPPExe% "%m1CorrectedAhkFileAddress%"
-        ;Msgbox,% runString " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-        ;Pause
         run,% runString
+        return true
     }else if(1 && isEditorExist_AHKStudio){
         ; 28.09.2018 15:48 2,6 MB opens with error warnings
         ; i got problems relacing some with umlaute (ue) 29.09.2018 12:04
@@ -103,7 +100,7 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
         run,% runString, ..\AutoGUI
         return true
     }else if(1){ ; fallback
-        runString = notepad "%m1CorrectedAhkFileAddress%"
+        runString = %NotepadPPExe% "%m1CorrectedAhkFileAddress%"
         run,% runString
         return true
     }
