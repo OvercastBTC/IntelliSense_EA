@@ -241,6 +241,9 @@ UPDATE_ActionList_UsedByUser_since_midnight(){
 
 
 
+
+
+;/¯¯¯¯ SendWord ¯¯ 181101130606 ¯¯ 01.11.2018 13:06:06 ¯¯\
 SendWord(WordIndex){
 ;/¯¯¯¯ used if triggered ...|ahk|... style 19.10.2018 10:24:29 ¯¯\
 ; 19.10.2018 10:24
@@ -874,8 +877,8 @@ if( RegExMatch( AHKcode , "mPi)\bSoundBeep[ *\("  ) ) {
              clipboard := AHKcode2
              }
 
-
 		DynaRun(AHKcode2)
+
         ; suspend,off
 		SetWorkingDir,%aWorkingDirBackUp%
 
@@ -939,11 +942,28 @@ if( RegExMatch( AHKcode , "mPi)\bSoundBeep[ *\("  ) ) {
         ; msgbox,found >%matchs1%<  >%matchs1debuginfo%< 18-04-30_11-46 `n(" A_LineNumber ")"
 		}
 	}
-	
+
+
+    ; addet 01.11.2018 13:20. i have changed title by ahk. and WinChanged was not triggerd. this solves that problem:
+    ; addet 01.11.2018 13:20. i have changed title by ahk. and WinChanged was not triggerd. this solves that problem:
+    ; addet 01.11.2018 13:20. i have changed title by ahk. and WinChanged was not triggerd. this solves that problem:
+    ; addet 01.11.2018 13:20. i have changed title by ahk. and WinChanged was not triggerd. this solves that problem:
+    ; becouse the title may have been changed by another application 01.11.2018 13:43
+    ; This typically happens with auto hotkey code (see lines above) but may also have been done with an external script.
+    WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsEventTime)
+
+
+
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, return , % g_Word "=key|" A_ThisFunc ":"  A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 	Return  ; endOf function: SendWord(WordIndex)
 }  
-;------------------------------------------------------------------------
+;\____ SendWord __ 181101130603 __ 01.11.2018 13:06:03 __/
+
+
+
+
+
+
 
 
 

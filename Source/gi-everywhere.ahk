@@ -189,7 +189,7 @@ maxLinesOfCode4length1 := 900 ;
 
 ; SetTimer, saveIamAllive, 8000 ; setinterval
 ; SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
-SetTimer,checkInRegistryChangedActionListAddress,2222 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 ; SetTimer,checkInRegistryChangedActionListAddress,off ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 SetTimer,checkActionListAHKfile_sizeAndModiTime,3000
 SetTimer,check_some_keys_hanging_or_freezed,1800 ; ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
@@ -957,7 +957,8 @@ if( g_ActionList_UsedByUser_since_midnight[g_ActionListID] ){
 
 
     isRegListChanged := (ActionListNewTemp_withoutExt && ActionList <> ActionListNewTemp_withoutExt)
-    if(!isRegListChanged || !ActionListNewTemp_withoutExt || A_TimeIdle < 1333){
+    ; if(!isRegListChanged || !ActionListNewTemp_withoutExt || A_TimeIdle < 1333){
+    if(!isRegListChanged || !ActionListNewTemp_withoutExt ){
         ; happens if already correct loadet
         Speak("Return in " A_LineNumber " probably correct loadet")
         return
@@ -1094,7 +1095,7 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
 
     ; tool too tool
     if(ActionListOLD == ActionList){ ; thats fixed that the list is lcoaed always to early with ClearAllVars
-        Speak("Return in " A_LineNumber ". List not changed: " ActionListFileName)
+        Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return ")
         EnableKeyboardHotKeys()
         EnableWinHook()
         return
@@ -1509,6 +1510,7 @@ return
 ;/¯¯¯¯ show_ListBox_Id
 show_ListBox_Id:
     SetTimer, show_ListBox_Id, Off ; setinterval
+    return
 
     global g_ListBox_Id
     global g_reloadIf_ListBox_Id_notExist

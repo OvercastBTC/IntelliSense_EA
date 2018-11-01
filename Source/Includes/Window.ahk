@@ -1,5 +1,6 @@
 ﻿;These functions and labels are related to the active window
 
+
 ;/¯¯¯¯ EnableWinHook ¯¯ 181024134525 ¯¯ 24.10.2018 13:45:25 ¯¯\
 ; DisableWinHook()
 EnableWinHook(){
@@ -30,9 +31,11 @@ EnableWinHook(){
       ;msgbox,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
 
       if !(g_WinChangedEventHook){
+
+        Speak("Failed to register Event Hook")
         msg := "Failed to register Event Hook! `n  g_WinChangedEventHook=" . g_WinChangedEventHook . "`n 17-07-16_16-21"
         ToolTip5sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " )
-        msgbox, % msg
+        ;msgbox, % msg
         lll(A_LineNumber, A_LineFile, msg )
          return false
          ;ExitApp
@@ -73,6 +76,9 @@ DisableWinHook(){
 ; Hook function to detect change of focus (and remove ListBox when changing active window)
 ; 31.10.2018 18:36: always if i change window by mousecliok
 ; 31.10.2018 18:36: always if i change window by alt+tab
+; 01.11.2018 13:27 i called it manually by typing
+; WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsEventTime)
+; inside the function SendWord . and it works.
 WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsEventTime){
    global g_inSettings
    global g_ManualActivate
@@ -118,7 +124,7 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
       GetIncludedActiveWindow()
    }
 
-    ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+    ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
     ; soundbeep,5000
     ; soundbeep,5000
     ; soundbeep,5000
@@ -138,12 +144,13 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
 
 
 ;/¯¯¯¯ SwitchOffListBoxIfActive ¯¯ 181022212325 ¯¯ 22.10.2018 21:23:25 ¯¯\
+; this function is triggerd early every key pressed 01.11.2018 13:02
 SwitchOffListBoxIfActive(){
    global g_Active_Id
    global g_ListBox_Id
    global g_ManualActivate
 
- ;   SoundbeepString2Sound(A_ThisFunc)
+  ; Speak(A_ThisFunc)
 
    if (g_Active_Id && g_ListBox_Id) {
       WinGet, Temp_id, ID, A   

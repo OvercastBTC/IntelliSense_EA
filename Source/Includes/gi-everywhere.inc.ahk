@@ -316,7 +316,7 @@ global g_doSaveLogFiles
 
 ; test
 ;/¯¯¯¯ RecomputeMatches ¯¯ 181025105946 ¯¯ 25.10.2018 10:59:46 ¯¯\
-RecomputeMatches(calledFromStr ){
+RecomputeMatches( calledFromStr ){
    ; This function will take the given word, and will recompile the list of matches and redisplay the ActionList.
    global g_MatchTotal
    global g_SingleMatch
@@ -1024,6 +1024,9 @@ lll(A_LineNumber, A_LineFile,"SuspendOn()`n" . Key " = Key `n" . WordIndex " = W
       SuspendOff()
    Return 
 }
+
+
+
 
 
 
