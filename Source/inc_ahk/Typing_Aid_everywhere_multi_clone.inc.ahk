@@ -124,7 +124,7 @@ ActionListDir = '%ActionListDir%'
 			ActionListNEWarchivePath80 := ActionListNEWarchivePath
 		}
 		;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		initialActionList := ltrim(getInitialActionList(ActionListNEWarchivePath,ActionListNEW))
+		initialActionList := ltrim(getInitialActionList(ActionListNEWarchivePath,ActionListNEW,at))
 		; _%ActionListNEWarchivePath%|r|Here you could find your library
 		
 		StringReplace, lineFileRelative, A_LineFile , % A_ScriptDir,Source, All
@@ -134,9 +134,10 @@ ActionListDir = '%ActionListDir%'
         Include := "Include"
 
 		    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend, `#%Include% _global.ahk `n`; '%at%' `; (%LineFileRelative%~%A_LineNumber%) `n%initialActionList% `n, % ActionListNEWarchivePath
-		 Sleep,400
-		 ; Sleep,250 ; why sleeping ? todo sleeping?
+
+FileAppend, % initialActionList , % ActionListNEWarchivePath
+; 		 Sleep,400
+		 Sleep,350 ; why sleeping ? todo sleeping?
 
 		; End of: if(!FileExist(ActionListNEWarchivePath))
 		lll(A_LineNumber, A_LineFile,A_ThisFunc ": "    "saved first time: >" . ActionListNEWarchivePath . "< = Now the new examples-template should be saved" )
@@ -182,7 +183,7 @@ ActionListDir = '%ActionListDir%'
 		Loop,read, % ActionListNEWarchivePath
 		{
            ; Beispiel:
-; #Include .\..\ActionLists\Notepad\_global.txt
+; #Include .\..\ActionLists\Notepad\_global.ahk
 ; #Include ..\_globalActionLists\Bewerbung\Firmware_Entwicklung.txt
 			
 ;           regEx := "i)^\s*#include\s*( |,)\s*([^|!]+)\s*(?:((\||\!))\s*(.+))?\s*"
@@ -196,6 +197,8 @@ ActionListDir = '%ActionListDir%'
 )
 			
 			msg := "#include foundPos = >" foundPos "< in `n" ActionListNEWarchivePath "`n"
+            msg .= ">" matchs1 "< =  matchs1 `n"
+            msg .= ">" A_LoopReadLine "< =  A_LoopReadLine `n"
 			msg .= A_WorkingDir " = A_WorkingDir `n"
 			msg .= A_ScriptDir " = A_ScriptDir `n"
 			msg .= A_ScriptFullPath " = A_ScriptFullPath `n"
@@ -205,9 +208,16 @@ ActionListDir = '%ActionListDir%'
 			;/¯¯¯¯ isIncludeFileInside ¯¯ 181012004940 ¯¯ 12.10.2018 00:49:40 ¯¯\
 			if(foundPos){
 				isIncludeFileInside := true
-				
-				includeFilePath     := ActionListDir "\" trim(matchs1)
-				
+
+    			regExAbsolutePath := "i)^\w\:" ; addet 01.11.2018 11:36
+                foundPosAbsolutePath := RegexMatch( matchs1, regExAbsolutePath, matchsPath)
+				if(foundPosAbsolutePath)
+				    includeFilePath     := trim(matchs1)
+				else
+				    includeFilePath     := ActionListDir "\" trim(matchs1)
+
+				includeFilePath := RegExReplace(includeFilePath ,";[^\n\r]+$") ; removes comments
+
 				; includeFilePath := RegExReplace(includeFilePath ,"(\\[^\\]+\\\.\.)+") ; works. removes all symbolic links 24.02.2018  cleanPath
 				includeFilePath := removesSymbolicLinksFromFileAdress(includeFilePath) ; same as above -^
 				
@@ -216,8 +226,12 @@ ActionListDir = '%ActionListDir%'
 				
 				exist_includeFilePath := (FileExist(includeFilePath)) ? 1 : 0
 				if(!exist_includeFilePath){ ; 11.03.201:23 new style/format of adress writing, but try stay compativle to old scripts. TODO deletie it.
-					
-					msg := ":( includeFile NOT exist here: "  includeFilePath " = includeFilePath  `n"
+					includeFilePathAbs := removesSymbolicLinksFromFileAdress(A_ScriptDir "\" includeFilePath)
+    				exist_includeFilePathAbs := (FileExist(includeFilePathAbs)) ? 1 : 0
+					msg .= ":( includeFile NOT exist here: `n"  includeFilePath "`n`n"
+					msg .= ">" includeFilePathAbs "<`n exist =" exist_includeFilePathAbs "`n`n"
+					msg .= ">" matchs1 "< =  matchs1 `n"
+                    msg .= ">" A_LoopReadLine "< =  A_LoopReadLine `n"
 					msg .= ActionListDir " =  ActionListDir `n"
 					msg .= A_WorkingDir " = A_WorkingDir `n"
 					msg .= A_ScriptDir " = A_ScriptDir `n"
@@ -232,11 +246,12 @@ ActionListDir = '%ActionListDir%'
 					if(!exist_includeFilePath){
 						msg .= "`n`n :( includeFile NOT exist here: "  includeFilePath " = includeFilePath  `n"
 						msg .= exist_includeFilePath " = exist_includeFilePath  `n`n"
+						msg .= A_ScriptDir
 						lll(A_LineNumber, A_LineFile, msg )
 						feedbackMsgBox(RegExReplace(A_LineFile,".*\\(.*?)\.ahk","$1") ">" A_LineNumber, msg, 1,1 ) ; temp.ahk is often ignored by config 05.10.2018 08:46
 						MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-                        ; __ __
 					}
+					clipboard := includeFilePathAbs
 					msgbox,% msg "(" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 				}
 				
@@ -926,6 +941,7 @@ FileWrite(sayHelloCode, sayHelloFunctionInc){
    Sleep,100
    lll(A_LineNumber, A_LineFile, "FileAppend too " sayHelloFunctionInc)
     ;msgbox,% sayHelloCode
+if(1 && InStr(A_ComputerName,"SL5") )
    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, % sayHelloCode, % sayHelloFunctionInc
    return 1
@@ -947,7 +963,8 @@ if(!ActionListNEW)
  global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-msgbox,!ActionListNEW exitap (line:`%A_LineNumber`%) `n
+tooltip,exitapp !ActionListNEW exitap (line:%g_lineNumberFeedback%) `n
+sleep,8888
 exitapp
 }
 if(!ActiveClass)
@@ -1043,14 +1060,14 @@ if `(!ActionListNEW `){
  global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-    MsgBox, ERROR ActionListNEW is EMPTY 17-03-05_14-51
+    tooltip, ERROR ActionListDir is EMPTY 17-03-19_11-51
     exitapp
 }
 if `(!ActionListDir `){
  global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
 
-    MsgBox, ERROR ActionListDir is EMPTY 17-03-19_11-52
+    tooltip, ERROR ActionListDir is EMPTY 17-03-19_11-52
     exitapp
 }
 
@@ -1181,7 +1198,7 @@ selfTestLoop1000(loopMax){
 }
 
 ;<<<<<<<<<<<<<<<<<<< getInitialActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<
-getInitialActionList(ActionListNEWarchivePath,ActionListNEW){
+getInitialActionList(ActionListNEWarchivePath,ActionListNEW,at){
 ; Start filling the template variable with useful examples 12.07.2017 21:18
 
 if(!ActionListNEWarchivePath)
@@ -1190,9 +1207,12 @@ if(!ActionListNEWarchivePath)
 ActionListFileName := RegExReplace(ActionListNEWarchivePath,".*\\([^\\]+)$","$1") ; 20.03.2018 00:15
 
 calledFromStr := A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+Include := "Include"
 initialActionList =
 (
-; only meta info (not importand): %calledFromStr%
+#%Include% _global.ahk
+; #%Include% ..\_globalActionLists\_actionListHelp.ahk ; delete the comment (;), if you want help by creating your ActionList
+; '%at%' .  Only meta info (not importand): %calledFromStr%
 ___open ActionList|rr||ahk|openInEditor,%ActionListFileName%
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
@@ -1295,12 +1315,14 @@ if(!ActionListNEWarchivePath){
         FileDelete, %ActionListGeneratedPath%
     Sleep,60
     lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListGeneratedPath)
+if(1 && InStr(A_ComputerName,"SL5") )
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend,% includeFileSContent, % ActionListGeneratedPath
     ; Sleep,20
     FileRead, fileContent, %ActionListNEWarchivePath%
     ;Sleep,20
     lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListGeneratedPath)
+if(1 && InStr(A_ComputerName,"SL5") )
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend,% fileContent, % ActionListGeneratedPath
     if(false)lll(A_LineNumber, A_LineFile, "SAVED: " . ActionListGeneratedPath)

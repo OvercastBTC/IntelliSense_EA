@@ -259,9 +259,8 @@ ProcessKey(InputChar,EndKey) {
          g_LastInput_Id := g_Active_Id
          Return
       }
-
       if(1 && InStr(A_ComputerName,"SL5"))
-           tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
+           tooltip,% "str=" NewInput " , chr=" InputChar "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),80,-10
 
       if InputChar in %prefs_ForceNewWordCharacters%
       {
@@ -315,6 +314,7 @@ global g_doSaveLogFiles
 
 
 
+; test
 ;/¯¯¯¯ RecomputeMatches ¯¯ 181025105946 ¯¯ 25.10.2018 10:59:46 ¯¯\
 RecomputeMatches(calledFromStr ){
    ; This function will take the given word, and will recompile the list of matches and redisplay the ActionList.
@@ -471,6 +471,7 @@ if(!prefs_Length)
     ; check if gui is opening
     ; if(strlen(g_Word)>=3){
     if(!g_reloadIf_ListBox_Id_notExist && StrLen(g_Word) == prefs_Length ){
+		    if(1 && InStr(A_ComputerName,"SL5") )
         toolTip, % g_Word "(" StrLen(g_Word) ")," prefs_Length "=prefs_Length:" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
         ; reload_IfNotExist_ListBoxGui()
         SetTimer, show_ListBox_Id, 600 ; setinterval ; 28.10.2018 02:39: fallback bugfix workaround help todo:
@@ -1287,7 +1288,7 @@ EvaluateScriptPathAndTitle(){
       IF(A_PtrSize == 4){
          IF(A_IsCompiled){
          ; A_IsCompiled	Contains 1 if the script is running as a compiled EXE and an empty string (which is considered false) if it is not.
-            ScriptPath64 := A_ScriptDir . "\" . ScriptNoExtension . "64." . ScriptExtension
+            ScriptPath64 := A_ScriptDir "\" ScriptNoExtension "64." ScriptExtension
 
             If(FileExist(ScriptPath64)){
                ; gosub,couldIfindMyself
@@ -1418,7 +1419,15 @@ ClearAllVars( calledFromStr , ClearWord ){
       g_ListBoxFlipped=
       g_ListBoxMaxWordHeight=
    }
-     Return
+   
+   g_SingleMatch =
+   g_SingleMatchDescription =
+   g_SingleMatchReplacement =
+   g_Match= 
+   g_MatchPos=
+   g_MatchStart= 
+   g_OriginalMatchStart=
+   Return
 }
 ;\____ ClearAllVars __ 181024140219 __ 24.10.2018 14:02:19 __/
 
@@ -1430,14 +1439,17 @@ FileAppendDispatch(Text,FileName,ForceEncoding=0){
    {
       IfNotEqual, ForceEncoding, 0
       {
+if(1 && InStr(A_ComputerName,"SL5") )
          RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, %Text%, %FileName%, %ForceEncoding%
       } else
       {
+if(1 && InStr(A_ComputerName,"SL5") )
          RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, %Text%, %FileName%, UTF-8
       }
    } else {
+   		    if(1 && InStr(A_ComputerName,"SL5") )
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, %Text%, %FileName%
          }
@@ -1490,6 +1502,7 @@ MaybeFixFileEncoding(File,Encoding){
 
    FileCopy, %File%, %File%.preconvB.bak
    FileDelete, %File%
+   		    if(1 && InStr(A_ComputerName,"SL5") )
    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, %Contents%, %File%, %Encoding%
    ; tooltip,% File " was saved backup you find here: `n" %File%.preconvB.bak "`n______________`n"  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
@@ -1519,6 +1532,7 @@ Return
                EncodingCheck =
                FileCopy, %File%, %File%.preconv.bak
                FileDelete, %File%
+               		    if(1 && InStr(A_ComputerName,"SL5") )
                RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, %Contents%, %File%, %Encoding%
                

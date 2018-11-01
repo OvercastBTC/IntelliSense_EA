@@ -1,5 +1,11 @@
 ﻿#Include _global.ahk
+; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
+
+käsewurst baumhaus
+domeDemeo text huhuhu
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, toDo, A_ScriptName " " A_LineNumber ": "  . " to many. 2 or 3 enough"  ; RegWrite , RegSave , Registry
+
 
 chat:|r|https://autohotkey.com/boards/viewtopic.php?f=5&t=59
 Server IRQ: chat.freenode.net
@@ -58,7 +64,7 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 	
 	
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend, Text, Filename, Encoding|rr|FileAppend, |ahk|m=Text, Filename, Encoding`n ll:=strlen(m)+1 `n lr:=4 `n send, %m% {left %ll%}{shift down}{right %lr%}{shift up}
+	FileAppend, Text, Filename, Encoding|rr|FileAppend, |ahk|m=Text, Filename, Encoding`n ll:=strlen(m)+1 `n lr:=4 `n send, %m% {left %ll%}{shift down}{right %lr%}{shift up}
 	
 ; gi-everywhere-master\Source\gi-everywhere.ahk
 	FileAppend dynAhk|rr|; FileAppend .. HelloWorld2.ahk|ahk|FileAppend, msgbox`, HelloWorld (from: %A_LineFile%~%A_LineNumber%)``n , incDynAhk\HelloWorld2.ahk

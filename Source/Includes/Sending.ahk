@@ -322,7 +322,7 @@ SendWord(WordIndex){
 ; ein eineins|rr|zwei|ahk|autohotkey source code
 ; eins|rr|zwei|ahk|autohotkey source code
 ; thats great :) here we find the complete line :) inside sending 17.03.2017 18:23 17-03-17_18-23
- ; SciTEWindow\_global.txt
+ ; SciTEWindow\_global.ahk
  ;~ Msgbox,'%WordIndex%' = WordIndex  `n (%A_LineFile%~%A_LineNumber%)
 ; msg = '%sending%' = sending
 ; MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -340,7 +340,7 @@ SendWord(WordIndex){
 ;global g_Word
 ;Msgbox, % g_Word[2] ; ; i dont know what this is. most of time its emptty . rght? 10.07.2017 14:06
 ;  Msgbox, % g_SingleMatchReplacement[WordIndex] ; thats only the text behind the pipe |
-; ________SciTEWindow\_global.txt
+; ________SciTEWindow\_global.ahk
 ; zwei
 ; Msgbox, '%sending%' = sending  n (line:%A_LineNumber%)  (line:%A_LineNumber%)
 	AHKcode := "" ; AHKcode2 .= ... AHKcode ... so later its in AHKcode2
@@ -510,7 +510,10 @@ UPDATE_ActionList_UsedByUser_since_midnight()
                     }
 
 				}
-                MsgBox,% lineOfIndex " - (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+		    if(1 && InStr(A_ComputerName,"SL5") ){
+                tooltip,% lineOfIndex " - (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                ; hapens by using a simple replaec like: alsdkasd|rlkjlkj   30.10.2018 22:12
+            }
 
 			}
 			StringLower, mlang, % rX["lang"]

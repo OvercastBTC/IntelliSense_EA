@@ -68,7 +68,6 @@ openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnd
     return openInEditorFromIntern(m1CorrectedAhkFileAddress)
 }
 ;\____ openInEditor __ 181028104756 __ 28.10.2018 10:47:56 __/
-;
 
 ;/¯¯¯¯ openInEditor ¯¯ 181028104913 ¯¯ 28.10.2018 10:49:13 ¯¯\
 openInEditorFromIntern(m1CorrectedAhkFileAddress){
@@ -81,8 +80,25 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
 
     editorName := "AutoGUI"
     isEditorExist_AutoGUI := FileExist("..\" editorName "\" editorName ".ahk")
+
+temp =
+(
+inside ahk-studio:
+Default_Project_Folder(){ ...
+FileSelectFolder,directory,`% "*" Dir,3,`% "Current Default Folder: " Settings.SSN("//directory").text
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AHK-Studio\shell\edit\command]
+@="\"G:\\fre\\git\\github\\global-IntelliSense-everywhere-Nightly-Build\\AHK-Studio\\AHK-Studio.ahk\" \"`%1\""
+the emeditor.ahk is going to be the name of the program then the file extension. the path can be edited to whatever you want. Works in windows 7.
+)
+
+
     if(false){
         noOp := 1
+    }else if( 0 ){
+        runString = notepad.exe "%m1CorrectedAhkFileAddress%"
+        run,% runString
+        return true
     }else if(1 && isEditorExist_NotepadPP){
         runString = %NotepadPPExe% "%m1CorrectedAhkFileAddress%"
         run,% runString

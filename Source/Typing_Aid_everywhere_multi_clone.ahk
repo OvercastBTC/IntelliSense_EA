@@ -185,7 +185,7 @@ while(true) {
                 ; activeTitle := "_global" ; used till 07.10.2018 10:12 18-10-07_10-12
 		activeTitle := "isNotAProject" ; isNotAProject.ahk ; todo: not very pretty stly. 28.10.2018 11:33
 
-		; toolto msgbox
+		;
 
 		msg = !fileExist(ActionListFilterPathNEWdir === >%ActionListFilterPathNEWdir%<)  `n '%activeTitle%'=activeTitle , '%activeClass%' = activeClass
 		lineFileName := RegExReplace(A_LineFile, ".*\\([\w\s\.]+)$", "$1")
@@ -193,7 +193,7 @@ while(true) {
 		tip=%msg% (%lineFileNameWithoutPATHandEXT%~%A_LineNumber%)
 		
 		if(InStr(A_ComputerName,"SL5"))
-			ToolTip2sec(tip,-1,-30)
+			ToolTip2sec(tip,-1,-40)
                 sleep,1500 ; if this is the case slow down ths script a little bit. temporaily
             ; msg=:-O WinExist temp.ahk `n `n %A_LineFile%~%A_LineNumber% ==> continue
             ;feedbackMsgBox("Oops. so lets use global.`n ",msg,1,1) ;
@@ -493,7 +493,7 @@ if(1 && l1 > l2){ ; proof it test it
 }
 
 
-;
+; ___ ___ ___
 
 if(1){
     ; dirty bug fix ._Generated.txt 04.03.2018 10:44
@@ -503,7 +503,8 @@ if(1){
   ; msgbox, `% ActionList
 }
     if(!RegExMatch(ActionList,"created_token_17-08-10_16-17")) ; todo: whey control here? wrong place. quck dirty 25.03.2018 01:36
-        RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, `%ActionList`% ; old scool. for compatibiliti thinks 02.03.2018 17:10
+        RegWrite181031( ActionList ) ; old scool. for compatibiliti thinks 02.03.2018 17:10)
+#Include,RegWrite181031.ahk
 
 }
 ) ; endOf temp
@@ -670,7 +671,7 @@ global g_lineNumberFeedback
 if `(!ActionListDir `) {
 global g_lineNumberFeedback
  g_lineNumberFeedback=%A_LineFile%~%A_ThisFunc%~%A_LineNumber%
-    MsgBox, ERROR ActionListDir is EMPTY 17-03-19_11-52
+    tooltip, ERROR ActionListDir is EMPTY 17-03-19_11-52
     exitapp
 }
 ;
@@ -732,6 +733,7 @@ global g_lineNumberFeedback
  lll(A_LineNumber, A_LineFile, "FileAppend too " ActionListFilterPath)
 ;msgbox, % ActionListFilterPath " asdf77778"
 tooltip,% "FileAppend (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")"
+if(1 && InStr(A_ComputerName,"SL5") )
  RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
 } 
@@ -762,6 +764,7 @@ lll(A_LineNumber, RegExReplace(A_LineFile,".*\\") ,m)
  if(!fileExist(ActionListFilterPath)) {
    ahkCodeInsideFile := getAhkCodeInsideFile(ActionListDir, ActionListFilterPath )
 tooltip,% "FileAppend (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")"
+		    if(1 && InStr(A_ComputerName,"SL5") )
    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend,  % ahkCodeInsideFile , % ActionListFilterPath ; ActionListNameFilter.inc.ahk
 
@@ -857,6 +860,7 @@ createIfFileNotExist_ActionListNameFilter_InNewDir(ActionListDir, ActionListFilt
     g_lineNumberFeedback  := "(" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")"
     if(1 && InStr(A_ComputerName,"SL5"))
         tooltip,% "FileAppend " g_lineNumberFeedback
+        		    if(1 && InStr(A_ComputerName,"SL5") )
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, % ahkCode , % ActionListFilterPath
 return true

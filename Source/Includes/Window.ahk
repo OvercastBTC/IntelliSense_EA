@@ -19,11 +19,16 @@ EnableWinHook(){
    global g_WinChangedEventHook
    global g_WinChangedCallback
    ; Set a hook to check for a changed window
+
+       ; SoundbeepString2Sound(A_ThisFunc)
+
    If !(g_WinChangedEventHook)
    {
       MaybeCoInitializeEx()
       g_WinChangedEventHook := DllCall("SetWinEventHook", "Uint", g_EVENT_SYSTEM_FOREGROUND, "Uint", g_EVENT_SYSTEM_FOREGROUND, "Ptr", g_NULL, "Uint", g_WinChangedCallback, "Uint", g_NULL, "Uint", g_NULL, "Uint", g_WINEVENT_SKIPOWNPROCESS)
-      
+
+      ;msgbox,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+
       if !(g_WinChangedEventHook){
         msg := "Failed to register Event Hook! `n  g_WinChangedEventHook=" . g_WinChangedEventHook . "`n 17-07-16_16-21"
         ToolTip5sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " )
@@ -41,7 +46,9 @@ EnableWinHook(){
 ;/¯¯¯¯ DisableWinHook ¯¯ 181024141107 ¯¯ 24.10.2018 14:11:07 ¯¯\
 DisableWinHook(){
    global g_WinChangedEventHook
-   
+
+    ; SoundbeepString2Sound(A_ThisFunc)
+
    if (g_WinChangedEventHook)
    {
       if (DllCall("UnhookWinEvent", "Uint", g_WinChangedEventHook))
@@ -63,13 +70,19 @@ DisableWinHook(){
 
 
 ;/¯¯¯¯ WinChanged ¯¯ 181022212344 ¯¯ 22.10.2018 21:23:44 ¯¯\
-; Hook function to detect change of focus (and remove ListBox when changing active window) 
+; Hook function to detect change of focus (and remove ListBox when changing active window)
+; 31.10.2018 18:36: always if i change window by mousecliok
+; 31.10.2018 18:36: always if i change window by alt+tab
 WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsEventTime){
    global g_inSettings
    global g_ManualActivate
    global g_OldCaretY
    global prefs_DetectMouseClickMove
-   
+
+   ; SoundbeepString2Sound(A_ThisFunc)
+   speak(A_ThisFunc)
+   SetTimer,checkInRegistryChangedActionListAddress,on
+
    If (event <> 3){
       return
    }
@@ -100,13 +113,27 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
             }
          }
       }
-      ; SciTEWindow\_global.txt
-      ; ____
+      ; SciTEWindow\_global.ahk
    } else {
       GetIncludedActiveWindow()
    }
+
+    ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+    ; soundbeep,5000
+    ; soundbeep,5000
+    ; soundbeep,5000
+    ; soundbeep,5000
+    ;sleep,2000
+
    Return
 }
+;\____ WinChanged __ 181031183224 __ 31.10.2018 18:32:24 __/
+
+
+
+
+
+
 
 
 
@@ -115,7 +142,9 @@ SwitchOffListBoxIfActive(){
    global g_Active_Id
    global g_ListBox_Id
    global g_ManualActivate
-   
+
+ ;   SoundbeepString2Sound(A_ThisFunc)
+
    if (g_Active_Id && g_ListBox_Id) {
       WinGet, Temp_id, ID, A   
       IfEqual, Temp_id, %g_ListBox_Id%
@@ -146,7 +175,9 @@ GetIncludedActiveWindow() {
    global g_Process_System_DPI_Aware
    global g_Process_Per_Monitor_DPI_Aware
    global prefs_ListBoxNotDPIAwareProgramExecutables
-   
+
+ ;   SoundbeepString2Sound(A_ThisFunc)
+
    CurrentWindowIsActive := GetIncludedActiveWindowGuts()
    
    if (g_Active_Pid) {
@@ -184,9 +215,18 @@ GetIncludedActiveWindow() {
    }
    
    EnableWinHook()
+
+   ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+   ; soundbeep,1000
+
    Return, CurrentWindowIsActive
 }
 ;\____ GetIncludedActiveWindow __ 181022212417 __ 22.10.2018 21:24:17 __/
+
+
+
+
+
 
 
 
@@ -202,7 +242,9 @@ GetIncludedActiveWindowGuts() {
    global g_MouseWin_Id
    Process, Priority,,Normal
    ;Wait for Included Active Window
-   
+
+  ;  SoundbeepString2Sound(A_ThisFunc)
+
    CurrentWindowIsActive := true
    
    Loop
@@ -295,11 +337,24 @@ GetIncludedActiveWindowGuts() {
    g_Active_Pid := ActivePid
    g_Active_Process := ActiveProcess
    g_Active_Title := ActiveTitle
+
+  ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+  ; soundbeep,800
+
+
+
    Return, CurrentWindowIsActive
 }
+;\____ GetIncludedActiveWindowGuts __ 181031183032 __ 31.10.2018 18:30:32 __/
 
-CheckForActive(ActiveProcess,ActiveTitle)
-{
+
+
+
+
+
+
+;/¯¯¯¯ CheckForActive ¯¯ 181031183100 ¯¯ 31.10.2018 18:31:00 ¯¯\
+CheckForActive(ActiveProcess,ActiveTitle){
 
    ;Check to see if the Window passes include/exclude tests
    global g_InSettings
@@ -307,7 +362,11 @@ CheckForActive(ActiveProcess,ActiveTitle)
    global prefs_ExcludeProgramTitles
    global prefs_IncludeProgramExecutables
    global prefs_IncludeProgramTitles
-   
+
+  ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+ ; SoundbeepString2Sound(A_ThisFunc)
+
+
    quotechar := """"
    
    If g_InSettings
@@ -366,7 +425,12 @@ CheckForActive(ActiveProcess,ActiveTitle)
 
    Return, 
 }
-;\____ GetIncludedActiveWindowGuts __ 181022212448 __ 22.10.2018 21:24:48 __/
+;\____ CheckForActive __ 181022212448 __ 22.10.2018 21:24:48 __/
+
+
+
+
+
 
 
 
@@ -376,12 +440,15 @@ ReturnWinActive(){
    global g_Active_Id
    global g_Active_Title
    global g_InSettings
-   
+
+  ;   ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+  ;  SoundbeepString2Sound(A_ThisFunc)
+
+
    IF g_InSettings
       Return
    
-   if (SwitchOffListBoxIfActive())
-   {
+   if (SwitchOffListBoxIfActive()){
       return, true
    }
    

@@ -99,7 +99,8 @@ tests(){
   }
   ; too tooo__
   ; emty ActionList state. space for new one without question about it:
-  ;RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, % "notWorkingFileAdress18-03-31_09-19"
+  ;RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+#Include,RegWrite181031.ahk
 
   ; if(doWorkaroundRerun_gIntelliISense)
   ;  run,..\start.ahk
@@ -598,7 +599,8 @@ check_wrong_ActionLists(){
   isWrong := 1
   while(isWrong){
     if(A_Index > 3){
-      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, % "notWorkingFileAdress18-03-31_09-19"
+      RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+#Include,RegWrite181031.ahk
       return
     }
       
@@ -620,7 +622,8 @@ close_ActionListChangedInRegistry(){
       ; strange, but this is disturbing.
       tip:= "strange but this is disturbing. `n \Selected_tab. `n ==> lets wait a little `n (" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\") ") "
       ToolTip3sec(tip) 
-      ;RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, % "notWorkingFileAdress18-03-31_09-19"
+      ;RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+#Include,RegWrite181031.ahk
       ; run,..\start.ahk
       Sleep,800
       
@@ -791,7 +794,7 @@ sendAeUeLines(t){
   t1 := t
   onlyName := RegExReplace(t, ".*(tstamp_[^\.]+).*","$1")
   lineAe := "helloEurope|r|helloWorld`n"
-  lineAe .= "___open generated|rr||ahk|run," onlyName ".txt._Generated.ahk`n`n"
+  lineAe .= "___open generated|rr||ahk|openInEditor," onlyName ".txt._Generated.ahk`n`n"
   lineAe .= "hi MsgBox|rr||ahk|MsgBox,hi World`n`n"
   lineAe .= "aaaaae|r|" chr(228) "`n"
   lineAe .= "uuuuue|r|" chr(252) "`n" 

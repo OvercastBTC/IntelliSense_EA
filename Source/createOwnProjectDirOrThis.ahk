@@ -50,7 +50,7 @@ globalActionListDir := "..\ActionLists"
 ; globalActionList := globalActionListDir "\_globalActionListsGenerated\_global.ahk"
 globalActionList := globalActionListDir   "\_globalActionListsGenerated\isNotAProject.ahk"
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionListNEW, %globalActionList% ; RegWrite , RegSave , Registry
-RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, %globalActionList% ; RegWrite , RegSave , Registry
+RegWrite181031( globalActionList )
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, %globalActionList% ; RegWrite , RegSave , Registry
 
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
@@ -144,5 +144,6 @@ reload
 #Include *i %A_ScriptDir%\inc_ahk\UPDATEDSCRIPT_global.inc.ahk
 
 #Include %A_ScriptDir%\inc_ahk\openInEditor_actionList.inc.ahk
-;__ __ __
+;__ __ __ ______ ____ ___
 ;
+#Include,%A_ScriptDir%\RegWrite181031.ahk

@@ -544,8 +544,8 @@ CoordMode, ToolTip,Screen
 		else
 			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read ActionListLearnedTXTaddress ``n" ActionListLearnedTXTaddress "``n (" RegExReplace(A_LineFile,".*\\") ">" A_LineNumber ") `n Sleep,100 `n }  ")
 ; Msgbox, n (line:%A_LineNumber%) Msgbox, `n (line:%A_LineNumber%)
-;Msgbox, n (line:%A_LineNumber%) ; SciTEWindow\_global.txt
-; SciTEWindow\_global.txt
+;Msgbox, n (line:%A_LineNumber%) ; SciTEWindow\_global.ahk
+; SciTEWindow\_global.ahk
 		if(false && ParseWordsCount>0)
 			Msgbox, %ParseWordsCount%  (line:%A_LineNumber%)
 
@@ -619,7 +619,7 @@ addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
 	if(!itsAGeneratedList && !RegExMatch(contentActionList432indes, pattern ) ){
 		ToolTip,% ActionList "`n`n " A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")   " "   Last_A_This
 		SplitPath, ActionList, , , , OutNameNoExt
-		temp := "___open " OutNameNoExt "(ActionList.ahk~" A_LineNumber "|rr||ahk|run," OutNameNoExt ".ahk"
+		temp := "___open " OutNameNoExt "(ActionList.ahk~" A_LineNumber "|rr||ahk|openInEditor," OutNameNoExt ".ahk"
 
         if(true){
             AddWordToList(temp,0,"ForceLearn",LearnedWordsCount)   ; springt dann in zeile 490 ungefähr
