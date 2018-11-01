@@ -60,7 +60,7 @@ RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir, % d1 ; RegWrit
 ;\____ try_faster_reload_if_created __ 181025152609 __ 25.10.2018 15:26:09 __/
 
 run,Typing_Aid_everywhere_multi_clone.ahk
-run,gi-everywhere.ahk
+; run,gi-everywhere.ahk
 
 FileAppend,"temporary empty file. if exist next view dont use the super _global.ahk", %d1%\_create_own_project.flag
 IfNotExist,%d1%\_global.ahk
@@ -70,8 +70,10 @@ IfNotExist,%d1%\_global.ahk
 ; it not need to be closed active bevor 13.05.2018 19:23. now we close it active. so its litle faster then a second . thats nice
 
 ; try sppedup it with DynaRun(AHKcode)
-;AHKcode := "MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,9"
-;DynaRun(AHKcode)
+; AHKcode := "MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,9"
+; DynaRun(AHKcode)
+
+
 
 
 ;FileDelete, % "..\ActionLists\" . ActiveClass . "\_create_own_project.flag"

@@ -233,7 +233,8 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				FileCreateDir, % wLGeneratedDIR
 				Sleep, 60
 			}
-			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+			if(1 && InStr(A_ComputerName,"SL5"))
+		    	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 FileAppend, _____global generated lib|r|%wl%`n , % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,%wl%`n, % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,..\_globalActionListsGenerated\_ahk_global.ahk`n, % wl

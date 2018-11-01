@@ -71,7 +71,19 @@ DisableWinHook(){
 
 
 
+; SetTimer,checkWinChangedTitle,1000 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 
+checkWinChangedTitle:
+    activeTitleOLD := activeTitle
+    WinGetActiveTitle, activeTitle
+    if(activeTitleOLD <> activeTitle){
+       g_is_correct_list_found := false
+       timeFirstTry_getNewListFromRegistry := A_timeIdle
+
+       Speak(A_ThisFunc A_thisLabel)
+       SetTimer,checkInRegistryChangedActionListAddress,on ; seems has no effect anymore 01.11.2018 19:14
+    }
+return
 ;/¯¯¯¯ WinChanged ¯¯ 181022212344 ¯¯ 22.10.2018 21:23:44 ¯¯\
 ; Hook function to detect change of focus (and remove ListBox when changing active window)
 ; 31.10.2018 18:36: always if i change window by mousecliok
@@ -85,9 +97,14 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
    global g_OldCaretY
    global prefs_DetectMouseClickMove
 
+    global g_is_correct_list_found
+    g_is_correct_list_found := false
+   EnableKeyboardHotKeys() ; seems needet 01.11.2018 19:04
+
    ; SoundbeepString2Sound(A_ThisFunc)
    speak(A_ThisFunc)
-   SetTimer,checkInRegistryChangedActionListAddress,on
+   SetTimer,checkInRegistryChangedActionListAddress,on ; seems has no effect anymore 01.11.2018 19:14
+   ; but it should work: https://autohotkey.com/boards/viewtopic.php?p=247296#p247296
 
    If (event <> 3){
       return
@@ -259,7 +276,7 @@ GetIncludedActiveWindowGuts() {
       WinGet, ActiveId, ID, A
       WinGet, ActivePid, PID, ahk_id %ActiveId%
       WinGet, ActiveProcess, ProcessName, ahk_id %ActiveId%
-      WinGetTitle, ActiveTitle, ahk_id %ActiveId%
+      WinGetTitle, activeTitle, ahk_id %ActiveId%
       IfEqual, ActiveId, 
       {
          IfNotEqual, g_MouseWin_Id,
@@ -289,7 +306,7 @@ GetIncludedActiveWindowGuts() {
          Break
       IfEqual, ActiveId, %g_ListBox_Id%
          Break
-      If CheckForActive(ActiveProcess,ActiveTitle)
+      If CheckForActive(ActiveProcess,activeTitle)
          Break
       
       CurrentWindowIsActive := false
@@ -299,10 +316,10 @@ GetIncludedActiveWindowGuts() {
       InactivateAll_Suspend_ListBox_WinHook()
       SetTitleMatchMode, 3 ; set the title match mode to exact so we can detect a window title change
       ; Wait for the current window to no longer be active
-      WinWaitNotActive, %ActiveTitle% ahk_id %ActiveId% ; whats the use of this ? script stops at this possition. i will deactivat this line now 16.07.2017 11:31 17-07-16_11-31
+      WinWaitNotActive, %activeTitle% ahk_id %ActiveId% ; whats the use of this ? script stops at this possition. i will deactivat this line now 16.07.2017 11:31 17-07-16_11-31
       SetTitleMatchMode, 2
       ActiveId = 
-      ActiveTitle =
+      activeTitle =
       ActiveProcess =
    }
 ;
@@ -311,7 +328,7 @@ GetIncludedActiveWindowGuts() {
       g_Active_Id :=  ActiveId
       g_Active_Pid := ActivePid
       g_Active_Process := ActiveProcess
-      g_Active_Title := ActiveTitle
+      g_Active_Title := activeTitle
       Return, CurrentWindowIsActive
    }
    
@@ -319,7 +336,7 @@ GetIncludedActiveWindowGuts() {
    IfNotEqual, ActiveId, %g_Helper_Id%
    {
       ; Check to see if we need to reopen the helper window
-      MaybeOpenOrCloseHelperWindow(ActiveProcess,ActiveTitle,ActiveId)
+      MaybeOpenOrCloseHelperWindow(ActiveProcess,activeTitle,ActiveId)
       SuspendOff()
       ;Set the process priority back to High
       Process, Priority,,High
@@ -343,7 +360,7 @@ GetIncludedActiveWindowGuts() {
    g_Active_Id :=  ActiveId
    g_Active_Pid := ActivePid
    g_Active_Process := ActiveProcess
-   g_Active_Title := ActiveTitle
+   g_Active_Title := activeTitle
 
   ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
   ; soundbeep,800
@@ -361,7 +378,7 @@ GetIncludedActiveWindowGuts() {
 
 
 ;/¯¯¯¯ CheckForActive ¯¯ 181031183100 ¯¯ 31.10.2018 18:31:00 ¯¯\
-CheckForActive(ActiveProcess,ActiveTitle){
+CheckForActive(ActiveProcess,activeTitle){
 
    ;Check to see if the Window passes include/exclude tests
    global g_InSettings
@@ -392,11 +409,11 @@ CheckForActive(ActiveProcess,ActiveTitle){
       {
          StringTrimLeft, TrimmedString, A_LoopField, 1
          StringTrimRight, TrimmedString, TrimmedString, 1
-         IfEqual, ActiveTitle, %TrimmedString%
+         IfEqual, activeTitle, %TrimmedString%
          {
             return,
          }
-      }  else IfInString, ActiveTitle, %A_LoopField%
+      }  else IfInString, activeTitle, %A_LoopField%
       {
          return,
       }
@@ -420,11 +437,11 @@ CheckForActive(ActiveProcess,ActiveTitle){
       {
          StringTrimLeft, TrimmedString, A_LoopField, 1
          StringTrimRight, TrimmedString, TrimmedString, 1
-         IfEqual, ActiveTitle, %TrimmedString%
+         IfEqual, activeTitle, %TrimmedString%
          {
             Return, 1
          }
-      } else IfInString, ActiveTitle, %A_LoopField%
+      } else IfInString, activeTitle, %A_LoopField%
       {
          Return, 1
       }
