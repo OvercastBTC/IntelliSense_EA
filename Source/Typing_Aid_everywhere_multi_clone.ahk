@@ -497,9 +497,13 @@ if(1 && l1 > l2){ ; proof it test it
 
 if(1){
     ; dirty bug fix ._Generated.txt 04.03.2018 10:44
-    If(FileExist( ActionList . "._Generated.ahk")) ; dirty bugFix TODO: prettyFy it
-      ActionList .= "._Generated.ahk"
 
+    postFixGenerated := "._Generated.ahk"
+    ActionListPostFix  := SubStr(ActionList, - StrLen(postFixGenerated) + 1 ) ; That works I've tested it 01.11.2018 14:59
+    itsAGeneratedList := ( postFixGenerated == ActionListPostFix )
+
+    If(!itsAGeneratedList && !FileExist( ActionList "._Generated.ahk")) ; dirty bugFix TODO: prettyFy it
+      ActionList .= "._Generated.ahk"
   ; msgbox, `% ActionList
 }
     if(!RegExMatch(ActionList,"created_token_17-08-10_16-17")) ; todo: whey control here? wrong place. quck dirty 25.03.2018 01:36

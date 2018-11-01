@@ -78,7 +78,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
  ; Select Path SunAwtDialog
  ; Open File or Project ahk_class SunAwtDialog
  ; Anhang speichern ahk_class #32770
-
+;
 	if(1 && InStr(A_ComputerName,"SL5")){
         ; Sourcetree ahk_class HwndWrapper[SourceTree.exe;;2705bdea-7ac8-4b39-b851-91e598ce9055] ; mouseWindowTitle=0xd508d8
         tip=%activeTitle% = activeTitle`n %ActiveClass% = ActiveClass`n

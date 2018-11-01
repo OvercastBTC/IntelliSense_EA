@@ -322,7 +322,14 @@ ActionListDir = '%ActionListDir%'
 ;<<<<<<<<<<<<<<  if(exist_includeFilePath)  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 				if(exist_includeFilePath){
 					ActionListNEWarchivePathBackup := ActionListNEWarchivePath
-					ActionListGeneratedPath := ActionListNEWarchivePath . "._Generated.ahk"
+
+                    postFixGenerated := "._Generated.ahk"
+                    thisPostFix := SubStr(ActionListGeneratedPath, - StrLen(postFixGenerated) + 1 )
+                    itsAGeneratedList := ( postFixGenerated == thisPostFix )
+                    if(itsAGeneratedList){
+                        Msgbox,Oops already geraated list lklkjlkjlkjl 555444 (line:%A_LineNumber%) n
+                    }
+                    ActionListGeneratedPath := ActionListNEWarchivePath postFixGenerated
 					
 					lll(A_LineNumber, A_LineFile, "'" . ActionListGeneratedPath . "' = ActionListGeneratedPath `n'" . ActionListNEWarchivePath . " = ActionListNEWarchivePath ")
 					

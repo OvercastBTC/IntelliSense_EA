@@ -191,7 +191,7 @@ maxLinesOfCode4length1 := 900 ;
 ; SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 ; SetTimer,checkInRegistryChangedActionListAddress,off ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
-SetTimer,checkActionListAHKfile_sizeAndModiTime,3000
+SetTimer,checkActionListAHKfile_sizeAndModiTime,8000
 SetTimer,check_some_keys_hanging_or_freezed,1800 ; ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
 SetTimer,check_ActionList_GUI_is_hanging_or_freezed,1000 ; ; 26.09.2018 16:38 it sometimes happesn.
 
@@ -764,11 +764,12 @@ return
 
 
 
+;
 
 ;/¯¯¯¯ checkActionListAHKfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
 checkActionListAHKfile_sizeAndModiTime:
     ;SetTimer,checkInRegistryChangedActionListAddress,Off
-
+;        Speak(A_LineNumber ":" A_thisFunc A_ThisLabel)
     if(!FileExist(ActionList)){
         if(0 && InStr(A_ComputerName,"SL5")) ; 23.10.2018 10:08 was used
             msgBox,% " is this deadlink? never uses? (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -780,6 +781,13 @@ checkActionListAHKfile_sizeAndModiTime:
         MsgBox,% "ups" msg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
     }
 
+        if(1 && InStr(ActionList,"._Generated.ahk._Generated.ahk")){
+             ToolTip9sec(" found ._Generated.ahk._Generated.ahk and not suported `n" ActionList "`n" A_LineNumber )
+
+    ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
+        }
+
+;
 
 
     FileGetSize, ActionListSize, %ActionList%
@@ -805,8 +813,18 @@ checkActionListAHKfile_sizeAndModiTime:
     isTimeChanged := (ActionListModified <> ActionListLastModified)
     isSizeNull := (!ActionListLastSize || !ActionListLastSize)
 
+; compu compu https://autohotkey.com/boards/viewtopic.php?f=5&t=59
+; com Hallo Rübennase Comp1 compu
+; 01.11.2018 14:19
+
     doReadActionListTXTfile := (isSizeChanged || isTimeChanged || isSizeNull )
     doReadActionListTXTfileSTR = %isSizeChanged%||%isTimeChanged%||%isSizeNull%
+
+    ToolTip9sec(doReadActionListTXTfileSTR "`n" ActionList "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    ; clipboard := ActionList
+
+; Hallo compu compu rüben hallo
+
     if(doReadActionListTXTfile){
         ;msgbox, doReadActionListTXTfile 654654654
 
@@ -830,6 +848,9 @@ checkActionListAHKfile_sizeAndModiTime:
              )
             msgbox,% msg "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
         }
+        ; compu hall Rüb
+        if(1 && InStr(A_ComputerName,"SL5"))
+            Speak(A_LineNumber ": ReadInTheActionList")
         ReadInTheActionList("checkActionListAHKfile_sizeAndModiTime:" doReadActionListTXTfileSTR " " A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
         ;ParseWordsCount := ReadActionList(calledFromStr) ; there is also update and select of time of the ActionList
         ;prefs_Length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
@@ -841,6 +862,8 @@ checkActionListAHKfile_sizeAndModiTime:
         sqlLastError := SQLite_LastError()
         tip .= "`n sqlLastError=" sqlLastError " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
         if( instr(sqlLastError, "no such table") ){
+
+
             tooltip, % tip
             SuspendOn()
             ;msgbox,% tip
@@ -1073,7 +1096,7 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
         msg := "ActionList >"ActionListNewTemp_withoutExt ".ahk< `n = ActionListNewTemp_withoutExt (=clipBoard) `n ActionList NOT exist"
         msg := ":( ERROR: " msg "`n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         if(1 && InStr(A_ComputerName,"SL5")){
-            clipBoard := removesSymbolicLinksFromFileAdress(A_ScriptDir "\" ActionListNewTemp_withoutExt ".ahk")
+            ; clipBoard := removesSymbolicLinksFromFileAdress(A_ScriptDir "\" ActionListNewTemp_withoutExt ".ahk")
             ToolTip3sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This,1,1)
         }
 
@@ -1091,11 +1114,15 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
     else
         ActionList := ActionListNewTemp_withoutExt ".ahk"
 
-    ;ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
+        if(1 && InStr(ActionList,"._Generated.ahk._Generated.ahk")){
+             ToolTip9sec(" found ._Generated.ahk._Generated.ahk and not suported `n" ActionList "`n" A_LineNumber )
+
+    ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
+        }
 
     ; tool too tool
     if(ActionListOLD == ActionList){ ; thats fixed that the list is lcoaed always to early with ClearAllVars
-        Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return ")
+        Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return. " RegExReplace(A_LineFile,".*\\"))
         EnableKeyboardHotKeys()
         EnableWinHook()
         return
@@ -1358,9 +1385,13 @@ ActionListTooltip:
     ToolTip,% tip
 return
 
+
+
 recreateListBox_IfFontSizeChangedAndTimeIdle(g_ListBoxFontSize, newListBoxFontSize){
   if ( A_TimeIdlePhysical < 1000 * 0.5 )
     return false
+    if(1 && InStr(A_ComputerName,"SL5"))
+        Sound("recreateListBox_IfFontSizeChangedAndTimeIdle. " RegExReplace(A_LineFile,".*\\") )
     if(g_ListBoxFontSize <> newListBoxFontSize ){
         g_ListBoxFontSize := newListBoxFontSize ; ; to to
         ; ListBoxEnd()
@@ -1370,7 +1401,10 @@ recreateListBox_IfFontSizeChangedAndTimeIdle(g_ListBoxFontSize, newListBoxFontSi
     }
     return false
 }
-; too
+
+
+
+
 doListBoxFollowMouse:
       MouseGetPos, g_ListBoxX, g_ListBoxY
       g_ListBoxX := g_ListBoxX - 77
@@ -1389,15 +1423,22 @@ doListBoxFollowMouse:
 return
 
 
+
+
+
 check_some_keys_hanging_or_freezed:
   if( A_TimeIdlePhysical <= 1000 * 3 )
     return
   fixBug_Alt_Shift_Ctrl_hanging_down()
 return
 
-;
 
 
+
+
+
+
+;/¯¯¯¯ exit_all_scripts ¯¯ 181101135520 ¯¯ 01.11.2018 13:55:20 ¯¯\
 exit_all_scripts(){
         DetectHiddenWindows, On
         WinGet, List, List, ahk_class AutoHotkey
@@ -1408,6 +1449,10 @@ exit_all_scripts(){
                  PostMessage,0x111,65405,0,, % "ahk_id " List%A_Index%
           }
 }
+;\____ exit_all_scripts __ 181101135538 __ 01.11.2018 13:55:38 __/
+
+
+
 
 fixBug_Alt_Shift_Ctrl_hanging_down(){
   ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
@@ -1503,14 +1548,14 @@ return
 
 
 
-; too too too too toolt
+
+
 
 
 
 ;/¯¯¯¯ show_ListBox_Id
 show_ListBox_Id:
     SetTimer, show_ListBox_Id, Off ; setinterval
-    return
 
     global g_ListBox_Id
     global g_reloadIf_ListBox_Id_notExist
@@ -1582,7 +1627,9 @@ return
 ;\____ show_ListBox_Id
 
 
-; ToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+
+
+
 
 
 #Include,RegWrite181031.ahk

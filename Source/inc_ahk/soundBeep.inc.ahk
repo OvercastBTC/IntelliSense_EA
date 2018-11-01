@@ -1,5 +1,9 @@
 ﻿; Google Translate Script work for DeepL: https://autohotkey.com/boards/viewtopic.php?p=247016#p247016
 
+
+Sound( text ){
+    Speak( text )
+}
 ;/¯¯¯¯ speaking ¯¯ 181101030122 ¯¯ 01.11.2018 03:01:22 ¯¯\
 Speak( text ){
     if(!g_doSoundBeepACK)

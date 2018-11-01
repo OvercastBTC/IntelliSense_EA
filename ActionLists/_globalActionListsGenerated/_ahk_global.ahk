@@ -2,8 +2,15 @@
 ; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
-käsewurst baumhaus
-domeDemeo text huhuhu
+Was kommt nun?
+
+
+computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
+computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
+computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
+ComputerName A_ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
+A_ComputerName ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
+
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, toDo, A_ScriptName " " A_LineNumber ": "  . " to many. 2 or 3 enough"  ; RegWrite , RegSave , Registry
 
 
