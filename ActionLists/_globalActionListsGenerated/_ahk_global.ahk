@@ -2,16 +2,11 @@
 ; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
-Was kommt nun?
+Speak(A_LineNumber ":" A_thisFunc A_ThisLabel)
 
-
-computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
-computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
-computer A_ComputerName|r|if(InStr(A_ComputerName,"SL5")
 ComputerName A_ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
-A_ComputerName ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
 
-RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, toDo, A_ScriptName " " A_LineNumber ": "  . " to many. 2 or 3 enough"  ; RegWrite , RegSave , Registry
+RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, toDo, A_ScriptName " " A_LineNumber ": "  ; RegWrite , RegSave , Registry
 
 
 chat:|r|https://autohotkey.com/boards/viewtopic.php?f=5&t=59

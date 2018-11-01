@@ -191,10 +191,13 @@ maxLinesOfCode4length1 := 900 ;
 ; SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 ; SetTimer,checkInRegistryChangedActionListAddress,off ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
-SetTimer,checkActionListAHKfile_sizeAndModiTime,8000
+lbl_default_checkActionListAHKfile_sizeAndModiTime := 8123456789
+lbl_default_checkActionListAHKfile_sizeAndModiTime := 400
+SetTimer,checkActionListAHKfile_sizeAndModiTime, % lbl_default_checkActionListAHKfile_sizeAndModiTime
 SetTimer,check_some_keys_hanging_or_freezed,1800 ; ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
 SetTimer,check_ActionList_GUI_is_hanging_or_freezed,1000 ; ; 26.09.2018 16:38 it sometimes happesn.
 
+; tool tool tooltip too tooltip
 
 SetTimer,doListBoxFollowMouse,off
 ;SetTimer,doListBoxFollowMouse,off
@@ -367,9 +370,28 @@ MainLoop()
 
 ; dirty bugfix, https://github.com/sl5net/global-IntelliSense-everywhere/issues/4
 ; __ __
+; tooltip tooltip
 ;<<<<<<<<<<<<<<<<< workaround <<<<<<<<<<<<<<<<<
 ; https://stackoverflow.com/questions/52493547/autohotkey-read-of-two-underscore-keys
 ; https://github.com/sl5net/global-IntelliSense-everywhere/issues/4
+; toolti
+#IfWinActive,asdjkfhaldjskahdskfjh
+~^s:: ; funktioniert nur einmal oder so ... komishc
+    editor_open_folder() {
+        Speak(A_LineNumber ": gespeichert" )
+        sleep,250
+        ; Gosub,checkActionListAHKfile_sizeAndModiTime
+        ; SetTimer,checkActionListAHKfile_sizeAndModiTime,Off
+        SetTimer,checkActionListAHKfile_sizeAndModiTime,On
+    }
+;
+;Gosub,checkActionListAHKfile_sizeAndModiTime
+  ;  speak(A_LineNumber ": Ctrl s Shortcut found" )
+    ; sleep,555
+    ; Gosub,checkActionListAHKfile_sizeAndModiTime
+    ; SetTimer,checkActionListAHKfile_sizeAndModiTime,Off
+    ; SetTimer,checkActionListAHKfile_sizeAndModiTime,1200
+; return
 #IfWinActive,
 ~esc::
    toolTip2sec("esc::" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
@@ -820,7 +842,7 @@ checkActionListAHKfile_sizeAndModiTime:
     doReadActionListTXTfile := (isSizeChanged || isTimeChanged || isSizeNull )
     doReadActionListTXTfileSTR = %isSizeChanged%||%isTimeChanged%||%isSizeNull%
 
-    ToolTip9sec(doReadActionListTXTfileSTR "`n" ActionList "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    ; ToolTip9sec(doReadActionListTXTfileSTR "`n" ActionList "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
     ; clipboard := ActionList
 
 ; Hallo compu compu rüben hallo
@@ -1115,14 +1137,14 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
         ActionList := ActionListNewTemp_withoutExt ".ahk"
 
         if(1 && InStr(ActionList,"._Generated.ahk._Generated.ahk")){
-             ToolTip9sec(" found ._Generated.ahk._Generated.ahk and not suported `n" ActionList "`n" A_LineNumber )
+             ToolTip5sec(";] Oopsfound ._Generated.ahk._Generated.ahk => ._Generated.ahk `n`n" ActionList "`n" A_LineNumber RegExReplace(A_LineFile,".*\\"), 1,1 )
 
     ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
         }
 
     ; tool too tool
     if(ActionListOLD == ActionList){ ; thats fixed that the list is lcoaed always to early with ClearAllVars
-        Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return. " RegExReplace(A_LineFile,".*\\"))
+        ; Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return. " RegExReplace(A_LineFile,".*\\"))
         EnableKeyboardHotKeys()
         EnableWinHook()
         return

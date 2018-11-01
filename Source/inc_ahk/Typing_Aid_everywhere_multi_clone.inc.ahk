@@ -326,11 +326,11 @@ ActionListDir = '%ActionListDir%'
                     postFixGenerated := "._Generated.ahk"
                     thisPostFix := SubStr(ActionListGeneratedPath, - StrLen(postFixGenerated) + 1 )
                     itsAGeneratedList := ( postFixGenerated == thisPostFix )
-                    if(itsAGeneratedList){
-                        Msgbox,Oops already geraated list lklkjlkjlkjl 555444 (line:%A_LineNumber%) n
+                    if(!itsAGeneratedList){
+                        ActionListGeneratedPath := ActionListNEWarchivePath postFixGenerated
+                        ;Msgbox,Oops already geraated list lklkjlkjlkjl 555444 (line:%A_LineNumber%) n
                     }
-                    ActionListGeneratedPath := ActionListNEWarchivePath postFixGenerated
-					
+
 					lll(A_LineNumber, A_LineFile, "'" . ActionListGeneratedPath . "' = ActionListGeneratedPath `n'" . ActionListNEWarchivePath . " = ActionListNEWarchivePath ")
 					
 					lll(A_LineNumber, A_LineFile,A_ThisFunc ": "   "'" . ActionListGeneratedPath . "' = ActionListGeneratedPath `n'" . ActionListNEWarchivePath . " = ActionListNEWarchivePath " )
