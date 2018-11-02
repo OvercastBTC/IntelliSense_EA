@@ -27,7 +27,7 @@ ActionList := RegExReplace(ActionList ,"(\\[^\\]+\\\.\.)+") ; works. removes all
 ActionList := RegExReplace(ActionList,"\\\.\\")  ; works. removes all symbolic link 24.02.2018 cleanPath
 ActionList := RegExReplace(ActionList,"^\.\\")  ; works. removes all symbolic link 24.02.2018  cleanPath
 
-RegWrite181031(ActionList)
+setRegistry_ActionList(ActionList)
 #Include,RegWrite181031.ahk
 ExitApp 
 

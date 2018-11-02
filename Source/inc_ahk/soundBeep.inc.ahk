@@ -5,8 +5,9 @@ Sound( text ){
     Speak( text )
 }
 ;/¯¯¯¯ speaking ¯¯ 181101030122 ¯¯ 01.11.2018 03:01:22 ¯¯\
-Speak( text ){
-    if(!g_doSoundBeepACK)
+Speak( text, mode := "DEV" ){ ;   ;  (DEV, TEST, STAGING, PROD),
+    global g_doSound
+    if(!g_doSound && mode != "PROD")
         return
     text := RegExReplace(text, "([a-z])([A-Z])", "$1 $2")
     text := RegExReplace(text, "(_|\-)", " ")
@@ -14,7 +15,7 @@ Speak( text ){
     g_ttSpeakObject.Speak(text) ; https://autohotkey.com/boards/viewtopic.php?p=247009#p247009
 }
 Speak2(text){
-    if(!g_doSoundBeepACK)
+    if(!g_doSound)
         return
 	ControlSetText,RICHEDIT50W1,% text,QTranslate ahk_class #32770 ahk_exe QTranslate.exe
 	ControlClick,Button4,QTranslate ahk_class #32770 ahk_exe QTranslate.exe
@@ -167,7 +168,7 @@ Class TTS { ; https://autohotkey.com/boards/viewtopic.php?p=247009#p247009
 
 ;/¯¯¯¯ SoundbeepString2Sound ¯¯ 181031173251 ¯¯ 31.10.2018 17:32:51 ¯¯\
 SoundbeepString2Sound(s){
-    if(!g_doSoundBeepACK)
+    if(!g_doSound)
         return
     minPitch := 500
     AHKcode := "#" . "NoTrayIcon `n "
@@ -215,7 +216,7 @@ SoundbeepString2Sound__ccc(s){
 
 ;<<<<<<<< SoundbeepGameOver <<<< 170814130442 <<<< 14.08.2017 13:04:42 <<<<
 SoundbeepGameOver(){
-    if(!g_doSoundBeepACK)
+    if(!g_doSound)
         return
 pitch := 750
 AHKcode := "#" . "NoTrayIcon `n "
@@ -234,8 +235,8 @@ while(--pitch > 350 ){
 
 ;<<<<<<<< SoundbeepMissionImpossibleTheme <<<< 170814103348 <<<< 14.08.2017 10:33:48 <<<<
 SoundbeepMissionImpossibleTheme(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
         return
     AHKcode := "#" . "NoTrayIcon `n "
 
@@ -314,8 +315,8 @@ return
 
 ;<<<<<<<< SoundbeepNoACK <<<< 170814140127 <<<< 14.08.2017 14:01:27 <<<<
 SoundbeepNoACK(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
         return
     SoundbeepGameOver()
 }
@@ -323,8 +324,8 @@ SoundbeepNoACK(){
 
 ;<<<<<<<< SoundbeepACK <<<< 170814140035 <<<< 14.08.2017 14:00:35 <<<<
 SoundbeepACK(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
         return
     ; SoundbeepMissionImpossibleTheme()
     SoundBeep,500,5000 ; high, timemilli 14.08.2017 09:43

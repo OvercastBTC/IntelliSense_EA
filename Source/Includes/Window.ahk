@@ -73,13 +73,41 @@ DisableWinHook(){
 
 ; SetTimer,checkWinChangedTitle,1000 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 
+set0(){
+    global activeTitle
+    global activeTitleOLD
+
+    global ActionList
+    global ActionListOLD
+
+    global g_itsProbablyArecentUpdate
+
+    global timeFirstTry_getNewListFromRegistry
+    global milliesTried_getNewListFromRegistry
+
+    activeTitleOLD := activeTitle
+
+    ActionList := ""
+   ActionListOLD := ""
+
+   g_itsProbablyArecentUpdate := false
+
+   timeFirstTry_getNewListFromRegistry := 0
+   milliesTried_getNewListFromRegistry := 0
+
+   return
+}
+
 checkWinChangedTitle:
+global activeTitle
+global activeTitleOLD
+global ActionList
+global ActionListOLD
+global g_itsProbablyArecentUpdate
     activeTitleOLD := activeTitle
     WinGetActiveTitle, activeTitle
     if(activeTitleOLD <> activeTitle){
-       g_is_correct_list_found := false
-       timeFirstTry_getNewListFromRegistry := A_timeIdle
-
+       set0()
        Speak(A_ThisFunc A_thisLabel)
        SetTimer,checkInRegistryChangedActionListAddress,on ; seems has no effect anymore 01.11.2018 19:14
     }
@@ -97,8 +125,7 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
    global g_OldCaretY
    global prefs_DetectMouseClickMove
 
-    global g_is_correct_list_found
-    g_is_correct_list_found := false
+    set0()
    EnableKeyboardHotKeys() ; seems needet 01.11.2018 19:04
 
    ; SoundbeepString2Sound(A_ThisFunc)

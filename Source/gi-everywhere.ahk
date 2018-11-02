@@ -43,16 +43,21 @@ global g_config
 g_config := { list:{ change: { stopRexExTitle: false } } }
 g_config := { FuzzySearch:{ enable: true, MAXlines : 87654, keysMAXperEntry : 6, minKeysLen: 4, doValueCopy : false } } ; difficult to implement symlink copy for not rr lines doValueCopy. todo: issue . doValueCopy : false  is not fully implemented
 
-global g_doSoundBeepACK
-g_doSoundBeepACK := false
+global g_doSound
+g_doSound := false
 if(1 && InStr(A_ComputerName,"SL5") )
-    g_doSoundBeepACK := true
+    g_doSound := 0
 
-if(g_doSoundBeepACK){
+if(1){
     global g_ttSpeakObject
     g_ttSpeakObject := new TTS()
     ; s.SetRate(-2)
-    g_ttSpeakObject.SetRate(5) ; speed higher value is faster. 2 is about 200 procent. 1 sounds like normal speak
+
+    ; DEV mode :
+    ; g_ttSpeakObject.SetRate(5) ; speed higher value is faster. 2 is about 200 procent. 1 sounds like normal speak
+
+    ; PROD mode:
+    g_ttSpeakObject.SetRate(2)
     ; -1 is very slow
     ; -5 is terrible slow
     ; 0 seems normal
@@ -70,7 +75,7 @@ Speak("gestartet")
 ; SoundbeepString2Sound("zx")
 ; SoundbeepGameOver()
 
-; ___1
+; ToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
 
 ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 ;msgBox,% g_config["FuzzySearch"]["MAXlines"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -960,13 +965,16 @@ return
 ; ActiveTitleOLD2 := activeTitleOLD
 ;/¯¯¯¯ checkIncChangedActionListAddress ¯¯ 181025104242 ¯¯ 25.10.2018 10:42:42 ¯¯\
 checkInRegistryChangedActionListAddress:
-    if(g_is_correct_list_found)
+    if(g_itsProbablyArecentUpdate)
         return
 
-    if( milliesTried_getNewListFromRegistry >= 3000 )
-        g_is_correct_list_found := true ; may the registry not changing anymore. this is the last try
+    if( milliesTried_getNewListFromRegistry >= 5000){
+        milliesTried_getNewListFromRegistry := 0
+        g_itsProbablyArecentUpdate := true ; may the registry not changing anymore. this is the last try
+        return
+    }
 
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(0 && InStr(A_ComputerName,"SL5"))
         SoundbeepString2Sound("a")
 
     if(g_config["list"]["change"]["stopRexExTitle"]=="."){
@@ -1019,7 +1027,9 @@ checkInRegistryChangedActionListAddress:
 
     RegRead, ActionListNewTemp_RAW, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
     ActionListNewTemp_withoutExt := ActionListNewTemp_RAW
-    milliesTried_getNewListFromRegistry := A_timeIdle - timeFirstTry_getNewListFromRegistry
+    if(!timeFirstTry_getNewListFromRegistry)
+        timeFirstTry_getNewListFromRegistry := A_TickCount
+    milliesTried_getNewListFromRegistry := A_TickCount - timeFirstTry_getNewListFromRegistry
 
     ActionListFileName := RegExReplace(ActionListNewTemp_withoutExt,".*\\")
     ActionListFileName := RegExReplace(ActionListFileName,"(\w+).*","$1")
@@ -1070,7 +1080,6 @@ checkInRegistryChangedActionListAddress:
         }else
             Speak(m "Return in " A_LineNumber " Registry is empty")
         ActionListNewTemp_withoutExt := ActionList_isNotAProject_withoutExt ; as long as nothing else would be found
-
     }
     if(!fileExist(ActionListNewTemp_withoutExt ".ahk")){ ; addet 26.4.2018 12:58 becouse of mistourios things
         m =
@@ -1163,8 +1172,11 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
 
         ; Msgbox,% ":( ERROR: " msg "`n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
         ; feedbackMsgBox(msg,msg,1,1)
-        ActionList := globalActionListDir   "\_globalActionListsGenerated\isNotAProject.ahk"
-        sleep,1000
+        ; ActionList := globalActionListDir   "\_globalActionListsGenerated\isNotAProject.ahk"
+        ActionListNewTemp_withoutExt := ActionList_isNotAProject_withoutExt ; as long as nothing else would be found
+        ;ActionListNewTemp := ActionList_isNotAProject ; as long as nothing else would be found
+
+        ;sleep,1000
         ; ActionListOLD := "" ; probably programmer want a reloud soon. quck an dirty ???
         ; return
     }
@@ -1182,23 +1194,42 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
         }
 
     ; tool too tool
-    if(ActionListOLD == ActionList){ ; thats fixed that the list is lcoaed always to early with ClearAllVars
+
+	; millis_since_midnight := JEE_millis_since_midnight(vOpt:="") ; <=== more correct then  := A_Hour*3600000+A_Min*60000+A_Sec*1000+A_MSec
+	millis_since_midnight := A_TickCount  ; <=== more correct then  := A_Hour*3600000+A_Min*60000+A_Sec*1000+A_MSec
+	RegRead, updatedTimeStamp_millisSinceMidnight, HKEY_CURRENT_USER, SOFTWARE\sl5net, updatedTimeStamp_millisSinceMidnight  ; RegWrite , RegSave , Registry
+	milliSinceLastRegistryUpdate := millis_since_midnight - updatedTimeStamp_millisSinceMidnight
+	milliSinceLastRegistryUpdate_sec := round((millis_since_midnight - updatedTimeStamp_millisSinceMidnight)/1000)
+
+    g_is_correct_list_found :=  true
+    g_itsProbablyArecentUpdate := (milliSinceLastRegistryUpdate < 2000 )  ; probalby correct
+
+        m =
+        (
+        milliSinceLastRegistryUpdate = %milliSinceLastRegistryUpdate%
+        g_itsProbablyArecentUpdate = %g_itsProbablyArecentUpdate%
+        %ActionListOLD% ?= %ActionList%
+        )
+    ; toolTip2sec(m "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+    ;msgbox,% m "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+
+    if(0 && ActionListOLD == ActionList){ ; thats fixed that the list is lcoaed always to early with ClearAllVars
         ; Speak("" A_LineNumber ": List not changed: " ActionListFileName ". Return. " RegExReplace(A_LineFile,".*\\"))
         EnableKeyboardHotKeys()
         EnableWinHook()
+        msgbox,% m "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
         return
     }
 
-    g_is_correct_list_found := true
-    timeFirstTry_getNewListFromRegistry := A_timeIdle
+    ; g_is_correct_list_found :=  (g_itsProbablyArecentUpdate || ActionListOLD <> ActionList)
+        ; timeFirstTry_getNewListFromRegistry := JEE_millis_since_midnight(vOpt:="")
 
     ; Number_of_attempts_to_pick_new_list_from_Registry := 0
-    SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
+    if(g_itsProbablyArecentUpdate)
+        SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
 
-
-
-
-
+    if(ActionListOLD <> ActionList && !instr(ActionList,"\isNotAProject"))
+        Speak(ActionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
     ActionListOLD := ActionList
     g_ActionListID := getActionListID(ActionList) ; 24.03.2018 23:02
 
@@ -1223,9 +1254,30 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
     ; SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
     ; SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
     ; SoundbeepString2Sound("zzz")
-    Speak(ActionListFileName " in " ceil(milliesTried_getNewListFromRegistry / 1000) " Sekunden gefunden.")
+    ;Speak(ActionListFileName " in " ceil(milliesTried_getNewListFromRegistry / 1000) " Sekunden gefunden.")
+
+    ; Speak(ActionListFileName " updated for " milliSinceLastRegistryUpdate_sec " Sekunden.") ; <====== interesting for developwers
+
     EnableKeyboardHotKeys() ; seems needet 01.11.2018 19:04
-    EnableWinHook()
+    InitializeHotKeys()
+    RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+
+            m =
+            (
+
+            g_itsProbablyArecentUpdate = %g_itsProbablyArecentUpdate%
+            g_is_correct_list_found = %g_is_correct_list_found%
+
+            milliSinceLastRegistryUpdate = %milliSinceLastRegistryUpdate%
+            milliesTried_getNewListFromRegistry = %milliesTried_getNewListFromRegistry%
+
+            timeFirstTry_getNewListFromRegistry = %timeFirstTry_getNewListFromRegistry%
+
+            %ActionList%
+            )
+        ; toolTip9sec(m "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
+        ; toolTip, % m "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\")
+
 return
 ;\____ checkInRegistryChangedActionListAddress __ 181025104318 __ 25.10.2018 10:43:18 __/
 
@@ -1277,6 +1329,7 @@ return
                         ; 111123456789
                     }
                     Speak("Action List New Temp without Extension in line " A_LineNumber)
+                     ; (DEV, TEST, STAGING, PROD),
                     return ActionListNewTemp_withoutExt
         }
         ;\____ ActionListNewTemp_withoutExt __ 181031091858 __ 31.10.2018 09:18:58 __/
@@ -1688,6 +1741,12 @@ show_ListBox_Id:
         ;/¯¯¯¯ ;ToolTip1sec(g_ListBox_Id ¯¯ 181022055812 ¯¯ 22.10.2018 05:58:12 ¯¯\
         ; tested . it works. dont need to reload or so
         ToolTip5sec( g_show_ListBox_Id_EMTY_COUNT ": DisEn (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " al= " RegExReplace(ActionList,".*\\") "  2:" ActionListNEW ,1,1)
+
+    if(0 && g_show_ListBox_Id_EMTY_COUNT >= 1)
+        EnableKeyboardHotKeys() ; seems needet 01.11.2018 19:04
+
+    ; if(1 && g_show_ListBox_Id_EMTY_COUNT >= 1)
+        ; InitializeListBox() ; ERROR same vaiabele cannot used twice
 
 
         if(0 && g_show_ListBox_Id_EMTY_COUNT >= 2){

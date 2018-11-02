@@ -99,7 +99,7 @@ tests(){
   }
   ; too tooo__
   ; emty ActionList state. space for new one without question about it:
-  ;RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+  ;setRegistry_ActionList("notWorkingFileAdress18-03-31_09-19")
 #Include,RegWrite181031.ahk
 
   ; if(doWorkaroundRerun_gIntelliISense)
@@ -599,7 +599,7 @@ check_wrong_ActionLists(){
   isWrong := 1
   while(isWrong){
     if(A_Index > 3){
-      RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+      setRegistry_ActionList("notWorkingFileAdress18-03-31_09-19")
 #Include,RegWrite181031.ahk
       return
     }
@@ -622,7 +622,7 @@ close_ActionListChangedInRegistry(){
       ; strange, but this is disturbing.
       tip:= "strange but this is disturbing. `n \Selected_tab. `n ==> lets wait a little `n (" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\") ") "
       ToolTip3sec(tip) 
-      ;RegWrite181031("notWorkingFileAdress18-03-31_09-19")
+      ;setRegistry_ActionList("notWorkingFileAdress18-03-31_09-19")
 #Include,RegWrite181031.ahk
       ; run,..\start.ahk
       Sleep,800
@@ -1018,8 +1018,8 @@ while(--pitch > 350 ){
 
 ;<<<<<<<< SoundbeepMissionImpossibleTheme <<<< 170814103348 <<<< 14.08.2017 10:33:48 <<<<
 SoundbeepMissionImpossibleTheme(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
 
 AHKcode =
 (
@@ -1091,8 +1091,8 @@ return
 ;>>>>>>>> SOUNDBEEPMissionImpossibleTheme >>>> 170814103354 >>>> 14.08.2017 10:33:54 >>>>
 ;<<<<<<<< SoundbeepNoACK <<<< 170814140127 <<<< 14.08.2017 14:01:27 <<<<
 SoundbeepNoACK(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
         return
     SoundbeepGameOver()
 }
@@ -1100,8 +1100,8 @@ SoundbeepNoACK(){
 
 ;<<<<<<<< SoundbeepACK <<<< 170814140035 <<<< 14.08.2017 14:00:35 <<<<
 SoundbeepACK(){
-    global g_doSoundBeepACK
-    if(!g_doSoundBeepACK)
+    global g_doSound
+    if(!g_doSound)
         return
     ; SoundbeepMissionImpossibleTheme()
     SoundBeep,500,5000 ; high, timemilli 14.08.2017 09:43

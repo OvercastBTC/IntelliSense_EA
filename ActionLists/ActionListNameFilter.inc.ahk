@@ -8,7 +8,25 @@
 #SingleInstance, force
 ; if you want you could use the follwong global variables for calculating you new ActionListNEW : ActionListDir, ActionListNEW, ActiveClass, activeTitle
 
-; REMEMBER: activeTitle should not be changed iside this fiel :) please :) 12.08.2017 10:11
+if (!ActionListNEW && 1){
+	; 02.11.2018 12:55 attention!! : This is redundant code when changing please consider the other posts also !!
+	ActiveClass := "_globalActionListsGenerated"
+	; activeTitle := "_global" ; used till 07.10.2018 10:12 18-10-07_10-12
+
+	ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
+	ActionList_isNotAProject  := global ActionList_isNotAProject_withoutExt ".ahk"
+
+	activeTitle := ActionList_isNotAProject ; isNotAProject.ahk ; todo: not very pretty silly. 28.10.2018 11:33
+}
+
+if (!ActionListNEW && 0){
+	m := "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ") `n (token293)"
+	ToolTip9sec(m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"  )
+	msgbox, % m
+    ; tooltip,%activeTitle%
+}
+
+; REMEMBER: activeTitle should not be changed inside of this file :) please :) 12.08.2017 10:11
 ; toh-5 - [D:\downloads\toh-5] - ...\src\app\app.component.ts - PhpStorm 2016.3.3 ahk_class SunAwtFrame
 
 
@@ -33,6 +51,14 @@ if(A_ScriptName == "ActionListNameFilter.inc.ahk" ) { ; thats developer mode. th
 	isSlowMotion := true
 } ; demo Mode ende. ( A_ScriptName == "ActionListNameFilter.inc.ahk" )
 
+if (!ActionListNEW && 1){
+	m := "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ") `n (token293)"
+	if(0 && InStr(A_ComputerName,"SL5")){
+		ToolTip9sec(m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"  )
+		msgbox, % m
+	}
+}
+
 if(!ActionListDir)
 	ActionListDir := A_ScriptDir
 if(!scriptDir)
@@ -42,19 +68,26 @@ if(!scriptDir)
 ;ToolTip,`n (%A_LineFile%~%A_LineNumber%)
 ;Sleep,2000
 
+if (!ActionListNEW && 1){
+	m := "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ") `n (token293)"
+	if(0 && InStr(A_ComputerName,"SL5")){
+		ToolTip9sec(m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"  )
+		msgbox, % m
+	}
+}
+
 #Include,.\..\ActionLists\activeClassManipulation.inc.ahk
 
-
-if (!ActionListNEW && false){
-	m = ERROR ActionListNEW is EMPTY: `n `n '%ActionListNEW%' = ActionListNEW  `n   17-03-05_14-51 `n `n 'ActionLists\ActionListNameFilter.inc.ahk' = ActionListFilterPath  `n (line:%A_LineNumber%) `n %A_ScriptFullPath% = (token293) A_ScriptFullPath   (line: %A_LineNumber%)
-	Clipboard := m
-	tooltip, ERRORmessage is copied to the >>Clipboard<< %m%
-    ; MsgBox, ERRORmessage is copied to the >>Clipboard<< , %m% , 7
+if (!ActionListNEW && 1){
+	m := "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ") `n (token293)" 
+	if(0 && InStr(A_ComputerName,"SL5")){
+		ToolTip9sec(m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"  )
+		msgbox, % m
+	}
 }
-; tooltip,%activeTitle%
 
 
-ToolTipSlowMotion(ActionListNEW, A_LineNumber)
+; ToolTipSlowMotion(ActionListNEW, A_LineNumber)
 
 ActionListNEW := getActionListNEW173129simplify( ActionListNEW )
 ToolTipSlowMotion(ActionListNEW, A_LineNumber)
@@ -390,9 +423,10 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 
     RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir
 
+    ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
     if(!CreatedDir)
-        return
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir, % "" ; RegWrite , RegSave , Registry
+        return, % ActionList_isNotAProject_withoutExt
+        ; return, % ActionListNEW
 
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
@@ -430,7 +464,9 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 
 )
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
+
+    FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
+
 	if( FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,ups ActionListNEW = %ActionListNEW% exist already ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
@@ -453,8 +489,6 @@ FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
      ; openInEditor(ActionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib)
 	; if(!isInEditorSoon)
     ; msgbox, ,please open your new ActionList by using __  `n (%A_LineFile%~%A_LineNumber%), 2
-	
-; __ ____
 	
      return, % ActionListNEW
 } ; ENDof: maybeSuperglobalActionList
