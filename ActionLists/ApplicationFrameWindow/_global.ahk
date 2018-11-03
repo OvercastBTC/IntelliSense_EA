@@ -1,0 +1,1 @@
+#Include _global.ahk

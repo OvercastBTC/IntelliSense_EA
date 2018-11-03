@@ -9,20 +9,7 @@ ComputerName A_ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
 SoundbeepString2Sound()
 
 
-
-mausefuhcs
-holunderblüte
-holunder
-aaaaaaaaaaaaaaaaaa
-bbbbbbbbbbbbbbbbbbbbbbbb
-cccccccccc
-cccccccccc
-dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-ffffffffffffffffffffffffffffffffffffffffffffffffffff
-gggggggggggggggggggggggggggggggggg
-
- 
+ReplacedStr := StrReplace(Haystack, SearchText , ReplaceText, OutputVarCount, Limit := -1)
 
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, toDo, A_ScriptName " " A_LineNumber ": "  ; RegWrite , RegSave , Registry
 
