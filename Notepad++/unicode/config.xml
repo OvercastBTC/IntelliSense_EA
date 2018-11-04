@@ -13,7 +13,7 @@
         <GUIConfig name="UserDefineDlg" position="undocked">hide</GUIConfig>
         <GUIConfig name="TabSetting" size="4" replaceBySpace="no" />
         <!--App position-->
-        <GUIConfig name="AppPosition" x="2231" y="255" width="1612" height="731" isMaximized="no" />
+        <GUIConfig name="AppPosition" x="1085" y="200" width="1136" height="432" isMaximized="no" />
         <!-- For the primary scintilla view,
              2 status for Attribut lineNumberMargin, bookMarkMargin, indentGuideLine and currentLineHilitingShow: "show" or "hide"
              4 status for Attribut folderMarkStyle : "simple", "arrow", "circle" and "box"  -->
@@ -92,26 +92,28 @@
     </GUIConfigs>
     <!-- The History of opened files list -->
     <FindHistory nbMaxFindHistoryPath="10" nbMaxFindHistoryFilter="10" nbMaxFindHistoryFind="10" nbMaxFindHistoryReplace="10" matchWord="no" matchCase="no" wrap="yes" directionDown="yes" fifRecuisive="yes" fifInHiddenFolder="no" dlgAlwaysVisible="no" fifFilterFollowsDoc="no" fifFolderFollowsDoc="no" searchMode="0" transparencyMode="1" transparency="150" dotMatchesNewline="no">
+        <Find name="downloa" />
         <Find name="getActionListNEW173129" />
         <Find name="ActionListNEW" />
         <Find name="i)" />
         <Find name="Gmail_Google_Chrome" />
     </FindHistory>
     <History nbMaxFile="15" inSubMenu="no" customLength="-1">
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\Gmail_Google_Chrome.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\B_rse_Aktuell_Aktien_Kurse_Charts_und_News_boerse_ARD_de_Google_Chrome.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\Created_84_createOwnProjectDirOrThis.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\createOwnProjectDirOrThis_ahk.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\GitKraken.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\Notepad\Unbenannt_Editor.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\_global.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\_ahk_global.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\isNotAProject.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\Best_PHP_Microframeworks_in_2018_PHP_Microframework_AllAboutWeb_Google_Chrome.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\Python_Archives_All_About_Web_Google_Chrome.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\JavaScript_Archives_All_About_Web_Google_Chrome.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\Save.ahk" />
-        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\Qt5QWindowIcon\Telegram.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\AHK363233890ln1464fn_functions_global.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\AHK363233890ln1464fn_functions_global.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\project_g-IntelliSense_State_In_Progress_Incomplete_Submitted_To_be_discussed_sort_by_Priority_asc.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionLists\AutoHotkey_Community.ahk._Generated.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\isNotAProject" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ActionListNameFilter.inc.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\About_Us_All_About_Web_Google_Chrome.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\Create_new_file.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\_ahk_global.ahk._Generated.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\ASP_Net_Archives_All_About_Web_Google_Chrome.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\MozillaWindowClass\1_Generation_Giordano_Mozilla_Firefox.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\gi-everywhere_ahk.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\MozillaWindowClass\Generation_Giordano_Mozilla_Firefox.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\SunAwtFrame\temp_global-IntelliSense-everywhere-Nightly-Build_IntelliJ_IDEA_Administrator.ahk" />
+        <File filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\MozillaWindowClass\Nic_Frank_Ich_war_nicht_immer_mit_ihm_einer_Meinung_und_manchmal_Mozilla_Firefox.ahk" />
     </History>
     <ProjectPanels>
         <ProjectPanel id="0" workSpaceFile="" />

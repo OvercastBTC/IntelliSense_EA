@@ -1,14 +1,6 @@
 <NotepadPlus>
     <Session activeView="0">
-        <mainView activeIndex="6">
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="930" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\ASP_Net_Archives_All_About_Web_Google_Chrome.ahk" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="770" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\_ahk_global.ahk._Generated.ahk" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1230" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\32770\Create_new_file.ahk" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="850" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ChromeWidgetWin1\About_Us_All_About_Web_Google_Chrome.ahk" />
-            <File firstVisibleLine="10" xOffset="0" scrollWidth="1530" startPos="1481" endPos="1481" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\ActionListNameFilter.inc.ahk" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1630" startPos="490" endPos="490" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionListsGenerated\isNotAProject" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\ActionLists\_globalActionLists\AutoHotkey_Community.ahk._Generated.ahk" />
-        </mainView>
+        <mainView activeIndex="0" />
         <subView activeIndex="0" />
     </Session>
 </NotepadPlus>
