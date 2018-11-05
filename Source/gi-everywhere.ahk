@@ -3,8 +3,8 @@
 
 #MaxHotkeysPerInterval 99000000
 #HotkeyInterval 99000000
-; Process, Priority,, H
-Process, Priority,, Normal
+Process, Priority,, H ; <=== only use this if its not in a critical development 05.11.2018 13:20
+; Process, Priority,, Normal
 SetBatchLines, -1 ; used till 03.11.2018 18:51. thats okay. Use SetBatchLines -1 to never sleep (i.e. have the script run at maximum speed). The default setting is 10m
 ; SetBatchLines, 20ms ; addet 03.11.2018 18:51
 ; SetBatchLines, 10
@@ -1229,9 +1229,25 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
     if(g_itsProbablyArecentUpdate)
         SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
 
-    if(ActionListOLD <> ActionList && !instr(ActionList,"\isNotAProject" ) && speakedLastActionList <> ActionList ){
+    if(false && ActionListOLD <> ActionList && !instr(ActionList,"\isNotAProject" ) && speakedLastActionList <> ActionList ){
         Speak(ActionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
         speakedLastActionList := ActionList
+
+        if(InStr(A_ComputerName,"SL5") && ActionListFileName == "AutoHotkey_Community"){
+
+            g_Word := "___"
+            clipboard := ActionListFileName
+            newFontSize := recreateListBox_IfFontSizeChangedAndTimeIdle(12, 14)
+            ; ShowListBox(g_ListBoxX,g_ListBoxY)
+            ; InitializeListBox() ; --> Error same variable I can use twice
+            ; reload_IfNotExist_ListBoxGui()
+            ApplyChanges()
+
+            Speak("ShowListBox", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
+
+            tooltip,% " ActionListFileName (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+        }
+
     }
     ActionListOLD := ActionList
     g_ActionListID := getActionListID(ActionList) ; 24.03.2018 23:02

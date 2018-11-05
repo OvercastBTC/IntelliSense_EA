@@ -8,6 +8,12 @@ ComputerName A_ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
 
 SoundbeepString2Sound()
 
+msg multi|r|
+msg =
+(
+)
+
+
 
 ReplacedStr := StrReplace(Haystack, SearchText , ReplaceText, OutputVarCount, Limit := -1)
 

@@ -1460,6 +1460,16 @@ FileAppend, %Text%, %FileName%
 }
 
 MaybeFixFileEncoding(File,Encoding){
+    return
+log =
+(
+i got a problem with this today.
+it become  in a harmless endless loop.
+The correction changed the file date.
+We don't need the function probably anyway because we have everything utf-8.
+05.11.2018 13:13
+)
+
    ; doWriteInAnyCasese := true ;
        if( RegExMatch(File,"Bewerbung") ){
 
