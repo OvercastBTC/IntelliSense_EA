@@ -58,13 +58,14 @@ if(1){
     ; g_ttSpeakObject.SetRate(5) ; speed higher value is faster. 2 is about 200 procent. 1 sounds like normal speak
 
     ; PROD mode:
-    g_ttSpeakObject.SetRate(2)
+    g_ttSpeakObject.SetRate(2) ; speed
     ; -1 is very slow
     ; -5 is terrible slow
     ; 0 seems normal
     ; 2 little faster
     ; 5 reaky fast but possible to understand
-    g_ttSpeakObject.SetPitch(10)
+    ; g_ttSpeakObject.SetPitch(10)
+    g_ttSpeakObject.SetPitch(1) ; tonhöhe high, deep. i like 1 and 10
 }
 Speak("gestartet")
 
@@ -1229,14 +1230,17 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
     if(g_itsProbablyArecentUpdate)
         SetTimer,checkInRegistryChangedActionListAddress,off ; will set on again inside WinChanged( 31.10.2018 18:52
 
-    if(false && ActionListOLD <> ActionList && !instr(ActionList,"\isNotAProject" ) && speakedLastActionList <> ActionList ){
+    if(1 && ActionListOLD <> ActionList && !instr(ActionList,"\isNotAProject" ) && speakedLastActionList <> ActionList ){
         Speak(ActionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
         speakedLastActionList := ActionList
 
-        if(InStr(A_ComputerName,"SL5") && ActionListFileName == "AutoHotkey_Community"){
+        ApplyChanges() ; It works also without this line. maybe the changes/first build is faster loadet 05.11.2018 13:37
 
-            g_Word := "___"
-            clipboard := ActionListFileName
+
+        if(0 && InStr(A_ComputerName,"SL5") && ActionListFileName == "AutoHotkey_Community"){
+
+            ; g_Word := "___"
+            ; clipboard := ActionListFileName
             newFontSize := recreateListBox_IfFontSizeChangedAndTimeIdle(12, 14)
             ; ShowListBox(g_ListBoxX,g_ListBoxY)
             ; InitializeListBox() ; --> Error same variable I can use twice
