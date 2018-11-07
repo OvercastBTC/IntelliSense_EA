@@ -1584,7 +1584,7 @@ recreateListBox_IfFontSizeChangedAndTimeIdle(g_ListBoxFontSize, newListBoxFontSi
     return false
 }
 
-; t t
+; t t t
 
 
 ;/¯¯¯¯ doListBoxFollowMouse ¯¯ 181107183540 ¯¯ 07.11.2018 18:35:40 ¯¯\
@@ -1782,7 +1782,9 @@ show_ListBox_Id:
             ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),True) ; 24.10.2018 14:16 may help listBoxGUI NEVER HANGS TODO:check it
         }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){ ; the only think that helps today 24.10.2018 15:11
-            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " A_now
+            if(1 && InStr(A_ComputerName,"SL5"))
+                soundBeep,3000
             reload ;  [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47
             ; run,% "..\start.ahk" ; deactivated. test 22.10.2018 05:54
         }

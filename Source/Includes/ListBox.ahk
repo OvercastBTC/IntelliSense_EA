@@ -79,12 +79,15 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
             tip=START follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
             ToolTip1sec(tip)
             g_doListBoxFollowMouse := true ; togle it.
-            SetTimer,doListBoxFollowMouse,200
+            ; SetTimer,doListBoxFollowMouse,200
+            SetTimer,doListBoxFollowMouse,50 ; 07.11.2018 20:33 update. absolute no problem for CPU
             Hotkey, WheelUp, on
             Hotkey, WheelDown, on
             ;SetTimer,doListBoxFollowMouse,on ; to
       }
       return
+
+; t t t
 
 
    GuiControlGet, g_MatchPos, ListBoxGui:, g_ListBox%TempRows%
