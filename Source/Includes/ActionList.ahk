@@ -436,7 +436,7 @@ CoordMode, ToolTip,Screen
                             is_multiline_r := false
                             doCollectAhkBlock := false
                             AddWordBlockTemp := rtrim(AddWordBlock)
-;                             AddWordBlockTemp := addAutoKeywords(AddWordBlockTemp, doCreateKeys)
+                             AddWordBlockTemp := addAutoKeywords(AddWordBlockTemp, doCreateKeys)
                             doCreateKeys := false
 
                             ; Msgbox,% insert " = insert(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
@@ -449,7 +449,7 @@ CoordMode, ToolTip,Screen
 
                         }else{
                             if(isIndexedAhkBlock){
-;                                 ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
+                                 ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
                                 doCreateKeys := false
                                 AddWordToList(Aindex, ALoopField , 0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
                             }
@@ -476,7 +476,7 @@ CoordMode, ToolTip,Screen
                         AddWordBlock := AddWordBlock "`n" ALoopField
                         ALoopFieldLast := ALoopField
                         if(isIndexedAhkBlock){
-;                             ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
+                             ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
                             doCreateKeys := false
                             AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
                         }
@@ -549,7 +549,7 @@ CoordMode, ToolTip,Screen
 
                 ; MsgBox,262208,% "found:" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":-) found: " A_LoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" ; info icon, always on top
 
-;                 ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
+                 ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
                 doCreateKeys := false
 				if(!AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)){
 				    ; set to defaults:
@@ -579,7 +579,7 @@ CoordMode, ToolTip,Screen
         if(doCollectAhkBlock && is_multiline_r){
             doCollectAhkBlock := false
             is_multiline_r := false
-;             AddWordBlock := addAutoKeywords(AddWordBlock, doCreateKeys)
+             AddWordBlock := addAutoKeywords(AddWordBlock, doCreateKeys)
             doCreateKeys := false
             AddWordToList(Aindex, AddWordBlock,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock )
 
@@ -731,6 +731,9 @@ CoordMode, ToolTip,Screen
 ;
 ;------------------------------------------------------------------------
 
+
+
+;/¯¯¯¯ addListOpenAction_ifNotAlreadyInTheList ¯¯ 181107004221 ¯¯ 07.11.2018 00:42:21 ¯¯\
 addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
@@ -768,8 +771,15 @@ addListOpenAction_ifNotAlreadyInTheList(contentActionList,ActionList){
 	}
 	return contentActionList
 }
+;\____ addListOpenAction_ifNotAlreadyInTheList __ 181107004230 __ 07.11.2018 00:42:30 __/
 
 
+
+
+
+
+
+;/¯¯¯¯ addFuzzySearch_in_generatedList ¯¯ 181107004148 ¯¯ 07.11.2018 00:41:48 ¯¯\
 ; addFuzzySearch_in_generatedList(ALoopField)
 addFuzzySearch_in_generatedList(ActionStr, ActionList, lineNr, ByRef LearnedWordsCount, addKeysMAX := 7, minKeysLen := 4, doValueCopy := true){
 
@@ -851,9 +861,19 @@ addFuzzySearch_in_generatedList(ActionStr, ActionList, lineNr, ByRef LearnedWord
 			; MsgBox,% substr(ActionStrVal,1,4) "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 
 
-		    if(substr(ActionStrVal,1,4)=="|rr|")
+			msg =
+			(
+			>>%key%<<
+			>>%ActionStrKey%<<
+			>>%ActionStrVal%<<
+			)
+			; MsgBox,% msg  "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+		    if(substr(ActionStrVal,1,3)=="|r|")
+			    newListSynonym := key "" ActionStrVal
+		    else if(substr(ActionStrVal,1,4)=="|rr|"){
 			    newListSynonym := key "" ActionStrVal ; <=== eigentlich sollte es ja so gehen
-			else
+			}else
 			    newListSynonym := key "|rr|ahk|" ActionStrVal ; <=== eigentlich sollte es ja so gehen
 			; newListSynonym := key "|rr|ahk|" ActionStr ; <=== eigentlich sollte es ja so gehen
 		;	newListSynonym := key ActionStrVal
@@ -934,6 +954,7 @@ ReverseWordNums(LearnedWordsCount){
 addAutoKeywords(AddWord, doCreateKeys){
    if(doCreateKeys){
 
+    if(0){
     msg =
     (
     because of technical reasons we have add this hardcoodet if we generating a ._Gener....
@@ -943,6 +964,7 @@ addAutoKeywords(AddWord, doCreateKeys){
     )
     Msgbox,% "ups" msg " (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     return AddWord
+    }
 
     ; AddWord doCreateKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
      regEx := "(\b[a-z]{1,3}\b|[^a-z]+)"

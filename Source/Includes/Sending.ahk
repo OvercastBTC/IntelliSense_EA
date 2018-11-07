@@ -39,13 +39,13 @@ getLineOfIndex(id) {
 	ORDER BY w.lineNr limit 1
 	)
     try{
-        g_ActionListDB.Query(select)
-           for each, row in NormalizeTable.Rows
+        results := g_ActionListDB.Query(select)
+           for each, row in results.Rows
            {
                 msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
                 return row[1]
            }
-           msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+           ; msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     } catch e{
         tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
         sqlLastError := SQLite_LastError()
@@ -489,6 +489,10 @@ SendWord(WordIndex){
 		regIsXXXcode := "^([^\|\n]+?)\|(rr)\|(?:([^\n]*?)(?:\|(ahk|kts)\|)+([^\n]*?)$)*"
 		regIsXXXcode := "^([^\|\n]+?)\|(rr)\|(?:([^\n]*?)(?:\|(ahk|kts)\|)+(.*?)$)*" ; since today we using ahk blocks. newline could be posible
 		regIs_r_replacement := "^([^\|\n]+?)\|r\|(.*?)$"
+
+        ; rX := {key:m1, rr:m2, send:"", lang:"" ,code:""}
+        regIsSynonym := "^([^\|\n]+?)\|(rr)\|$" ; ; synonymValue|rr|
+
 ; Camtasia mp4|r|G:\fre\private\video\mp4\Camtasia
 ; may remember this vor later implementation: ^([^\|\n]+?)(?:\|(rr)\|(?:([^\n]*?)(?:\|(ahk|kts)\|)+([^\n]*?)$)*)*$
 ; https://regex101.com/r/XvcvV4/3/      https://autohotkey.com/boards/viewtopic.php?f=6&t=45684&p=241492#p241492
@@ -517,9 +521,7 @@ SendWord(WordIndex){
 		
 ; msgBox,% "g_ActionList_UsedByUser_since_midnight[g_ActionListID]: " g_ActionList_UsedByUser_since_midnight[g_ActionListID]"(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 		
-; rX := {key:m1, rr:m2, send:"", lang:"" ,code:""}
-		regIsSynonym := "^([^\|\n]+?)\|(rr)\|$" ; ; synonymValue|rr|
-		
+
 		
 		lineOfIndex := g_SingleMatch[WordIndex]
 ; lineOfIndex := "hoHi|rr|"
@@ -600,6 +602,7 @@ SendWord(WordIndex){
 			if(!rX["code"]){
 				ToolTip3sec("found synonym `n ("   RegExReplace(A_LineFile,".*\\")  " ," A_LineNumber  ") "   )
 				id := getWordIndex(m1)
+				msgbox,% lineOfIndex "found synonym `n ("   RegExReplace(A_LineFile,".*\\")  " ," A_LineNumber  ") "
 				while(!rX["code"] && id>1){
                     ;/¯¯¯¯ Synonym ¯¯ 181021060216 ¯¯ 21.10.2018 06:02:16 ¯¯\
                     ; deprecated: https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-46
