@@ -553,6 +553,9 @@ AddToMatchList(position, MaxLength, HalfLength, LongestBaseLength, ComputeBaseLe
 
 ;------------------------------------------------------------------------
 
+
+
+;/¯¯¯¯ ComputeListBoxMaxLength ¯¯ 181107190719 ¯¯ 07.11.2018 19:07:19 ¯¯\
 ; find out the longest length we can use in the listbox
 ; Any changes to this function probably need to be reflected in ShowListBox() or ForceWithinMonitorBounds
 ComputeListBoxMaxLength(){
@@ -616,13 +619,28 @@ else
    } else {
       Width := MonWidth
    }
-   
-   return Floor((Width-ListBoxBaseSizeX)/ g_ListBoxCharacterWidthComputed)
+
+   ; to
+
+   ret := Floor((Width-ListBoxBaseSizeX)/ g_ListBoxCharacterWidthComputed)
+   if(ret < 100){
+    ret := 100 ; dirty bug fix 07.11.2018 19:08
+    if(1 && InStr(A_ComputerName,"SL5"))
+        msgbox,% "ret := 100 ; dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",
+    }
+   return ret
 }
+;\____ ComputeListBoxMaxLength __ 181107190727 __ 07.11.2018 19:07:27 __/
+
+
    
+; t too msg  to  too
+
+
 
 ;Show matched values
 ; Any changes to this function may need to be reflected in ComputeListBoxMaxLength()
+;/¯¯¯¯ ShowListBox ¯¯ 181107184816 ¯¯ 07.11.2018 18:48:16 ¯¯\
 ShowListBox(paraX:="",paraY:=""){
 
    global
@@ -820,6 +838,10 @@ try {
          WinSet, Transparent, %prefs_ListBoxOpacity%, ahk_id %g_ListBox_Id%
    }
 }
+;\____ ShowListBox __ 181107184837 __ 07.11.2018 18:48:37 __/
+
+
+
 
 ; Any changes to this function may need to be reflected in ComputeListBoxMaxLength()
 ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSizeW, ListBoxActualSizeH){

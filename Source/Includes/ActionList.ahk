@@ -1,8 +1,8 @@
 ﻿; These functions and labels are related maintenance of the ActionList
 
 
-;
 
+;/¯¯¯¯ setTrayIcon ¯¯ 181107175114 ¯¯ 07.11.2018 17:51:14 ¯¯\
 setTrayIcon(status := "loaded" ){
     if(status == "RecomputeMatches" ){
        Menu, Tray, Icon, shell32.dll, 240 ; pretty green clock
@@ -17,7 +17,11 @@ setTrayIcon(status := "loaded" ){
     iconAdress=%A_ScriptDir%\icon\abc123\%ScriptNameLetter2%.ico
     Menu, Tray, Icon, %iconAdress%
 }
-;
+;\____ setTrayIcon __ 181107175118 __ 07.11.2018 17:51:18 __/
+
+
+
+
 
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;<<<<<<<<<<<<<< ReadActionList <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -459,7 +463,6 @@ CoordMode, ToolTip,Screen
                         }
                     }else ; endOf: is_multiline_r
                      if(trim(ALoopField)){
-
                         if(InStr(A_ComputerName,"SL5")){
                             log =
                             (
@@ -470,8 +473,12 @@ CoordMode, ToolTip,Screen
                              06.11.2018 20:06
 
                              while maybe opening ahk-studio
+
+                             if i use a messagebox here in this it toglles to ahkStudio and message box, it happens always when ahkStudio ist focused.
+                             therfore i simply ignore that message. maybe add a sleep of half a seoond or so. 07.11.2018 11:42
                             )
-                            msgbox,% ALoopField "`n" ActionList "`n i have forgotten when this happens 06.11.2018 11:14 (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+                            tooltip,% ALoopField "`n" ActionList "`n i have forgotten when this happens 06.11.2018 11:14 (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+                            sleep,100 ; not needet may useful 07.11.2018 11:43
                         }
                         AddWordBlock := AddWordBlock "`n" ALoopField
                         ALoopFieldLast := ALoopField
@@ -727,9 +734,9 @@ CoordMode, ToolTip,Screen
 
 	Return ParseWordsCount
 }
-;>>>>>>>>>>>>>>>>>>  ReadActionList >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;
-;------------------------------------------------------------------------
+;\____ ReadActionList __ 181107175022 __ 07.11.2018 17:50:22 __/
+
+
 
 
 

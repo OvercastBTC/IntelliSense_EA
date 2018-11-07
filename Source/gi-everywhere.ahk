@@ -207,7 +207,7 @@ lbl_default_checkActionListAHKfile_sizeAndModiTime := 500
 ; lbl_default_checkActionListAHKfile_sizeAndModiTime := 8000
 SetTimer,checkActionListAHKfile_sizeAndModiTime, % lbl_default_checkActionListAHKfile_sizeAndModiTime
 SetTimer,check_some_keys_hanging_or_freezed,1800 ; ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
-SetTimer,check_ActionList_GUI_is_hanging_or_freezed,1000 ; ; 26.09.2018 16:38 it sometimes happesn.
+SetTimer,check_ActionList_GUI_is_hanging_or_freezed,1800 ; ; 26.09.2018 16:38 it sometimes happesn.
 SetTimer,checkWinChangedTitle,1000 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 ; activeTitleOLD := activeTitle
 
@@ -497,8 +497,10 @@ if(true){
 return 
 ;>>>>>>>>>>>>>>>>> workaround >>>>>>>>>>>>>>>
 #IfWinActive,
+; Ctrl+Shift+F5
 ^+f5:: ; exit-all-scripts and restart
-    if(1 && InStr(A_ComputerName,"SL5")){
+    ;if(1 && InStr(A_ComputerName,"SL5")){
+    if(1){
         setRegistry_toDefault()
         ; exit_all_scripts()
         run,..\start.ahk
@@ -577,13 +579,15 @@ SetTitleMatchMode,regEx
     }
  return
 
+
+
 #IfWinActive, ; thats probably needet. 27.09.2018 10:29 was problem that hitting 1 , 2 , 3 ... not triggered any. triggers notihng.. with this line it works again.
 RecomputeMatchesTimer:
    Thread, NoTimers
    if(1 && InStr(A_ComputerName,"SL5"))
         tooltip,% "RecomputeMatchesTimer: " g_Word "(" StrLen(g_Word) ") (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\") ")",1,1
 
-    if(!g_reloadIf_ListBox_Id_notExist && StrLen(g_Word) == prefs_Length ){
+    if(false && !g_reloadIf_ListBox_Id_notExist && StrLen(g_Word) == prefs_Length ){
         toolTip, % g_Word "(" StrLen(g_Word) ")," prefs_Length "=prefs_Length:" A_LineNumber " " RegExReplace(A_LineFile,".*\\"),1,1
         ; reload_IfNotExist_ListBoxGui()
         SetTimer, show_ListBox_Id, 600 ; setinterval ; 28.10.2018 02:39: fallback bugfix workaround help todo:
@@ -836,6 +840,9 @@ return
 
 ;/¯¯¯¯ checkActionListAHKfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
 checkActionListAHKfile_sizeAndModiTime:
+    if(g_doListBoxFollowMouse)
+        return
+
     ;SetTimer,checkInRegistryChangedActionListAddress,Off
 
 ;        Speak(A_LineNumber ":" A_thisFunc A_ThisLabel)
@@ -854,7 +861,7 @@ checkActionListAHKfile_sizeAndModiTime:
     }
 
         if(1 && InStr(ActionList,"._Generated.ahk._Generated.ahk")){
-             ToolTip9sec(" found ._Generated.ahk._Generated.ahk and not suported `n" ActionList "`n" A_LineNumber )
+             ToolTip9sec(" found ._Generated.ahk._Generated.ahk and not suported `n" ActionList "`n" A_LineNumber ) ; in checkActionListAHKfile_sizeAndModiTime
 
     ActionList := StrReplace(ActionList, ".ahk._Generated.ahk._Generated.ahk", ".ahk._Generated.ahk") ; clean strange wordlists 25.10.2018 20:03
         }
@@ -958,7 +965,7 @@ return
 
 
 
-
+; msgb
 
 
 
@@ -967,6 +974,8 @@ return
 ; ActiveTitleOLD2 := activeTitleOLD
 ;/¯¯¯¯ checkIncChangedActionListAddress ¯¯ 181025104242 ¯¯ 25.10.2018 10:42:42 ¯¯\
 checkInRegistryChangedActionListAddress:
+    if(g_doListBoxFollowMouse)
+        return
     if(g_itsProbablyArecentUpdate)
         return
 
@@ -1564,9 +1573,10 @@ recreateListBox_IfFontSizeChangedAndTimeIdle(g_ListBoxFontSize, newListBoxFontSi
     return false
 }
 
+; t t
 
 
-
+;/¯¯¯¯ doListBoxFollowMouse ¯¯ 181107183540 ¯¯ 07.11.2018 18:35:40 ¯¯\
 doListBoxFollowMouse:
       MouseGetPos, g_ListBoxX, g_ListBoxY
       g_ListBoxX := g_ListBoxX - 77
@@ -1580,9 +1590,14 @@ doListBoxFollowMouse:
       if(newFontSize){
         g_ListBoxFontSize := newFontSize
         listBoxFontSizeOLD := g_ListBoxFontSize
+
+        g_ListBoxCharacterWidthComputed := getListBoxCharacterWidth( g_ListBoxFontSize, g_ListBoxCharacterWidthComputed )
+
+
        }else
           ShowListBox(g_ListBoxX,g_ListBoxY)
 return
+;\____ doListBoxFollowMouse __ 181107183544 __ 07.11.2018 18:35:44 __/
 
 
 
@@ -1615,7 +1630,7 @@ exit_all_scripts(){
 
 
 
-
+;/¯¯¯¯ fixBug_Alt_Shift_Ctrl_hanging_down ¯¯ 181107183135 ¯¯ 07.11.2018 18:31:35 ¯¯\
 fixBug_Alt_Shift_Ctrl_hanging_down(){
   ; 30.08.2018 13:52 it sometimes happesn. and if it happens then its really ugly !!!! :( !!
     Suspend,On
@@ -1652,6 +1667,7 @@ fixBug_Alt_Shift_Ctrl_hanging_down(){
     Suspend, Off
   return
 } ; endOf: fixBug_Alt_Shift_Ctrl_hanging_down
+;\____ fixBug_Alt_Shift_Ctrl_hanging_down __ 181107183142 __ 07.11.2018 18:31:42 __/
 
 
 ;/¯¯¯¯ check_ActionList_GUI_is_hanging_or_freezed ¯¯ 181024140430 ¯¯ 24.10.2018 14:04:30 ¯¯\
@@ -1681,7 +1697,18 @@ check_ActionList_GUI_is_hanging_or_freezed:
     ;MsgBox, % tip "`n`n" elapsedMilli  "millisec = " elapsedSec "sec have elapsed. (" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
     if(elapsedSec > 11){
      ;winclose, % g_ListBoxTitle
-     ToolTip3sec("DestroyListBox()`n`n" A_LineNumber " " A_ScriptName )
+     ; t
+     ;/¯¯¯¯ return ¯¯ 181107181830 ¯¯ 07.11.2018 18:18:30 ¯¯\
+     m =
+     (
+Reload GI? It's frozen? ==> Ctrl+Shift+F5
+Move the ActionLists? ==> Click on it once, move the mouse, click it again. Resize Font by MouseWheel.
+     )
+     ToolTip9sec(m "`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ") ",60,-5)
+     return
+     ;\____ return __ 181107181826 __ 07.11.2018 18:18:26 __/
+
+     ToolTip4sec("check_ActionList_GUI_is_hanging_or_freezed: elapsedSec > 11: DestroyListBox()`n`n" A_LineNumber " " A_ScriptName )
      DestroyListBox()
 
      ; script hangs at this position
