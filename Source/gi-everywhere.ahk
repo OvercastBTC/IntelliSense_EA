@@ -836,7 +836,7 @@ return
 
 
 
-;
+
 
 ;/¯¯¯¯ checkActionListAHKfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
 checkActionListAHKfile_sizeAndModiTime:
@@ -856,7 +856,13 @@ checkActionListAHKfile_sizeAndModiTime:
         ActionList := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject.ahk" )
     }
     if(!FileExist(ActionList)){
-        msg := "!FileExist(ActionList = " ActionList ")"
+        msg =
+        (
+        !FileExist(ActionList)
+        >>%ActionList%<<
+
+        %A_ThisLabel% = A_ThisLabel
+        )
         MsgBox,% "ups" msg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
     }
 
