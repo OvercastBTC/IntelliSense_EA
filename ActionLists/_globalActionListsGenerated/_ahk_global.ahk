@@ -40,7 +40,8 @@ ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_Lin
 
 Msgbox|rr|Msgbox,(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
 
-Sleep, 000
+Sleep, 000|rr|Sleep, 000|ahk|Send,{left 3}
+
 
 InputBox, UserInput|rr||ahk
 m =
