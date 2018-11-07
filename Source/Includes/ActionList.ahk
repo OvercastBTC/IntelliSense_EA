@@ -302,7 +302,11 @@ CoordMode, ToolTip,Screen
 				==> update database next.
 				(%A_LineFile%~%A_LineNumber%)
 				)
-				tooltip,% tip,1,1
+				;tooltip,% tip,1,1
+				if(1 && InStr(A_ComputerName,"SL5"))
+				    ToolTip4sec(tip "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " ,1,1)
+                else
+				    ToolTip4sec("update database`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " ,1,1)
 				lll(A_LineNumber, A_LineFile, tip)
 				CleanupActionListAll_ofLittleWordCount() ; i dont konw what for that is. try it without 18-10-06_21-40
 			} else {
