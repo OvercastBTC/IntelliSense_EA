@@ -409,6 +409,43 @@ MainLoop()
     ; SetTimer,checkActionListAHKfile_sizeAndModiTime,Off
     ; SetTimer,checkActionListAHKfile_sizeAndModiTime,1200
 ; return
+
+;/¯¯¯¯ doubleCtrlC ¯¯ 181108142340 ¯¯ 08.11.2018 14:23:40 ¯¯\
+; doubleCtrlC for add entry to actionsList
+#IfWinActive,
+~^c::
+   toolTip2sec( "`n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+   KeyWait, c, L
+   ; KeyWait, Ctrl, L
+   diffMilli := A_tickCount - copyCTriggeredTimeMilli
+   if(diffMilli > 700 || diffMilli < 9 ){ ; diffMilli < 10 probably not human triggerd
+      copyCTriggeredTimeMilli := A_tickCount
+      return
+   }
+    ; MsgBox,262208,% diffMilli "=diffMilli :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    RegExReplace(A_LineFile,".*\\")
+    ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+    ActionListWithoutGenerated_witExt := StrReplace(ActionList_witExt, "._Generated.ahk", "")
+
+
+    timeoutSec := 9
+    AHKcode .= "#" . "NoTrayIcon `n "
+    AHKcode2 =
+    (
+inputBox, newEntry, add to ActionLists?, add to ``n%ActionListFileName%  ? ``n``n timeoutSec = %timeoutSec% , , 350, 180,,,,%timeoutSec%,`% clipboard
+if ErrorLevel
+    return
+FileAppend, `% "``n" clipboard , %ActionListWithoutGenerated_witExt%
+    )
+    ; msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    DynaRun(AHKcode AHKcode2)
+   ; InactivateAll_Suspend_ListBox_WinHook()
+return
+;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
+
+; ___
+
 #IfWinActive,
 ~esc::
    toolTip2sec("esc::" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
@@ -1284,6 +1321,12 @@ global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSe
     if(0 && InStr(A_ComputerName,"SL5"))
         Speak(ActionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
     speakedLastActionList := ActionList
+
+    if( SubStr( ActionList , -3 ) <> ".ahk" ) ; 06.03.2018 13:09
+        ActionList_witExt .= ActionList ".ahk"
+    else
+        ActionList_witExt .= ActionList
+
 
         ApplyChanges() ; It works also without this line. maybe the changes/first build is faster loadet 05.11.2018 13:37
 
