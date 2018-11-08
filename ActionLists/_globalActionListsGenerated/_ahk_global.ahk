@@ -605,24 +605,4 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 						move2Img(i , textInfo, mm) 
 						clickImg(i, textInfo, mm, offset = 20) 
 
-return
-if ErrorLevel
-    return
-
-#IfWinActive,
-~esc::
-
-#IfWinActive,
-~esc::
-
-
-
-
-
-
-|r|
-; adf
-; asdf
-|r|
-;4
-;5
+						
