@@ -428,8 +428,9 @@ MainLoop()
     RegExReplace(A_LineFile,".*\\")
     ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     ActionListWithoutGenerated_witExt := StrReplace(ActionList_witExt, "._Generated.ahk", "")
-    cb := clipboard
-    Sleep, 1500
+    cp := clipboard
+     Sleep, 100
+     cp := regExReplace(cp,"`%","``%")
     isMuliline := (regExMatch(trim(clipboard), "m)\n"))
     ;if(isMuliline)
      ;   msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -443,7 +444,7 @@ if("%isMuliline%"){
 cp =
 (
 |r|
-%clipboard%
+%cp%
 `)
 msgbox,`% cp
 
@@ -459,8 +460,8 @@ if(true){
 }
 FileAppend, `% rtrim(cp) , %ActionListWithoutGenerated_witExt%
     )
-    ; msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     DynaRun(AHKcode AHKcode2)
+    msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
    ; InactivateAll_Suspend_ListBox_WinHook()
 return
 ;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
