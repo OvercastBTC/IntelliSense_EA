@@ -431,6 +431,7 @@ MainLoop()
     cp := clipboard
      Sleep, 100
      cp := regExReplace(cp,"`%","``%")
+     cp := regExReplace(cp,"^([ ]*)\)","$1`)")
     isMuliline := (regExMatch(trim(clipboard), "m)\n"))
     ;if(isMuliline)
      ;   msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -446,7 +447,7 @@ cp =
 |r|
 %cp%
 `)
-msgbox,`% cp
+; msgbox,`% cp
 
 }
 if(true){
@@ -461,7 +462,7 @@ if(true){
 FileAppend, `% rtrim(cp) , %ActionListWithoutGenerated_witExt%
     )
     DynaRun(AHKcode AHKcode2)
-    msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    ; msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
    ; InactivateAll_Suspend_ListBox_WinHook()
 return
 ;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
