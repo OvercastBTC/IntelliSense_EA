@@ -415,6 +415,8 @@ MainLoop()
 #IfWinActive,
 ~^c::
    toolTip2sec( "`n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+   if(instr(ActionList,"\isNotAProject"))
+    return
    KeyWait, c, L
    ; KeyWait, Ctrl, L
    diffMilli := A_tickCount - copyCTriggeredTimeMilli
@@ -425,10 +427,7 @@ MainLoop()
     ; MsgBox,262208,% diffMilli "=diffMilli :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
     RegExReplace(A_LineFile,".*\\")
     ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-
     ActionListWithoutGenerated_witExt := StrReplace(ActionList_witExt, "._Generated.ahk", "")
-
-
     timeoutSec := 9
     AHKcode .= "#" . "NoTrayIcon `n "
     AHKcode2 =
@@ -444,7 +443,8 @@ FileAppend, `% "``n" clipboard , %ActionListWithoutGenerated_witExt%
 return
 ;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
 
-; ___
+
+; lkjlkj
 
 #IfWinActive,
 ~esc::
