@@ -428,23 +428,45 @@ MainLoop()
     RegExReplace(A_LineFile,".*\\")
     ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     ActionListWithoutGenerated_witExt := StrReplace(ActionList_witExt, "._Generated.ahk", "")
+    cb := clipboard
+    Sleep, 1500
+    isMuliline := (regExMatch(trim(clipboard), "m)\n"))
+    ;if(isMuliline)
+     ;   msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    ;msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+;
     timeoutSec := 9
     AHKcode .= "#" . "NoTrayIcon `n "
     AHKcode2 =
     (
-inputBox, newEntry, add to ActionLists?, add to ``n%ActionListFileName%  ? ``n``n timeoutSec = %timeoutSec% , , 350, 180,,,,%timeoutSec%,`% clipboard
-if ErrorLevel
-    return
-FileAppend, `% "``n" clipboard , %ActionListWithoutGenerated_witExt%
+if("%isMuliline%"){
+cp =
+(
+|r|
+%clipboard%
+`)
+msgbox,`% cp
+
+}
+if(true){
+    inputBox, cp, add to ActionLists?, add to ``n%ActionListFileName%  ? ``n``n timeoutSec = %timeoutSec% , , 350, 180,,,,%timeoutSec%,`% cp
+     if ErrorLevel
+        return
+    cp =
+    (
+    `%cp`%
+    `)
+}
+FileAppend, `% rtrim(cp) , %ActionListWithoutGenerated_witExt%
     )
-    ; msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    msgbox,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     DynaRun(AHKcode AHKcode2)
    ; InactivateAll_Suspend_ListBox_WinHook()
 return
 ;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
 
 
-; lkjlkj
+
 
 #IfWinActive,
 ~esc::
