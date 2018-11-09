@@ -79,6 +79,8 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
 
     editorName := "Notepad++"
     NotepadPPExe := "..\" editorName "\unicode\" editorName ".exe"
+    if(1 && InStr(A_ComputerName,"SL5"))
+        NotepadPPExe := "C:\Program Files\Notepad++\notepad++.exe"
     isEditorExist_NotepadPP := FileExist(NotepadPPExe)
 
     editorName := "AutoGUI"
@@ -98,7 +100,7 @@ the emeditor.ahk is going to be the name of the program then the file extension.
 
     if(false){
         noOp := 1
-    }else if( 0 ){
+    }else if( !InStr(A_ComputerName,"SL5") ){
         runString = notepad.exe "%m1CorrectedAhkFileAddress%"
         run,% runString
         return true
