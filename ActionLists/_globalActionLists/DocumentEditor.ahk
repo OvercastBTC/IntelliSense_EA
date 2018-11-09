@@ -8,6 +8,25 @@
 
 ___open ActionList|rr||ahk|openInEditor,DocumentEditor.ahk
 
+  
+|r|
+Faxen 07121 753954-7
+Handylein 01777 44 3748
+18-11-09_13-45
+
+|r|
+Donnerstag, 06.11.2018
+Sehr geehrte Damen und Herren,
+18-11-09_13-45 
+
+
+|r|
+Vielen Dank fuer Ihr Verständnis!
+Mit freundlichen Grüßen
+ Sebastian Lauffer
+
+Verständnis
+
 Montag
 Dienstag
 Mittwoch
@@ -15,6 +34,17 @@ Donnerstag
 Freitag
 Samstag
 Sonntag
+
+play beep|rr||ahk|SoundBeep,4000
+
+soundBeep,500|rr||ahk|
+soundBeep,500 ; 
+Sleep,2000
+
+Synonym found|rr|
+TestBereich empty|r|
+ not empty 
+
 
 Datum|rr||ahk|
 FormatTime, timestamp, %A_now%,dd.MM.yyyy 
@@ -25,16 +55,3 @@ Send,^v
 sleep,200
 Clipboard := ClipboardBackup
 
-
-
-|r|
-Fax 07121 753954-7
-Handy 01777 44 3748
-
-
-
-|r|
-Donnerstag, 06.11.2018
-Sehr geehrte Damen und Herren,
-
-Herren

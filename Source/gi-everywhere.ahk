@@ -420,7 +420,7 @@ MainLoop()
    KeyWait, c, L
    ; KeyWait, Ctrl, L
    diffMilli := A_tickCount - copyCTriggeredTimeMilli
-   if(diffMilli > 700 || diffMilli < 9 ){ ; diffMilli < 10 probably not human triggerd
+   if(diffMilli > 750 || diffMilli < 9 ){ ; diffMilli < 10 probably not human triggerd
       copyCTriggeredTimeMilli := A_tickCount
       return
    }
@@ -428,8 +428,13 @@ MainLoop()
     RegExReplace(A_LineFile,".*\\")
     ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     ActionListWithoutGenerated_witExt := StrReplace(ActionList_witExt, "._Generated.ahk", "")
-    s := clipboard
-     Sleep, 100
+    while(!clipboard && A_index < 100)
+        Sleep, 10
+     if(!clipboard){
+        ToolTip8sec( "ups. clipboard is empty.`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+        return
+     }
+     s := clipboard
      s := regExReplace(s,"(``|`%)","``$1")
      ; s := regExReplace(s,"`%","``%")
      s := regExReplace(s,"^([ ]*)\)","$1`)")
@@ -479,7 +484,7 @@ if(true){
 FileAppend, `% s , %sActionListWithoutGenerated_witExt%
 exitApp
     )
-    clipboard := AHKcode AHKcode2
+    ; clipboard := AHKcode AHKcode2 " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     DynaRun(AHKcode AHKcode2)
     if(0 && InStr(A_ComputerName,"SL5"))
         msgbox,% AHKcode2 "`n saved to " sActionListWithoutGenerated_witExt "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -960,7 +965,12 @@ checkActionListAHKfile_sizeAndModiTime:
 
         %A_ThisLabel% = A_ThisLabel
         )
-        MsgBox,% "ups" msg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        if(1 && InStr(A_ComputerName,"SL5")){
+            tooltip,% "ups" msg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+            ; todo: thats proably not so a big problem.
+        }
+        Sleep, 100
+        return
     }
 
         if(1 && InStr(ActionList,"._Generated.ahk._Generated.ahk")){

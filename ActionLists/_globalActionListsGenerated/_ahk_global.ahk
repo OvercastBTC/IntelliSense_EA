@@ -2,6 +2,12 @@
 ; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
+Speak(,"PROD")
+Speak( A_ThisFunc,"PROD")
+Speak(" found","PROD")
+
+rTrim(clipboard," `t`r`n")
+
 RegExReplace(A_LineFile,".*\\")
 
 RegExMatch(fileName, "\.ahk$")
@@ -548,7 +554,7 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 						FileGetSize,fSize, % A_LoopFileFullPath ; in bytes 
 						FileGetTime, sourceModifiedTime, %f%  ; Retrieves the modification time by default. 
 						FileReadLine, line, %f%, %A_Index% 
-						SoundBeep,n ,200 ; high beep 
+						SoundBeep, 200 
 						while(!clipboard && loopCounter < 100) 
 							copyLineOrWord2clipBoard(doSelectLine) 
 						isInteger(var) 
