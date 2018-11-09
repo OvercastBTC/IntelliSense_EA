@@ -25,3 +25,16 @@ Send,^v
 sleep,200
 Clipboard := ClipboardBackup
 
+
+
+|r|
+Fax 07121 753954-7
+Handy 01777 44 3748
+
+
+
+|r|
+Donnerstag, 06.11.2018
+Sehr geehrte Damen und Herren,
+
+Herren
