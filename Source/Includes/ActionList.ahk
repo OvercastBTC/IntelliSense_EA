@@ -633,8 +633,10 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 	
 	strOfAllResultsForAnalysisOrDebugging	:= "" ; ObjSToStrTrim(strOfAllResultsForAnalysisOrDebugging,)
 	strDebugByRef	:= "" ; ObjSToStrTrim(strOfAllResultsForAnalysisOrDebugging,)
-	
-	Loop, Parse, ParseWords, `n, `r
+
+	; `nEOF1811122207 its a dirty workaround ... how to read the end Of file or read last line??? 18-11-12_22-08
+	ParseWords .= "`n; EOF_1811122207"
+	Loop, Parse, ParseWords , `n, `r
 	{
 		
 		    ; Speak(A_LineNumber,"PROD")
@@ -673,7 +675,12 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 			lineObj_inBlock := { value:ALoopField, last:AoopFieldLast }
 			isCommandType_inBlock := setCommandTypeS(lineObj_inBlock, commandTypeObj_inBlock, collectionObj_inBlock, doObj_inBlock )
 			ObjSToStrTrim(strOfAllResultsForAnalysisOrDebugging,lineObj_inBlock, commandTypeObj_inBlock, collectionObj_inBlock, doObj_inBlock )
-			if(isCommandType_inBlock){
+
+			isEndOfFile := ( A_LoopField == "; EOF_1811122207" )
+			if(isEndOfFile)
+			    msgbox,isEndOfFile
+
+			if(isCommandType_inBlock || isEndOfFile){
 				newKeywords := ""
 				if(doObj.createKeys)
 					newKeywords := " " addAutoKeywords(collectionObj.value, doObj.createKeys)
