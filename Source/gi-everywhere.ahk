@@ -413,9 +413,12 @@ MainLoop()
 ; doubleCtrlC for add entry to actionsList
 #IfWinActive,
 ~^c::
-   toolTip2sec( "`n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-   if(instr(ActionList,"\isNotAProject"))
+   if(1 && InStr(A_ComputerName,"SL5"))
+    toolTip2sec( "BTW: work only in projects `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+   if(instr(ActionList,"\isNotAProject")){
+    toolTip2sec( "`n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     return
+    }
    KeyWait, c, L
    ; KeyWait, Ctrl, L
    diffMilli := A_tickCount - copyCTriggeredTimeMilli
