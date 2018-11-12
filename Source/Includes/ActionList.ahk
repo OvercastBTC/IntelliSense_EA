@@ -41,6 +41,22 @@ ReadActionList( calledFromStr ){
 	
 	if(!ActionList)
 		return false
+
+    postFixGenerated := "._Generated.ahk"
+    ActionListPostFix  := SubStr(rtrim(ActionList), - StrLen(postFixGenerated) + 1 ) ; That works I've tested it 01.11.2018 14:59
+    itsAGeneratedList := ( postFixGenerated == ActionListPostFix )
+    if(!itsAGeneratedList){
+        fileEx := FileExist ( ActionList postFixGenerated )
+        if(1 && InStr(A_ComputerName,"SL5")){
+            Speak(A_LineNumber ": dumm stupid " ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
+            ToolTip8sec( ActionList "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+            Sleep, 3000
+        }
+		return false
+    }
+
+
+
     ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
 	
 	; global g_config ; ["FuzzySearch"]["enable"]
@@ -362,7 +378,7 @@ from: ActionList.ahk~%A_LineNumber%
 			; AddWordToList(Aindex, temp,1,"ForceLearn") ; works but AHK is not succedet :( 12.08.2017 22:28
 			; ^- is oben sowieso false
 		}
-		DynaRun("#" . "NoTrayIcon `n  Tooltip,.SL5. `n Sleep,2300")
+;		DynaRun("#" . "NoTrayIcon `n  Tooltip,.SL5. `n Sleep,2300")
       ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		;
 		
@@ -380,271 +396,30 @@ from: ActionList.ahk~%A_LineNumber%
 			Msgbox, %ParseWordsCount%  (line:%A_LineNumber%)
 		
 		INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		;/¯¯¯¯ Loop ¯¯ 181109170337 ¯¯ 09.11.2018 17:03:37 ¯¯\
-		isIndexedAhkBlock := false
-		doCollectBlock := false
-		codePrefixChar := ""
-		doCreateKeys := false ; https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
-		Loop, Parse, ParseWords, `n, `r1
-		{
-		    ; thats the place very updates from the file are inserted into the database. this you shuld never delte.
-		    ; Das ist der Ort, an dem sehr Updates aus der Datei in die Datenbank eingefügt werden. Das sollte man nie löschen.
-		    ; 02.10.2018 19:21 18-10-02_19-21
-            ; Tooltip,%A_LoopField% `n (from: %A_LineFile%~%A_LineNumber%)
-            ; ToolTip4sec(A_LoopField "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-			ParseWordsSubCount++
-			
-			if(doCollectBlock){
-				if(RegExMatch( A_LoopField , "i)\bGi\s*\:\s*do_indexFollowingLines4search\s*[\:]?=\s*true\b" )) { 
-					    ; Gi: do_indexFollowingLines4search := true
-					isIndexedAhkBlock := true
-					doCollectBlock := false
-			}	}
-			
-			ALoopField := A_LoopField
-			Aindex := A_index
-			
-			if(!collectedLines && !doCollectBlock){
-				regIs_without_keywords  := "^\|(r|rr)\|"
-				if(RegExMatch( ALoopField , regIs_without_keywords )){
-					doCreateKeys := true ; https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
-					ALoopField := "autoKeyWord" ALoopField ; for testing during deevlopment 06.11.2018 11:15
-					tooltip,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-					speak("found do Create Keys true","PROD")
-			}   }
-			
-			if(!doCollectBlock){
-				is_multiline_r := false
-				doCollectBlock := false
-				ALoopField  := RegExReplace(ALoopField, "^\s+" , "" ) ; like ltrim or the same? 06.11.2017 18:28
-			}else{
-				if(is_multiline_r){
-					if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]*\|(r|rr)\|)",  m )){
-						; ^- because we have found here a new command, we are completing the old collection.
-						speak("anoter rr or r found ==> Block Collection ends. is_multiline_r := false")
-						
-						is_multiline_r := false
-						doCollectBlock := false
-						collectedLinesTemp := rTrim(collectedLines," `t`r`n") ; https://autohotkey.com/board/topic/87075-trim-not-trimming/
-						
-						if(collectedLinesTemp){
-							
-							lastChars := substr(collectedLinesTemp,-2)
-							if(lastChars=="|r|"){
-								speak("Maybe an ERROR","PROD")
-								
-								MsgBox,262208,% "Maybe an ERROR? Your Multiline-R-Command is empty `n`n`",% collectedLinesTemp "`n `n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-								; ToolTip4sec( "Synonym for next Command found: " collectedLinesTemp "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-								; MsgBox,262160,% ":( its empty. empty |r| command." ,% ":(`n`n thats really what you want??`n" collectedLinesTemp "`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-							}else
-								speak("R-Block found","PROD")
-							tooltip,% ALoopField "`nAHK Block found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-                                ; sleep,1000
-                                ; msgbox,% lastChars "`n" collectedLinesTemp  "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-						}else{
-							msgbox,% collectedLinesTemp "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-							collectedLinesTemp := addAutoKeywords(collectedLinesTemp, doCreateKeys)
-							AddWordToList(Aindex, collectedLinesTemp,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
-						}
-						doCreateKeys := false
-						if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
-                                ;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, collectedLinesTemp )
-							msgbox,% collectedLinesTemp "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-							addFuzzySearch_in_generatedList(trim(collectedLinesTemp), ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
-						}
-						collectedLines := ""
-						
-					}else{
-						if(isIndexedAhkBlock){
-							ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
-							doCreateKeys := false
-							msgbox,% ALoopField "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-							AddWordToList(Aindex, ALoopField , 0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
-						}
-						collectedLines := collectedLines ALoopField "`r`n"
-                            ; ALoopFieldLast := ALoopField
-						continue
-					}
-				}else ; endOf: is_multiline_r
-					if(trim(ALoopField)){
-						if(InStr(A_ComputerName,"SL5")){
-							log =
-                            (
-                            m =  i have forgotten when this happens 06.11.2018 11:14 (460 ActionList.ahk)
 
-                            m = ..\ActionLists\_globalActionLists\AHK_Studio.ahk._Generated.ahk
-                             i have forgotten when this happens 06.11.2018 11:14 (467 ActionList.ahk)
-                             06.11.2018 20:06
 
-                             while maybe opening ahk-studio
 
-                             if i use a messagebox here in this it toglles to ahkStudio and message box, it happens always when ahkStudio ist focused.
-                             therfore i simply ignore that message. maybe add a sleep of half a seoond or so. 07.11.2018 11:42
-                            )
-							tooltip,% ALoopField "`n" ActionList "`n i have forgotten when this happens 06.11.2018 11:14 (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-							sleep,100 ; not needet may useful 07.11.2018 11:43
-						}
-						;<
-						collectedLines := collectedLines "`n" ALoopField ; Collection collecting lines to block.
-						ALoopFieldLast := ALoopField
-						if(isIndexedAhkBlock){
-							ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
-							doCreateKeys := false
-							msgbox,% ALoopField "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-							AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
-						}
-						continue
-					}else{
-					doCollectBlock := false
-					if(codePrefixChar == "(" || codePrefixChar == "["){
-					   ; collectedLines .= "`nsend,`% it`n"
-						if(trim(ALoopFieldLast) == ")"){
-							collectedLines .= "`nsend,`% it`n"
-						  ; MsgBox, % ">" codePrefixChar "<== codePrefixChar `n" ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-					}	}
-					ALoopField := collectedLines
-                        ; MsgBox, % ">" codePrefixChar "<== codePrefixChar `n" ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-                        ; tooltip,% "collectedLines = `n >" collectedLines "< (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-				}
-			}
-			if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|rr\|[ ]*$",  m )){
-					; if(0 && InStr(A_ComputerName,"SL5"))
-				speak("Synonym found","PROD")
-				tooltip,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-				msgbox,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-			}
-			
-			if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|rr\|)(ahk\|)[ ]*$",  m )){
-				speak("Maybe an ERROR?","PROD")
-				
-				probablyTried := (m2) ? m1 "|ahk|" : m1 "|ahk|"
-					;MsgBox,262208,% "Maybe an ERROR?",% ALoopField "`n is recognized as a simple text.`n Or do you actually want : `n`n" probablyTried "`n`n ? Thats what you want? :)`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-			}
-			
-			if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )){
-				doCollectBlock := true
-				is_multiline_rr := true
-				if(1 && InStr(A_ComputerName,"SL5")){
-					speak("AHK Block found","PROD")
-					tooltip,% ALoopField "`nAHK Block found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-                        ;sleep,1000
-				}
-				
-				if(1 && InStr(A_ComputerName,"SL5") )
-					ToolTip2sec(doCollectBlock= "=doCollectBlock (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-				isIndexedAhkBlock := false ; maybe its set in next line
-				if(m2){
-					if(m2 == "(" || m2 == "["){
-						if(m2 == "[")
-							isIndexedAhkBlock := true
-						codePrefixChar := m2
-						m2 := "`nit = `n("
-                            ; MsgBox,% codePrefixChar "=codePrefixChar(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-				}	}
-				collectedLines := m1 m2
-                    ; MsgBox,% codePrefixChar "=m1 , " ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-				continue
-			}else{
-				
-				if(1){
-					regIs_multiline_r  := "^([^\|\n]+?)\|r\|([ ]*?)$"
-					if(RegExMatch( ALoopField , regIs_multiline_r ,  m )){
-						doCollectBlock := true
-						is_multiline_r := true
-							; collectedLines := rtrim(ALoopField)
-						collectedLines := ALoopField
-                            ; collectedLines := rTrim(ALoopField," `t`r`n") ; https://autohotkey.com/board/topic/87075-trim-not-trimming/
-						
-                            ; msgBox,% collectedLines  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-						
-						continue
-                            ; rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
-                            ; create a working synonym:
-                            ; ALoopField := rX["key"] "|rr||ahk|"
-                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-					}
-					
-					
-				}else{
-                        ; deprecated since 22.10.2018 12:13
-					if(InStr(A_ComputerName,"SL5"))
-						msgBox,% ALoopField "??? deprecated since 22.10.2018 12:13(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-					regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
-					if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
-						rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
-                            ; create a working synonym:
-						ALoopField := rX["key"] "|rr||ahk|"
-                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-			}	}	}
-			
-			
-                ; MsgBox,262208,% "found:" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":-) found: " A_LoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" ; info icon, always on top
-			
-			ALoopField := addAutoKeywords(ALoopField, doCreateKeys)
-			doCreateKeys := false
-			if(!AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)){
-				    ; set to defaults:
-				doCollectBlock := false
-				isIndexedAhkBlock := false
-			}
-                ; msgbox,% ALoopField "`n`n=ALoopField,`n`n" A_LoopField "`n`n=A_LoopField `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-			
-			
-                ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-				; LearnedWordsCount := addFuzzySearch_in_generatedList(ALoopField , ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
-			if(!CheckValid(ALoopField)){
-				if(0 && InStr(A_ComputerName,"SL5"))
-					msgbox,% "!CheckValid(`n>>" ALoopField "<<`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-				continue ; cuts of empty lines or comments 06.11.2018 13:27
-			}
-                ; msgBox,% "Valid:" ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-			if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
-				
-                    ;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, ALoopField )
-				addFuzzySearch_in_generatedList(ALoopField, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
-				;     AddWordToList(Aindex, "rübennase" A_now,1,"ForceLearn", g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"], g_config["FuzzySearch"]["doValueCopy"])
-			}
-			
-            ; msgBox,% " inside loop :" ALoopField " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-		} ; ENDof Loop
-		;\____ Loop __ 181109170852 __ 09.11.2018 17:08:52 __/
+
+		; ParseWords := addListOpenAction_ifNotAlreadyInTheList(ParseWords,ActionList)
+        Speak("vor Schleife","PROD")
+        ParseWords := Loop_Parse_ParseWords(ParseWords)
+        Speak("nach Schleife","PROD")
+
 		
-		
-		
-		
-		
-		if(doCollectBlock && is_multiline_r){
-			doCollectBlock := false
-			is_multiline_r := false
-			collectedLines := addAutoKeywords(collectedLines, doCreateKeys)
-			doCreateKeys := false
-			AddWordToList(Aindex, collectedLines,0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock )
-			msgbox,% ALoopField "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
 			
-			if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
-				addFuzzySearch_in_generatedList(collectedLines, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
-			}
 			
-			collectedLines := ""
-		}
-		
-		
+			
+
 		INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 		
-		
+		; autoh blum beu auto 
+
 		
 		if(false && ParseWordsCount>0)
 			Msgbox, %ParseWordsCount%  (line:%A_LineNumber%)
 		
+
 		ParseWords =
 		g_ActionListDB.EndTransaction()
       ;Progress, Off
@@ -777,6 +552,698 @@ from: ActionList.ahk~%A_LineNumber%
 	Return ParseWordsCount
 }
 ;\____ ReadActionList __ 181107175022 __ 07.11.2018 17:50:22 __/
+
+
+;/¯¯¯¯ ObjToStrTrim ¯¯ 181111193648 ¯¯ 11.11.2018 19:36:48 ¯¯\
+ObjToStrTrim(o, showEmpty := false){
+    ret := ((s:=Trim(ObjToStr(o, showEmpty)," `t`r`n")) ? ">" s "<`n" : "")
+    ; msgbox,,% ret,,1
+    return ret
+}
+;\____ ObjToStrTrim __ 181111193651 __ 11.11.2018 19:36:51 __/
+
+
+
+;/¯¯¯¯ ObjToStr ¯¯ 181111193656 ¯¯ 11.11.2018 19:36:56 ¯¯\
+; https://autohotkey.com/board/topic/66496-object-fromto-file-or-string-data-structures/
+ObjToStr(Obj,  showEmpty := false, Rows="`n", Equal=" = ", Indent="`t", Depth=7, CurIndent="") {	; converts object to string
+	For k,v in Obj
+	{
+	    if(!showEmpty && !v)
+	        continue
+		ToReturn .= CurIndent . k . (IsObject(v) && depth>1 ? Rows . ObjToStr(v,  showEmpty ,Rows, Equal, Indent, Depth-1, CurIndent . Indent) : Equal . v) . Rows
+    }
+	return RTrim(ToReturn, Rows)
+}	; http://www.autohotkey.com/forum/post-426623.html#426623
+;\____ ObjToStr __ 181111193702 __ 11.11.2018 19:37:02 __/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;/¯¯¯¯ Loop_Parse_ParseWords ¯¯ 181110211433 ¯¯ 10.11.2018 21:14:33 ¯¯\
+Loop_Parse_ParseWords(ByRef ParseWords){
+
+		global g_config
+		global ActionList
+		global doReadThisActionListEverySeconds
+		devTestTxtFile := doReadThisActionListEverySeconds "_temp.txt"
+
+; Montag  __ ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+;
+
+		;/¯¯¯¯ Loop ¯¯ 181109170337 ?? 09.11.2018 17:03:37 ¯¯\
+		is_IndexedAhkBlock := false
+		codePrefixChar := ""
+		do.createKeys := false ; https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
+		; fileappend, % "Loop: (" A_LineNumber ")`n" , % devTestTxtFile, UTF-8
+
+        commandTypeObj := { is_str: is_str , is_r: is_r , is_rr: is_rr, is_multiline_r: is_multiline_r , is_multiline_rr: is_multiline_rr  }
+        collectionObj := { value: value, is_ended: is_ended } ; .value .is_ended
+        doObj := { collectBlock: collectBlock, createKeys: createKeys}
+
+        ; commandTypeObj := { is_str: is_str , is_r: is_r , is_rr: is_rr, is_multiline_r: is_multiline_r , is_multiline_rr: is_multiline_rr  }
+        ; collectionObj := { value: value, is_ended: is_ended } ; .value .is_ended
+        ; do := { collectBlock: collectBlock, createKeys: createKeys}
+
+        ;commandTypeObj := {}
+        ;collectionObj := {}
+        ;doObj := {}
+        
+        ; commandTypeObjInBlock := {}
+        ; collectionObjInBlock := {}
+        ; doObjInBlock  := {}
+
+        commandTypeObjInBlock := { is_str: is_str , is_r: is_r , is_rr: is_rr, is_multiline_r: is_multiline_r , is_multiline_rr: is_multiline_rr  }
+        collectionObjInBlock := { value: value, is_ended: is_ended } ; .value .is_ended
+        doObjInBlock := { collectBlock: collectBlock, createKeys: createKeys}
+
+
+
+		Loop, Parse, ParseWords, `n, `r
+		{
+
+		    ; Speak(A_LineNumber,"PROD")
+
+		    ; thats the place very updates from the file are inserted into the database. this you shuld never delte.
+		    ; Das ist der Ort, an dem sehr Updates aus der Datei in die Datenbank eingef?gt werden. Das sollte man nie l?schen.
+		    ; 02.10.2018 19:21 18-10-02_19-21
+            ; Tooltip,%A_LoopField% `n (from: %A_LineFile%~%A_LineNumber%)
+            ; ToolTip4sec(A_LoopField "`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+                ; .is_str .is_r .is_rr .is_multiline_r .is_multiline_rr
+
+			ParseWordsSubCount++
+                ALoopFieldLast := ALoopField
+				ALoopField := A_LoopField
+				Aindex := A_index
+
+        ;/¯¯¯¯ collectBlock ¯¯ 181111201107 ¯¯ 11.11.2018 20:11:07 ¯¯\
+        if(doObj.collectBlock){
+            lineObjInBlock := { value:ALoopField, last:AoopFieldLast }
+            isCommandTypeInBlock := setCommandTypeS(lineObjInBlock, commandTypeObjInBlock, collectionObjInBlock, doObjInBlock )
+
+            ;; fileappend, % "#/¯ lineObjInBlock(" A_LineNumber ")=`n" ObjToStrTrim(lineObjInBlock) , % devTestTxtFile, UTF-8
+
+            ; ; fileappend, % "#/¯¯¯>" ALoopField "<====== isCommandTypeInBlock=" isCommandTypeInBlock "`n", % devTestTxtFile, UTF-8
+            ; ; fileappend, % "#/¯ commandTypeObjInBlock(" A_LineNumber ")=`n" ObjToStrTrim(commandTypeObjInBlock) , % devTestTxtFile, UTF-8
+            ;; fileappend, % "#/¯ collectionObjInBlock(" A_LineNumber ")=`n" ObjToStrTrim(collectionObjInBlock) , % devTestTxtFile, UTF-8
+            ; ; fileappend, % "#/¯ doObjInBlock(" A_LineNumber ")=`n" ObjToStrTrim(doObjInBlock) , % devTestTxtFile, UTF-8
+            ;; fileappend, % "#/¯ is_IndexedAhkBlock(" A_LineNumber ")=" is_IndexedAhkBlock , % devTestTxtFile, UTF-8
+
+
+
+
+
+            if(isCommandTypeInBlock){
+
+                ; ; fileappend, % "#isCommand InBlock?=" isCommandTypeInBlock "`n" , % devTestTxtFile, UTF-8
+                ; fileappend, % "#====>(" A_LineNumber ")" A_LoopField "<=== Command InBlock`n" , % devTestTxtFile, UTF-8
+                ; fileappend, % "#====> commandTypeObjInBlock(" A_LineNumber ")=`n" ObjToStrTrim(commandTypeObjInBlock) , % devTestTxtFile, UTF-8
+                ; lineObj.value := addAutoKeywords(collectionObj.value, doObj.createKeys) " " lineObj.value
+
+                ; ; fileappend, % "#lineObj.value(" A_LineNumber ")=`n>" lineObj.value "<`n" , % devTestTxtFile, UTF-8
+                ; ; fileappend, % "#collectionObj.value(" A_LineNumber ")=`n>" collectionObj.value "<`n" , % devTestTxtFile, UTF-8
+
+                newKeywords := addAutoKeywords(collectionObj.value, doObj.createKeys)
+                ; ; fileappend, % "newKeywords(" A_LineNumber ")=`n>" newKeywords "<`n" , % devTestTxtFile, UTF-8
+                if(doObj.createKeys){
+                    valud2DB := newKeywords " " lineObj.value "`n" collectionObj.value
+                    ; fileappend, % "`n#AddWordToList(" A_LineNumber ")=`n>" valud2DB "<`n`n" , % devTestTxtFile, UTF-8
+                }else{
+
+            if(!commandTypeObj.is_multiline_r && commandTypeObj.is_multiline_rr) {
+                if(commandTypeObj.codePrefixChar == "(" || commandTypeObj.codePrefixChar == "["){
+                    if(trim(ALoopFieldLast) == ")"){
+                        collectionObj.value .= "send,`% it`n"
+                    }
+                    ;tooltip, % ">" collectionObj.value "<"
+                }
+                    ; msgbox, % ">" ALoopFieldLast "<"
+            }
+
+                    valud2DB := lineObj.value "`n" collectionObj.value
+                    ; fileappend, % "`n#AddWordToList(" A_LineNumber ")=`n>" valud2DB "<`n`n" , % devTestTxtFile, UTF-8
+                }
+                ; return
+                AddWordToList(Aindex, valud2DB , 0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
+                if(g_config["FuzzySearch"]["enable"] && Aindex < g_config["FuzzySearch"]["MAXlines"]){
+                    addFuzzySearch_in_generatedList(valud2DB, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+                }
+
+                doObj.collectBlock := false
+                doObj.createKeys := false
+                collectionObj.value := ""
+                ;return
+
+            }else{
+
+
+            if(commandTypeObj.is_multiline_r && commandTypeObj.is_IndexedAhkBlock){
+                     ; autoKeywords := addAutoKeywords(ALoopField, doCreateKeys)
+                     newKeywords := addAutoKeywords(collectionObj.value, true)
+                    valud2DB := newKeywords " " lineObjInBlock.value
+                    AddWordToList(Aindex, valud2DB , 0,"ForceLearn",LearnedWordsCount, commandTypeObj.is_IndexedAhkBlock)
+
+                }
+
+
+                collectionObj.value .= lineObjInBlock.value "`n"
+                ;collectionObj.value .= A_LoopField "`n"
+                ;; fileappend, % "#<inBlock(" A_LineNumber ")>" A_LoopField "</inBlock>`n" , % devTestTxtFile, UTF-8
+            ;is_CollectionEnded := is_CollectionEnded(lineObj, commandTypeObj, collectionObj, doObj , is_IndexedAhkBlock)
+                ; doObj.createKeys := false
+                continue
+            }
+        } ; EndOf: if(doObj.collectBlock)
+        ;\____ collectBlock __ 181111201057 __ 11.11.2018 20:10:57 __/
+
+        ; ; fileappend, % "---´¯(" A_LineNumber ")¯¯ " A_LoopField " ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯`n" , % devTestTxtFile, UTF-8
+
+
+        lineObj := { value:ALoopField, last:AoopFieldLast }
+
+
+
+        isCommandType := setCommandTypeS(lineObj, commandTypeObj, collectionObj, doObj )
+        ; .is_str .is_r .is_rr .is_multiline_r .is_multiline_rr .codePrefixChar  ... .value .is_ended
+
+        isEmptyLine := ( trim(lineObj.value) == "")
+        if(0 && instr(lineObj.value,"nasenbar")){
+            Speak(A_LineNumber ":" lineObj.value ,"PROD")
+            Sleep, 2000
+            m := ""
+            m .= "lineObj=" ObjToStrTrim(lineObj)
+            m .= "doObj=`n" ObjToStrTrim(doObj)
+            m .= "commandTypeObj=`n" ObjToStrTrim(commandTypeObj)
+            m .= "isEmptyLine=`n" isEmptyLine
+            m .= "commandTypeObj.is_IndexedAhkBlock=`n" commandTypeObj.is_IndexedAhkBlock
+            msgbox,% m "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+        }
+
+
+
+
+
+            ;if(!commandTypeObj.is_str || !trim(lineObj.value) ){ ; not add empty string
+            ; if( !isEmptyLine && (commandTypeObj.is_str && CheckValid(ALoopField)){
+            ; if( CheckValid(ALoopField) ){
+            if( CheckValid(lineObj.value) ){
+                if(0 && instr(lineObj.value,"nasenbar")){
+                    Speak(A_LineNumber ,"PROD")
+                    Sleep, 2000
+                    m := ""
+                    m .= "Aindex=" Aindex "`n"
+                    m .= "lineObj=" ObjToStrTrim(lineObj)
+                    m .= "doObj=`n" ObjToStrTrim(doObj)
+                    m .= "commandTypeObj=`n" ObjToStrTrim(commandTypeObj)
+                    m .= "commandTypeObj.is_IndexedAhkBlock=" commandTypeObj.is_IndexedAhkBlock
+                    msgbox,% m "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                }
+                AddWordToList(Aindex, lineObj.value , 0,"ForceLearn",LearnedWordsCount, isIndexedAhkBlock)
+                if(g_config["FuzzySearch"]["enable"] && Aindex < g_config["FuzzySearch"]["MAXlines"]){
+                    addFuzzySearch_in_generatedList(lineObj.value, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+                }
+            }
+            continue
+        ;}
+
+
+                ; ; fileappend, % "////¯¯¯¯ CommandType (" A_LineNumber ")¯¯\ " A_LoopField "`n" , % devTestTxtFile, UTF-8
+
+				; fileappend, % "/¯ lineObj(" A_LineNumber ")=`n" ObjToStrTrim(lineObj), % devTestTxtFile, UTF-8
+				; fileappend, % "/¯ commandTypeObj(" A_LineNumber ")=`n" ObjToStrTrim(commandTypeObj), % devTestTxtFile, UTF-8
+				; fileappend, % "/¯ collectionObj(" A_LineNumber ")=`n" ObjToStrTrim(collectionObj), % devTestTxtFile, UTF-8
+				; fileappend, % "/¯ doObj(" A_LineNumber ")=`n" ObjToStrTrim(doObj), % devTestTxtFile, UTF-8
+				;; fileappend, % "/¯ is_IndexedAhkBlock(" A_LineNumber ")=" is_IndexedAhkBlock, % devTestTxtFile, UTF-8
+
+			;}
+			continue
+
+			; msgbox,% A_LoopField
+			AddWordToList(A_index, A_LoopField,0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock )
+
+			if(do.collectBlock){
+				if(RegExMatch( A_LoopField , "i)\bGi\s*\:\s*do_indexFollowingLines4search\s*[\:]?=\s*true\b" )) {
+					    ; Gi: do_indexFollowingLines4search := true
+					is_IndexedAhkBlock := true
+					do.collectBlock := false
+			}	}
+			ALoopField := A_LoopField
+			Aindex := A_index
+
+			if(!collectedLines && !do.collectBlock){
+				regIs_without_keywords  := "^\|(r|rr)\|"
+				if(RegExMatch( ALoopField , regIs_without_keywords )){
+					do.createKeys := true ; https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
+					ALoopField := "autoKeyWord" ALoopField ; for testing during deevlopment 06.11.2018 11:15
+			}   }
+			if(!do.collectBlock){
+				is_multiline_r := false
+				do.collectBlock := false
+				ALoopField  := RegExReplace(ALoopField, "^\s+" , "" ) ; like ltrim or the same? 06.11.2017 18:28
+			}
+			if(do.collectBlock)
+				is_CollectionEnded := RegExMatch( ALoopField , "i)^([^; ]*[^\n]*\|(r|rr)\|)",  m )
+			if(do.collectBlock && is_CollectionEnded){
+				do.collectBlock := false
+				collectedLinesTemp := rTrim(collectedLines," `t`r`n") ; https://autohotkey.com/board/topic/87075-trim-not-trimming/
+			}
+			if(do.collectBlock && is_multiline_r && is_CollectionEnded){
+						; ^- because we have found here a new command, we are completing the old collection.
+				speak("anoter rr or r found ==> Block Collection ends. is_multiline_r := false")
+				is_multiline_r := false
+				if(collectedLinesTemp){
+					lastChars := substr(collectedLinesTemp,-2)
+					if(lastChars=="|r|"){
+						MsgBox,262208,% "Maybe an ERROR? Your Multiline-R-Command is empty `n`n`",% collectedLinesTemp "`n `n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+					}else
+						speak("R-Block found","PROD")
+					tooltip,% ALoopField "`nAHK Block found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				}else{
+					msgbox,% collectedLinesTemp "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+					collectedLinesTemp := addAutoKeywords(collectedLinesTemp, do.createKeys)
+					AddWordToList(Aindex, collectedLinesTemp,0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock)
+				}
+				do.createKeys := false
+				if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
+                                ;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, collectedLinesTemp )
+					msgbox,% collectedLinesTemp "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+					addFuzzySearch_in_generatedList(trim(collectedLinesTemp), ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+				}
+			} ; EndOf do.collectBlock && is_multiline_r && is_CollectionEnded
+
+
+			if(do.collectBlock && !is_multiline_r && !is_CollectionEnded){
+				do.collectBlock := false
+				if(codePrefixChar == "(" || codePrefixChar == "["){
+				   ; collectedLines .= "`nsend,`% it`n"
+					if(trim(ALoopFieldLast) == ")"){
+						collectedLines .= "`nsend,`% it`n"
+					  ; MsgBox, % ">" codePrefixChar "<== codePrefixChar `n" ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				}	}
+				ALoopField := collectedLines
+			    ; MsgBox, % ">" codePrefixChar "<== codePrefixChar `n" ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+			    ; tooltip,% "collectedLines = `n >" collectedLines "< (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+			}
+
+			if(do.collectBlock && !is_CollectionEnded){
+				if(is_IndexedAhkBlock)
+					AddWordToList(Aindex, ALoopField , 0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock)
+
+				if(do.collectBlock && !is_CollectionEnded)
+					collectedLines := collectedLines "`r`n" ALoopField ; Collection collecting lines to block.
+
+				if(do.collectBlock && is_IndexedAhkBlock && !is_CollectionEnded && trim(ALoopField)){
+					ALoopField := addAutoKeywords(ALoopField, do.createKeys)
+					do.createKeys := false
+					msgbox,% ALoopField "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+					AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock)
+				}
+
+				if(do.collectBlock && is_IndexedAhkBlock && is_CollectionEnded ){
+					is_IndexedAhkBlock := false
+				}
+
+				if(do.collectBlock && is_CollectionEnded)
+					collectedLines := ""
+
+				if(do.collectBlock && !is_CollectionEnded)
+					continue
+
+
+				; no starts the NOT do.collectBlock area
+				if(do.collectBlock)
+					msgBox,ERROR 18-11-09_21-31
+
+				if(trim(ALoopField))
+					ALoopFieldLast := ALoopField
+
+				if(!trim(ALoopField))
+					continue
+
+
+				if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|rr\|[ ]*$",  m )){
+					; if(0 && InStr(A_ComputerName,"SL5"))
+					speak("Synonym found","PROD")
+					tooltip,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+					msgbox,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				}
+
+				if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|rr\|)(ahk\|)[ ]*$",  m )){
+					speak("Maybe an ERROR?","PROD")
+
+					probablyTried := (m2) ? m1 "|ahk|" : m1 "|ahk|"
+					;MsgBox,262208,% "Maybe an ERROR?",% ALoopField "`n is recognized as a simple text.`n Or do you actually want : `n`n" probablyTried "`n`n ? Thats what you want? :)`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				}
+
+				if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )){
+					do.collectBlock := true
+					commandTypeObj.is_multiline_rr := true
+					if(1 && InStr(A_ComputerName,"SL5")){
+						speak("AHK Block found","PROD")
+						tooltip,% ALoopField "`nAHK Block found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+                        ;sleep,1000
+					}
+
+					if(1 && InStr(A_ComputerName,"SL5") )
+						ToolTip2sec(do.collectBlock= "=do.collectBlock (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+					is_IndexedAhkBlock := false ; maybe its set in next line
+					if(m2){
+						if(m2 == "(" || m2 == "["){
+							if(m2 == "[")
+								is_IndexedAhkBlock := true
+							codePrefixChar := m2
+							m2 := "`nit = `n("
+                            ; MsgBox,% codePrefixChar "=codePrefixChar(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+					}	}
+					collectedLines := m1 m2
+                    ; MsgBox,% codePrefixChar "=m1 , " ALoopField "`n" collectedLines "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+					continue
+				}else{
+
+					if(1){
+						regIs_multiline_r  := "^([^\|\n]+?)\|r\|([ ]*?)$"
+						if(RegExMatch( ALoopField , regIs_multiline_r ,  m )){
+							do.collectBlock := true
+							is_multiline_r := true
+							; collectedLines := rtrim(ALoopField)
+							collectedLines := ALoopField
+                            ; collectedLines := rTrim(ALoopField," `t`r`n") ; https://autohotkey.com/board/topic/87075-trim-not-trimming/
+
+                            ; msgBox,% collectedLines  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+							continue
+                            ; rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
+                            ; create a working synonym:
+                            ; ALoopField := rX["key"] "|rr||ahk|"
+                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+						}
+
+
+					}else{
+                        ; deprecated since 22.10.2018 12:13
+						if(InStr(A_ComputerName,"SL5"))
+							msgBox,% ALoopField "??? deprecated since 22.10.2018 12:13(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+						regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
+						if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
+							rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
+                            ; create a working synonym:
+							ALoopField := rX["key"] "|rr||ahk|"
+                            ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				}	}	}
+
+
+                ; MsgBox,262208,% "found:" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":-) found: " A_LoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" ; info icon, always on top
+
+				ALoopField := addAutoKeywords(ALoopField, do.createKeys)
+				do.createKeys := false
+				if(!AddWordToList(Aindex, ALoopField,0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock)){
+				    ; set to defaults:
+					do.collectBlock := false
+					is_IndexedAhkBlock := false
+				}
+                ; msgbox,% ALoopField "`n`n=ALoopField,`n`n" A_LoopField "`n`n=A_LoopField `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+
+                ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				; LearnedWordsCount := addFuzzySearch_in_generatedList(ALoopField , ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+				if(!CheckValid(ALoopField)){
+					if(0 && InStr(A_ComputerName,"SL5"))
+						msgbox,% "!CheckValid(`n>>" ALoopField "<<`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+					continue ; cuts of empty lines or comments 06.11.2018 13:27
+				}
+                ; msgBox,% "Valid:" ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+				if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
+
+                    ;feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, ALoopField )
+					addFuzzySearch_in_generatedList(ALoopField, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+				;     AddWordToList(Aindex, "r?bennase" A_now,1,"ForceLearn", g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"], g_config["FuzzySearch"]["doValueCopy"])
+				}
+
+            ; msgBox,% " inside loop :" ALoopField " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+			} ; ENDof Loop
+		;\____ Loop __ 181109170852 __ 09.11.2018 17:08:52 __/
+					if(do.collectBlock && is_multiline_r){
+        				do.collectBlock := false
+        				is_multiline_r := false
+        				collectedLines := addAutoKeywords(collectedLines, do.createKeys)
+        				do.createKeys := false
+        				AddWordToList(Aindex, collectedLines,0,"ForceLearn",LearnedWordsCount, is_IndexedAhkBlock )
+        				msgbox,% ALoopField "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+        				if(g_config["FuzzySearch"]["enable"] && a_index < g_config["FuzzySearch"]["MAXlines"]){
+        					addFuzzySearch_in_generatedList(collectedLines, ActionList,Aindex,LearnedWordsCount,g_config["FuzzySearch"]["keysMAXperEntry"],g_config["FuzzySearch"]["minKeysLen"])
+        				}
+        				collectedLines := ""
+        			}
+        		}
+        		; msgbox,here ? ghghghgghgh
+        		return ParseWords
+        }
+
+;
+
+; toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+; _ _1 test t to aut
+
+
+
+
+
+
+
+
+
+
+
+;/¯¯¯¯ is_CollectionEnded ¯¯ 181110182235 ¯¯ 10.11.2018 18:22:35 ¯¯\
+; Whether you pass an object as ByRef or not ByRef, any changes to the object are permanent. Does whether a parameter is ByRef or not have any effect on objects? Are there performance advantages/disadvantages, or other consequences? https://autohotkey.com/boards/viewtopic.php?t=46310
+is_CollectionEnded(lineObj, commandTypeObj, collectionObj, do, is_IndexedAhkBlock ){
+
+ msgbox,lasdjfalsdkf deprecated... not used never used
+
+
+    isCommandType := setCommandTypeS(lineObj, commandTypeObj, collectionObj, doObj)
+    commandTypeObj.is_str := "KäseWurst" ; <==  that changes the values outside
+    if(commandTypeObj.is_str)
+        return false
+    if(!lineObj.value)
+        return false
+    if(isCommandType){
+        ;if(commandTypeObj)
+            return true
+    }
+
+    return false
+}
+;\____ is_CollectionEnded __ 181110182238 __ 10.11.2018 18:22:38 __/
+
+
+
+
+
+;/¯¯¯¯ setCommandTypeS ¯¯ 181110182307 ¯¯ 10.11.2018 18:23:07 ¯¯\
+;/¯¯¯¯ setCommandTypeS ¯¯ 181110182307 ¯¯ 10.11.2018 18:23:07 ¯¯\
+;/¯¯¯¯ setCommandTypeS ¯¯ 181110182307 ¯¯ 10.11.2018 18:23:07 ¯¯\
+;/¯¯¯¯ setCommandTypeS ¯¯ 181110182307 ¯¯ 10.11.2018 18:23:07 ¯¯\
+;/¯¯¯¯ setCommandTypeS ¯¯ 181110182307 ¯¯ 10.11.2018 18:23:07 ¯¯\
+; Whether you pass an object as ByRef or not ByRef, any changes to the object are permanent. Does whether a parameter is ByRef or not have any effect on objects? Are there performance advantages/disadvantages, or other consequences? https://autohotkey.com/boards/viewtopic.php?t=46310
+setCommandTypeS(lineObj, commandTypeObj, collectionObj, doObj ){
+		; .is_str .is_r .is_rr .is_multiline_r .is_multiline_rr .codePrefixChar
+		; .value .is_ended
+    ; commandTypeObj := { is_str: ...
+    ; collectionObj := { value: value, is_ended: is_ended }
+    ; Speak( A_ThisFunc, "PROD" )
+
+    if(trim(!lineObj.value))
+        return false
+
+
+        ; msgBox,% lineObj.value "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+        ; tooltip,% (lineObj.value) "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+
+        ; bisschen tesxt|r|anderer text
+        ;Speak(A_LineNumber ,"PROD")
+        ;Sleep, 2000
+
+        regIs_r  := "^([^\|\n]+?)\|r\|.+"
+        if(RegExMatch( lineObj.value , regIs_r ,  m )){
+            doObj.collectBlock := false
+            commandTypeObj.is_r := true
+            ;msgbox,% lineObj.value "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+            ;Speak("hallo","PROD")
+        }else{
+            commandTypeObj.is_r := false
+        }
+
+        regIs_multiline_r  := "^([^\|\n]+?)\|r\|([ ]*?)$"
+        if(RegExMatch( lineObj.value , regIs_multiline_r ,  m )){
+            doObj.collectBlock := true
+            commandTypeObj.is_multiline_r := true
+            ; collectedLines := rtrim(ALoopField)
+            collectionObj.value := ALoopField
+            ; collectedLines := rTrim(ALoopField," `t`r`n")
+            ; msgBox,% lineObj.value "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+            ; Speak("" A_LineNumber, "PROD" )
+        }
+
+
+    					if(0){
+                            ; deprecated since 22.10.2018 12:13
+    						if(InStr(A_ComputerName,"SL5"))
+    							msgBox,% ALoopField "??? deprecated since 22.10.2018 12:13(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    						regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
+    						if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
+    							rX := {key:m1, rr:"r", send:"", lang:"" ,code:""}
+                                ; create a working synonym:
+    							ALoopField := rX["key"] "|rr||ahk|"
+                                ; msgBox,% ALoopField "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    				        }
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	if(RegExMatch( lineObj.value , "i)^([^; ]*[^\n]+\|rr\|[ ]*$",  m )){
+    					; if(0 && InStr(A_ComputerName,"SL5"))
+		commandTypeObj.is_rr := true
+		commandTypeObj.is_synonym := true
+		; speak("Synonym found","PROD")
+		tooltip,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+		msgbox,% ALoopField "`nSynonym found :)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+	}else
+        commandTypeObj.is_rr := false
+
+    if(RegExMatch( lineObj.value , "i)^([^; ]*[^\n]+\|ahk\|)[^\s]{2,}+",  m )){
+        commandTypeObj.is_rr := true
+        commandTypeObj.is_IndexedAhkBlock := false ; maybe its set in next line
+        ; msgbox, % lineObj.value "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    }
+
+
+
+
+
+    if(RegExMatch( lineObj.value , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )){
+        commandTypeObj.is_rr := true
+        commandTypeObj.is_IndexedAhkBlock := false ; maybe its set in next line
+        if(m2){
+            if(m2 == "(" || m2 == "["){
+                if(m2 == "[")
+                    commandTypeObj.is_IndexedAhkBlock := true
+                commandTypeObj.codePrefixChar := m2
+                m2 := "`nit = `n(`n"
+                ; MsgBox,% codePrefixChar "=codePrefixChar(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+            }
+            collectionObj.value := m1 m2
+        }
+        ; msgbox,% collectionObj.value
+    }
+
+
+	if(RegExMatch( lineObj.value , "i)^([^; ]*[^\n]+\|rr\|)(ahk\|)[ ]*$",  m )){
+		speak("Maybe an ERROR?","PROD")
+		sleep,2000
+		probablyTried := (m2) ? m1 "|ahk|" : m1 "|ahk|"
+		commandTypeObj.is_rr := true
+		lineObj.value := ""
+    					;MsgBox,262208,% "Maybe an ERROR?",% ALoopField "`n is recognized as a simple text.`n Or do you actually want : `n`n" probablyTried "`n`n ? Thats what you want? :)`n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+	}
+
+	commandTypeObj.is_multiline_rr := false ; todo: thats a dirty bugfix . 10.11.2018 23:19
+	if(RegExMatch( lineObj.value , "i)^([^;\n ]*[^\n]+\|ahk\|)([^\s\n]?)[ ]*$",  m )){
+		commandTypeObj.is_multiline_rr := true
+		doObj.collectBlock := true
+	}
+
+    ;/¯¯¯¯ collectBlock ¯¯ 181111082347 ¯¯ 11.11.2018 08:23:47 ¯¯\
+    if(!doObj.collectBlock){
+        regIs_without_keywords  := "^\|(r|rr)\|"
+        if(RegExMatch( lineObj.value , regIs_without_keywords, m )){
+            if(m1=="r"){
+                lineObj.value := "" A_ThisFunc "" lineObj.value ; for testing during deevlopment 06.11.2018 11:15
+    		    commandTypeObj.is_r := true
+            }if(m1=="rr")
+    		    commandTypeObj.is_rr := true
+            doObj.createKeys := true ; https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
+            doObj.collectBlock := true
+    } }
+    ;\____ collectBlock __ 181111082353 __ 11.11.2018 08:23:53 __/
+
+
+    if(doObj.collectBlock){
+        if(!commandTypeObj.codePrefixChar)
+            collectionObj.value := "" ; initialice so later you could use .=
+    }
+
+	; now plausibility checks. proof of programer does Bullshit or was lazy 10.11.2018 09:47
+	o := commandTypeObj ; https://autohotkey.com/boards/viewtopic.php?f=76&t=58979&p=248157#p248157
+
+	if(!o.is_multiline_rr){
+        commandTypeObj.is_IndexedAhkBlock := false
+        commandTypeObj.codePrefixChar := ""
+	}
+	if(o.is_multiline_rr){
+        o.is_str := false
+        o.is_r := false
+        o.is_rr := false
+        o.is_multiline_r := false
+        ; o.is_multiline_rr := false
+
+
+	}else if(o.is_multiline_r){
+        o.is_str := false
+        o.is_r := false
+        o.is_rr := false
+        ;o.is_multiline_r := false
+        o.is_multiline_rr := false
+	}else if(o.is_rr){
+        o.is_str := false
+        o.is_r := false
+        ; o.is_rr := false
+        ;o.is_multiline_r := false
+        ;o.is_multiline_rr := false
+	}else if(o.is_r){
+        o.is_str := false
+        ; o.is_r := false
+        o.is_rr := false
+        ;o.is_multiline_r := false
+        ;o.is_multiline_rr := false
+	}else if(!o.is_r && !o.is_rr && !o.is_multiline_r && !o.is_multiline_rr ){
+        o.is_str := true
+	}
+	if(o.is_str){
+        o.is_r := false
+        ; o.is_multiline_r := false
+        ; o.is_multiline_rr := false
+    	return false
+	}
+	return true
+}
+;\____ ReadActionList __ 181107175022 __ 07.11.2018 17:50:22 __/
+
+
 
 
 
@@ -1000,9 +1467,9 @@ ReverseWordNums(LearnedWordsCount){
 
 
 ;/¯¯¯¯ addAutoKeywords ¯¯ 181106121229 ¯¯ 06.11.2018 12:12:29 ¯¯\
-addAutoKeywords(AddWord, doCreateKeys){
-	if(doCreateKeys){
-		
+addAutoKeywords( ByRef AddWord, createKeys){
+	if(createKeys){
+
 		if(0){
 			msg =
     (
@@ -1015,10 +1482,10 @@ addAutoKeywords(AddWord, doCreateKeys){
 			return AddWord
 		}
 		
-    ; AddWord doCreateKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
+    ; AddWord doObj.createKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
 		regEx := "(\b[a-z]{1,3}\b|[^a-z]+)"
 		newKeyWords := RegExReplace(substr(AddWord,1,200),"mi)" regEx, " ")
-		AddWord := newKeyWords " " AddWord
+		AddWord := rTrim(newKeyWords," `t`r`n") ; " - " Trim(AddWord," `t`r`n")
      ; feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" . A_LineNumber, AddWord )
      ; tooltip,% AddWord "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
      ;sleep,5000
@@ -1029,8 +1496,8 @@ addAutoKeywords(AddWord, doCreateKeys){
 
 
 
-;/¯¯¯¯ AddWordToList ¯¯ 181106113409 ¯¯ 06.11.2018 11:34:09 ¯¯\
-AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef LearnedWordsCount := false, isIndexedAhkBlock := false) {
+;/¯¯¯¯ AddWordToList( ¯¯ 181106113409 ¯¯ 06.11.2018 11:34:09 ¯¯\
+AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef LearnedWordsCount := false, is_IndexedAhkBlock := false) {
 	
    ;AddWord = Word to add to the list
    ;ForceCountNewOnly = force this word to be permanently learned even if learnmode is off
@@ -1090,8 +1557,10 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 		}
 	}
 	
-	if(!CheckValid(AddWord,ForceLearn, isIndexedAhkBlock)){
+	if(!CheckValid(AddWord,ForceLearn, is_IndexedAhkBlock)){
         ; msgbox,% ">>" AddWord "<<`n is NOT valid(" A_LineNumber ": " A_ThisFunc " " RegExReplace(A_LineFile, ".*\\") ")"
+        if(0 && InStr(A_ComputerName,"SL5"))
+            Speak(A_LineNumber ":" lineObj.value ,"PROD")
 		return false
 	}
         ; msgBox,% "is valid: " AddWord "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
@@ -1109,7 +1578,11 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 			
         ; msgbox,% INSERT_INTO_words "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			
-			
+            if(1 && InStr(A_ComputerName,"SL5")){
+                Speak(A_LineNumber ":" INSERT_INTO_words ,"PROD")
+                msgbox,% INSERT_INTO_words "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+            }
+
 			try{
 				g_ActionListDB.Query(INSERT_INTO_words)
 			} catch e{
@@ -1144,6 +1617,16 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 			
 			try{
 				g_ActionListDB.Query(INSERT_INTO_words)
+
+                if(1 && InStr(A_ComputerName,"SL5")){
+
+                    if(1 && instr(lineObj.value,"nasenbar")){
+                    Speak(A_LineNumber "" ,"PROD")
+                    msgbox,% INSERT_INTO_words "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    }
+                }
+
+
 			} catch e{
 				tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
 				sqlLastError := SQLite_LastError()
@@ -1170,6 +1653,8 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 			
 			IfNotEqual, ForceCountNewOnly, 1
 			{
+				
+			    ;/¯¯¯¯ return ¯¯  181110065558 ?? 10.11.2018 06:55:58 ??\
 				IF (StrLen(AddWord) < prefs_LearnLength) ; don't add the word if it's not longer than the minimum length for learning if we aren't force learning it
 					return false
 				
@@ -1178,6 +1663,7 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 				
 				if AddWord contains %prefs_DoNotLearnStrings%
 					return false
+                ;\____ return __ 181110065602 __ 10.11.2018 06:56:02 __/
 				
 				CountValue = 1
 				
@@ -1192,6 +1678,12 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 			
 			try{
             		g_ActionListDB.Query(INSERT_INTO_words)
+
+                    if(1 && InStr(A_ComputerName,"SL5")){
+                        Speak(A_LineNumber ":" INSERT_INTO_words ,"PROD")
+                        msgbox,% INSERT_INTO_words "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    }
+
             	} catch e{
             		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
             		sqlLastError := SQLite_LastError()
@@ -1233,7 +1725,7 @@ AddWordToList(lineNr, AddWord,ForceCountNewOnly,ForceLearn:= false, ByRef Learne
 
 
 ;/¯¯¯¯ CheckValid ¯¯ 181106193909 ¯¯ 06.11.2018 19:39:09 ¯¯\
-CheckValid(Word,ForceLearn:= false, isIndexedAhkBlock := false){
+CheckValid(Word,ForceLearn:= false, is_IndexedAhkBlock := false){
 	
 	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
@@ -1243,7 +1735,7 @@ CheckValid(Word,ForceLearn:= false, isIndexedAhkBlock := false){
 	if Word is space ;If Word is only whitespace, skip out.
 		Return
 	
-	if(isIndexedAhkBlock){
+	if(is_IndexedAhkBlock){
 		if(!RegExMatch( Word , "\S" )) ; search a nonspace in it
 			return
 	}else{
@@ -1491,11 +1983,11 @@ StrUnmark(string) {
 	string := RegExReplace(StrGet(&buf, len, "UTF-16"), "\pM")
 	
 	if(false){
-		StringReplace, string, string, ï¿½, ae, All
-		StringReplace, string, string, ï¿½, AE, All
-		StringReplace, string, string, ï¿½, oe, All
-		StringReplace, string, string, ï¿½, OE, All
-		StringReplace, string, string, ï¿½, ss, All
+		StringReplace, string, string, ?, ae, All
+		StringReplace, string, string, ?, AE, All
+		StringReplace, string, string, ?, oe, All
+		StringReplace, string, string, ?, OE, All
+		StringReplace, string, string, ?, ss, All
 	}
 	
 	return, string
@@ -1517,7 +2009,7 @@ getActionListID(ActionList){
 	if(!g_ActionListDB){
 		msgbox,% "!g_ActionListDB`n `n (" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ")"
 	}
- 	sqlGetWLid =
+	sqlGetWLid =
     (
 SELECT id, lastUsedByUser_since_midnight FROM ActionLists WHERE
 ActionList = '%ActionList%' ;

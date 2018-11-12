@@ -1,6 +1,7 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/Einrueckungsstil#SL5small-Stil
 ; # ErrorStdOut
 
+
 #MaxHotkeysPerInterval 99000000
 #HotkeyInterval 99000000
 Process, Priority,, H ; <=== only use this if its not in a critical development 05.11.2018 13:20
@@ -219,6 +220,7 @@ SetTimer,doListBoxFollowMouse,off
 ; #IfWinActive,(Autohotkey|\.ahk)
 ; Hotkey, ^+esc, off
 
+
 #IfWinActive,
 Hotkey, WheelUp, off
 Hotkey, WheelDown, off
@@ -375,9 +377,6 @@ if !(g_ListBoxScrollCallback){
 }
    
 GetIncludedActiveWindow() ;Find the ID of the window we are using
-
-
-
 
 MainLoop()
 
@@ -726,6 +725,8 @@ $2:: ; ; some users dont have numpad ; 25.03.2018 15:35
 $Numpad2::
 CheckWord("$2")
 return
+
+; _ __ to
 
 $3::  ; some users dont have numpad ; 25.03.2018 15:35
 ; $�:: ; problem with the paragraph sign. probably becouse of the document format. i dont need it so much. lets deactivate it. 21.04.2017 12:02
@@ -1167,6 +1168,7 @@ checkInRegistryChangedActionListAddress:
 
     RegRead, ActionListNewTemp_RAW, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
     ActionListNewTemp_withoutExt := ActionListNewTemp_RAW
+
     if(!timeFirstTry_getNewListFromRegistry)
         timeFirstTry_getNewListFromRegistry := A_TickCount
     milliesTried_getNewListFromRegistry := A_TickCount - timeFirstTry_getNewListFromRegistry
