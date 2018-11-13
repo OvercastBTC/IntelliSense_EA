@@ -1,6 +1,30 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/Einrueckungsstil#SL5small-Stil
 ; # ErrorStdOut
 
+FileEncoding, UTF-8
+
+global g_ttSpeakObject
+g_ttSpeakObject := new TTS()
+    ; s.SetRate(-2)
+    ; DEV mode :
+    ; g_ttSpeakObject.SetRate(5) ; speed higher value is faster. 2 is about 200 procent. 1 sounds like normal speak
+    ; PROD mode:
+g_ttSpeakObject.SetRate(2) ; speed
+    ; -1 is very slow
+    ; -5 is terrible slow
+    ; 0 seems normal
+    ; 2 little faster
+    ; 5 reaky fast but possible to understand
+    ; g_ttSpeakObject.SetPitch(10)
+g_ttSpeakObject.SetPitch(1) ; tonhöhe high, deep. i like 1 and 10
+
+
+#Include %A_ScriptDir%\unitTests.inc.ahk
+
+
+
+
+
 
 #MaxHotkeysPerInterval 99000000
 #HotkeyInterval 99000000
@@ -26,6 +50,10 @@ FileEncoding, UTF-8
 
 CoordMode, ToolTip,Screen
 
+
+
+
+
 fnReceive_ActionListAddress := Func("Receive_ActionListAddress").Bind(1)
 ; OnMessage(0x4a, "Receive_WM_COPYDATA")  ; 0x4a is WM_COPYDATA  ; deprecated 15.02.2018 10:26
 ; ObjRegisterActive(Stuff, "{93C04B39-0465-4460-8CA0-7BFFF481FF98}")
@@ -49,25 +77,6 @@ g_doSound := false
 if(1 && InStr(A_ComputerName,"SL5") )
     g_doSound := 0
 
-if(1){
-    global g_ttSpeakObject
-    g_ttSpeakObject := new TTS()
-    ; s.SetRate(-2)
-
-    ; DEV mode :
-    ; g_ttSpeakObject.SetRate(5) ; speed higher value is faster. 2 is about 200 procent. 1 sounds like normal speak
-
-    ; PROD mode:
-    g_ttSpeakObject.SetRate(2) ; speed
-    ; -1 is very slow
-    ; -5 is terrible slow
-    ; 0 seems normal
-    ; 2 little faster
-    ; 5 reaky fast but possible to understand
-    ; g_ttSpeakObject.SetPitch(10)
-    g_ttSpeakObject.SetPitch(1) ; tonhöhe high, deep. i like 1 and 10
-}
-Speak("gestartet")
 
 ; SoundbeepString2Sound("zzz")
 ; SoundbeepString2Sound("aaa")
@@ -417,9 +426,7 @@ MainLoop()
     ;toolTip2sec( "BTW: work only in projects `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     toolTip2sec( "First, create a list (__cre...)`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
    if(instr(ActionList,"\isNotAProject")){
-;    toolTip2sec( "`n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-        toolTip2sec( "First, create a list (__cre...)`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-
+        toolTip6sec( ActionList "`n`nFirst, create a list`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1 )
     return
     }
    KeyWait, c, L
