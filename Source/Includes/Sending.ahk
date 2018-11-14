@@ -16,6 +16,9 @@ SendKey(Key){
 	Return
 }
 
+
+
+
 ;/¯¯¯¯ getLineOfIndex ¯¯ 181106201806 ¯¯ 06.11.2018 20:18:06 ¯¯\
 getLineOfIndex(id) {
 	global g_SingleMatch

@@ -619,3 +619,13 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 
 						
 						
+
+Schlaf, Schlafen, Meditation , Schöne Natur, Ber
+
+|r|
+Ein neuer
+Test
+
+|r|
+Ein neuer
+Test2
