@@ -6,9 +6,7 @@ FileEncoding, UTF-8
 #Include %A_ScriptDir%\inc_ahk\init_global.init.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\soundBeep.inc.ahk
 
-#Include %A_ScriptDir%\unitTests.inc.ahk ; Use this if you just want to test the preparser 13.11.2018 21:17
-
-
+; #Include %A_ScriptDir%\unitTests.inc.ahk ; Use this if you just want to test the preparser 13.11.2018 21:17
 
 
 
