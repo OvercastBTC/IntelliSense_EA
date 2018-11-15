@@ -146,8 +146,12 @@ onlineAHKprettyfy|r|[url=http://ahkscript.org/boards/viewtopic.php?f=22&t=8678]a
 Refactoring|r|[url=https://autohotkey.com/boards/viewtopic.php?f=6&t=8628]ahk..com>Refactoring[/url]
 riot rooms|r|[url=https://about.riot.im/]#Autohotkey:matrix.org[/url] ([url=https://about.riot.im/need-help/#rooms-sectiong]c[/url])
 
-|r|
-global checkActionListAHKfile_sizeAndModiTime
-SetTimer,checkActionListAHKfile_sizeAndModiTime,Off
-SetTimer,checkActionListAHKfile_sizeAndModiTime,200 ; < I'm surprised that somehow has no effect 01.11.2018 18:47
-SetTimer,checkActionListAHKfile_sizeAndModiTime,On
+blue|r|red green
+
+HomeBoard|r|
+HomeBoard indexAutoHotkeyBug Reports
+Hotkey with ~ modifier has side effects in this case
+
+test 
+
+
