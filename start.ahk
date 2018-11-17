@@ -1,6 +1,8 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/EinrÃ¼ckungsstil#SL5small-Stil
 #NoTrayIcon
 
+Critical , On
+
 SetWorkingDir %A_ScriptDir%\Source
 
 SetTitleMatchMode,1
@@ -65,6 +67,7 @@ FileDelete, ActionListLearned.db
 Sleep,100
 
 run,gi-everywhere.ahk,%A_ScriptDir%\Source
+winwait,gi-everywhere.ahk,,9
 Sleep,1000
 run,Typing_Aid_everywhere_multi_clone.ahk,%A_ScriptDir%\Source
 

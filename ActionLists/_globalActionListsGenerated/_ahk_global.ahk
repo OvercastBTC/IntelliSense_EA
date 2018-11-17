@@ -3,14 +3,18 @@
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
-
-autohaus
-beumhaus
-blumenbed
+msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+Msgbox,`n(%A_LineFile%~%A_LineNumber%)
+Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
 
 Speak(,"PROD")
 Speak( A_ThisFunc,"PROD")
 Speak(" found","PROD")
+
+
 
 rTrim(clipboard," `t`r`n")
 
@@ -50,10 +54,11 @@ ActionLists
 Source
 
 Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox info on top|r|MsgBox,262208,% ":)`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" 
-MsgBox error on top|r|MsgBox,262160,% ":(`n" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":(`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" 
+MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 Msgbox,`n(%A_LineFile%~%A_LineNumber%)
 Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
+
 
 ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
@@ -579,8 +584,8 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 						StringDifference(string1, string2, maxOffset=1) 
 						stringLower(s) 
 						isUrlAvailable(URL) 
-						lll(A_LineNumber, A_LineFile, text="")|rr|lll(A_LineNumber, A_LineFile, "")|ahk|Send,{left 2}
-; lll(A_LineNumber, A_LineFile, msg)
+						lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,text="")|rr|lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")|ahk|Send,{left 2}
+; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,msg)
 						lll(ln, sn, text="") 
 						file_put_contents(f, c, overwrite=true) 
 						SendStrgC(trycount) 

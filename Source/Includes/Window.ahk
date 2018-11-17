@@ -28,15 +28,15 @@ EnableWinHook(){
       MaybeCoInitializeEx()
       g_WinChangedEventHook := DllCall("SetWinEventHook", "Uint", g_EVENT_SYSTEM_FOREGROUND, "Uint", g_EVENT_SYSTEM_FOREGROUND, "Ptr", g_NULL, "Uint", g_WinChangedCallback, "Uint", g_NULL, "Uint", g_NULL, "Uint", g_WINEVENT_SKIPOWNPROCESS)
 
-      ;msgbox,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+      ;msgbox,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
 
       if !(g_WinChangedEventHook){
 
         Speak("Failed to register Event Hook")
         msg := "Failed to register Event Hook! `n  g_WinChangedEventHook=" . g_WinChangedEventHook . "`n 17-07-16_16-21"
-        ToolTip5sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " )
+        ToolTip5sec(msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " )
         ;msgbox, % msg
-        lll(A_LineNumber, A_LineFile, msg )
+        lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,msg )
          return false
          ;ExitApp
       }
@@ -168,7 +168,7 @@ WinChanged(hWinEventHook, event, wchwnd, idObject, idChild, dwEventThread, dwmsE
       GetIncludedActiveWindow()
    }
 
-    ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+    ; ToolTip,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
     ; soundbeep,5000
     ; soundbeep,5000
     ; soundbeep,5000
@@ -267,7 +267,7 @@ GetIncludedActiveWindow() {
    
    EnableWinHook()
 
-   ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+   ; ToolTip,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
    ; soundbeep,1000
 
    Return, CurrentWindowIsActive
@@ -317,14 +317,14 @@ GetIncludedActiveWindowGuts() {
 
          CurrentWindowIsActive := false
 
-             lll(A_LineNumber, A_LineFile, " InactivateAll_Suspend_ListBox_WinHook() 17-08-04_16-19c")
+             lll( A_ThisFunc ":" A_LineNumber , A_LineFile ," InactivateAll_Suspend_ListBox_WinHook() 17-08-04_16-19c")
              ; run,\.\log\%A_LineFile%.log.txt
 
          InactivateAll_Suspend_ListBox_WinHook()
          ;Wait for any window to be active
 
          tip="WinWaitActive, , , , ZZZYouWillNeverFindThisStringInAWindowTitleZZZ`n" A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") . " " . Last_A_This
-         ToolTip4sec(tip " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+         ToolTip4sec(tip " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
          ; msgbox,% tip
          WinWaitActive, , , , ZZZYouWillNeverFindThisStringInAWindowTitleZZZ
          Continue
@@ -337,7 +337,7 @@ GetIncludedActiveWindowGuts() {
          Break
       
       CurrentWindowIsActive := false
-                   lll(A_LineNumber, A_LineFile, "GetIncludedActiveWindowGuts() > LOOP >  CurrentWindowIsActive := false > InactivateAll_Suspend_ListBox_WinHook() 18-02-10_09-44")
+                   lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"GetIncludedActiveWindowGuts() > LOOP >  CurrentWindowIsActive := false > InactivateAll_Suspend_ListBox_WinHook() 18-02-10_09-44")
                   ; run,\.\log\%A_LineFile%.log.txt
 
       InactivateAll_Suspend_ListBox_WinHook()
@@ -389,7 +389,7 @@ GetIncludedActiveWindowGuts() {
    g_Active_Process := ActiveProcess
    g_Active_Title := activeTitle
 
-  ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+  ; ToolTip,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
   ; soundbeep,800
 
 
@@ -414,7 +414,7 @@ CheckForActive(ActiveProcess,activeTitle){
    global prefs_IncludeProgramExecutables
    global prefs_IncludeProgramTitles
 
-  ; ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+  ; ToolTip,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
  ; SoundbeepString2Sound(A_ThisFunc)
 
 
@@ -492,7 +492,7 @@ ReturnWinActive(){
    global g_Active_Title
    global g_InSettings
 
-  ;   ToolTip,% g_WinChangedEventHook " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " "
+  ;   ToolTip,% g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " "
   ;  SoundbeepString2Sound(A_ThisFunc)
 
 

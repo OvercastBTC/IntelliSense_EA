@@ -1,10 +1,13 @@
-﻿#Include ..\_global.ahk
+﻿#Include ..\_globalActionListsGenerated\_ahk_global.ahk
+; #Include _global.ahk
+
+
 ___open ActionList|rr||ahk|openInEditor,AHK_Studio.ahk
 ; ä = thats a au 
 
 
 
-multi ahk Template|rr||ahk|
+multi ahk Template|rr||ahk|q
 ; Gi: do_indexFollowingLines4search = true
 m=
 (
@@ -25,7 +28,7 @@ send,^v
 
 
 
-multi_quote_demo 2|rr||ahk|
+multi_quote_demo 2|rr||ahk|q
 ; Gi: do_indexFollowingLines4search = true
 m=
 (
@@ -61,14 +64,14 @@ send,^v
 
 
 
-replacment rr |rr||ahk|
+replacment rr |rr||ahk|q
 m = 
 (
 key for ahk|rr|sending|ahk|code
 )
 Send,% m
 
-replacment r|rr||ahk|
+replacment r|rr||ahk|q
 m = 
 (
 replacment text|r|text

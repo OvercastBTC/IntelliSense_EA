@@ -279,13 +279,13 @@ sizeHere := (ActionListsize)? ActionListsize: 0
 			ErrMsg := g_ActionListDB.ErrMsg() . "`n" . sql . "`n"
 			ErrCode := g_ActionListDB.ErrCode()
 
-            ;tool tip msgbox too too too mmgw() msg t MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+            ;tool tip msgbox too too too mmgw() msg t MsgBox,% msg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
             ; tooltip
 
             sqlLastError := SQLite_LastError()
             if( instr(sqlLastError, "no such table") ){
     			Create_PerformanceMeasurementOf_Functions_Table()
-    			MsgBox,% ErrMsg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    			MsgBox,% ErrMsg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
                return
             }
 
@@ -300,9 +300,9 @@ sizeHere := (ActionListsize)? ActionListsize: 0
         {
             last_insert_rowid := id[1]
             last_millis_since_midnight := id[2]
-            ; msgbox,% last_millis_since_midnight  " = last_millis_since_midnight(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+            ; msgbox,% last_millis_since_midnight  " = last_millis_since_midnight(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
         }
-        ; msgbox,% res  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        ; msgbox,% res  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
                 sql := "select ROWID, millis_since_midnight from performance order by ROWID desc limit 1"
 
@@ -310,7 +310,7 @@ sizeHere := (ActionListsize)? ActionListsize: 0
 millis_since_midnight := JEE_millis_since_midnight(vOpt:="")
 if(last_millis_since_midnight && millis_since_midnight){
     if(millis_since_midnight < last_millis_since_midnight){
-        msgbox,":( that could not happen (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        msgbox,":( that could not happen (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
         return
     }
     millisec_dif_to_next_function_call := millis_since_midnight - last_millis_since_midnight
@@ -351,14 +351,14 @@ sql .= temp ")"
         ErrMsg := g_ActionListDB.ErrMsg() . "`n" . sql . "`n"
         ErrCode := g_ActionListDB.ErrCode()
         ; clipboard := sql
-        msg := "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-        ; msgbox, % "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
-        ToolTip4sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
+        msg := "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        ; msgbox, % "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        ToolTip4sec(msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
         return
         ;ExitApp
     }
     ;clipboard := sql
-    ;msgbox, % sql  "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    ;msgbox, % sql  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 }
 
 
@@ -370,7 +370,7 @@ sql .= temp ")"
 
 ; Performance_measurement_functions_Table
 Create_PerformanceMeasurementOf_Functions_Table(performanceTableName := "performance"){
-	lll(A_LineNumber, A_LineFile, "lin1 at CREATE_TABLE_performance")
+	lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"lin1 at CREATE_TABLE_performance")
 	global g_ActionListDB
 	global ActionList
 	sql =
@@ -393,14 +393,14 @@ small_LineFile TEXT NOT NULL
 		ErrCode := g_ActionListDB.ErrCode()
 		clipboard := sql
 		msg := "Cannot Create " performanceTableName " Table - fatal error: " ErrCode " - " ErrMsg
-		ToolTip4sec(msg " (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
-		MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+		ToolTip4sec(msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
+		MsgBox,% msg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		ExitApp
 	}
 } ; endOfFunction
 	
 	CreateWordsTable(WordsTableName:="Words"){
-		lll(A_LineNumber, A_LineFile, "lin1 at CREATE_TABLE_wordS")
+		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"lin1 at CREATE_TABLE_wordS")
 		global g_ActionListDB
 		global g_ActionListDBfileAdress
 		if(!g_ActionListDB)
@@ -449,7 +449,7 @@ ActionListID INTEGER NOT NULL
 	
 ;<<<<<<<< CREATE_TABLE_ActionLists <<<< 180218062159 <<<< 18.02.2018 06:21:59 <<<<
 	CREATE_TABLE_ActionLists(){
-		lll(A_LineNumber, A_LineFile, "lin1 at CREATE_TABLE_ActionLists")
+		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"lin1 at CREATE_TABLE_ActionLists")
 		global g_ActionListDB
 		global g_ActionListDBfileAdress
 		if(!g_ActionListDB)

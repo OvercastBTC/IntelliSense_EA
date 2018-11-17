@@ -31,7 +31,7 @@ change 2 '.ahk AutoHotkey_Community'|rr||ahk|sleep,2000 `n WinSetTitle,A,,.ahk A
 start changeing list automatically|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:=false
 
 
-list|rr||ahk|
+list|rr||ahk|q
 s = 
 (
 [list]
@@ -42,7 +42,7 @@ s =
 Clipboard := s
 send, ^v
 
-quote|rr||ahk|
+quote|rr||ahk|q
 ClipboardBackup := Clipboard
 timeoutSec := 9
 userNameDefault := "jeeswg joedf"
@@ -67,7 +67,7 @@ IfMsgBox,yes
 
 quote End|r|[/quote]
 
-center|rr||ahk|
+center|rr||ahk|q
 s = 
 (
 [center]%clipboard%[/center]
@@ -78,7 +78,7 @@ send, ^v
 
 
 
-img image|rr||ahk|
+img image|rr||ahk|q
 sting = 
 (
 [img]%clipboard%[/img]
@@ -86,7 +86,7 @@ sting =
 Clipboard := sting
 send, ^v
 
-docs|rr||ahk|
+docs|rr||ahk|q
 ahkCode = 
 (
 [docs] %clipboard%[/docs]
@@ -97,7 +97,7 @@ send, ^v
 
 
 
-code|rr||ahk|
+code|rr||ahk|q
 ahkCode = 
 (
 [code]

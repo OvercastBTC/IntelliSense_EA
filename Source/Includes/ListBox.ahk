@@ -20,7 +20,7 @@ InitializeListBox(){
       ; to ms ms to
    ; Gui, ListBoxGui:Font, s%prefs_ListBoxFontSize%, %ListBoxFont% ;
    if(0 && InStr(A_ComputerName,"SL5"))
-    ToolTip5sec( g_ListBoxFontSize " = font size of ListBoxGui `n (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") )
+    ToolTip5sec( g_ListBoxFontSize " = font size of ListBoxGui `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") )
    Gui, ListBoxGui:Font, s%g_ListBoxFontSize%, %ListBoxFont%
 
   INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
@@ -85,6 +85,9 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
             SetTimer,doListBoxFollowMouse,off
             Hotkey, WheelUp, off
             Hotkey, WheelDown, off
+            ;
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX, %g_ListBoxX%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY, %g_ListBoxY%
       }else{
             tip=START follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
             ToolTip1sec(tip)
@@ -305,7 +308,7 @@ ListBoxEnd() {
       g_ScrollEventHookThread =
       MaybeCoUninitialize()
    }
-   lll(A_LineNumber, A_LineFile, "DisableKeyboardHotKeys()")
+   lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"DisableKeyboardHotKeys()")
    DisableKeyboardHotKeys()
    return
 }
@@ -857,14 +860,14 @@ try {
          ; Msgbox,%g_ListBoxTitle% = g_ListBoxTitle `n (%A_LineFile%~%A_LineNumber%)
 
 } catch {
-   lll(A_LineNumber, A_LineFile, "ERROR Gui, ListBoxGui proably not ready ")
+   lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"ERROR Gui, ListBoxGui proably not ready ")
    return 
 }      
       
       IfEqual, g_ListBox_Id,
       {
-      ; lll(A_LineNumber, A_LineFile, "")
-         lll(A_LineNumber, A_LineFile, "EnableKeyboardHotKeys()")
+      ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")
+         lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"EnableKeyboardHotKeys()")
          EnableKeyboardHotKeys()
       }
       

@@ -38,7 +38,7 @@ getCaretPos(activedoProtectOutOfWindowPos:=true){
 	if(activedoProtectOutOfWindowPos){
 		WinGetPos,wX,wY,wW,wH,A
 		if(CaretX < wX || CaretY < wY || CaretX > (wX+wH) || CaretY > (wX+wH)){
-			ToolTip5sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\")  " (copy2clipBoard.functions.inc.ahk : 24)" )
+			ToolTip5sec(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")  " (copy2clipBoard.functions.inc.ahk : 24)" )
 			CaretX := g_CaretX_Old 
 			CaretY := g_CaretY_Old 
 		} 
@@ -72,6 +72,9 @@ varExist(ByRef v) {
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  lll(ByRef ln, scriptName, text := "") {
 global g_ignReg
+
+debugIt := true
+
 	ln .= "`n"
 	n := "`n"
 if(0){
@@ -94,12 +97,18 @@ if(0){
 if(1){
 	if(is_ignReg_defined ){
 	if( RegExMatch( ln, g_ignReg["saveLogFiles"]["ln"]) ){
+
+	    if(debugIt)
+	        msgbox, return %ln%
 		return
 	}
 	if( RegExMatch( scriptName, g_ignReg["saveLogFiles"]["scriptName"])	){
+	    if(debugIt)
+	        msgbox, return %scriptName%
 		return
 	}
     if( RegExMatch( text, g_ignReg["saveLogFiles"]["text"]) ){
+	        msgbox, return %text%
 		return
 	}}
 }
@@ -132,7 +141,7 @@ if(!Instr(logFileName,scriptName)){ ; plausibillity check . hopefully never happ
 
 	;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	; proof randomly if ye should delte the log file 16.07.2017 12:05
-	Random, rand, 1, 50
+	Random, rand, 1, 150
 	if(rand == 1){
 		FileGetSize, logFileKbytes, %logFileName%, K  ; Retrieve the size in Kbytes.
 		if(!logFileKbytes){
@@ -140,7 +149,7 @@ if(!Instr(logFileName,scriptName)){ ; plausibillity check . hopefully never happ
 			if(!fileexist(logFileName))
     			msgbox,Oops  %A_LineNumber%
         }
-		if(logFileKbytes > 10){
+		if(logFileKbytes > 100){
 			FileDelete,%logFileName%
 			FileAppend, %A_LineNumber%: logFileDeleted %timestampHHmmss%, %logFileName%
 			; msgbox,deleted :) %A_LineNumber%
@@ -708,7 +717,7 @@ SetKeyDelay,80,80
     if !WinExist("- CopyQ")
       MsgBox, please install CopyQ and add a global hotkey STRG+SHIFT+1 (v is not possible there - or?)
 
-    WinWaitNotActive, - CopyQ
+    WinWaitNotActive, - CopyQ,,9
 	; - CopyQ- CopyQ
 	; cl- CopyQeanUp 
 	Clipboard = %Clipboard% 
@@ -1272,7 +1281,10 @@ If(!WinExist(feedbackMsgBoxNr . ":")) ; shuld never happens 10.02.2018 12:51
 	DynaRun(AHKcode)
 else
 	feedbackMsgBoxNr(tit,text,x,y)
-WinWait,% feedbackMsgBoxNr . ":"
+WinWait,% feedbackMsgBoxNr . ":",,1
+ifWinNotExist,% feedbackMsgBoxNr . ":"
+    return false
+
 if(feedbackMsgBoxNr ==1)
 	WinMove, % feedbackMsgBoxNr . ":" , , % x , % y ; whay again? bugdif 10.02.2018 14:49
 sleep,100 ; we need this small wait becouse of the stupid focus ;) it needs little time after exist to catch the focus ;) 10.02.2018 13:40
@@ -1441,6 +1453,24 @@ DynaRunFROMAhkSudio(Script,Wait:=true,name:="Untitled"){
 
 ;/¯¯¯¯ DynaRun ¯¯ 181029190515 ¯¯ 29.10.2018 19:05:15 ¯¯\
 DynaRun(TempScript, pipename=""){
+
+    ; msgbox,18-11-16_13-19 ; to tool
+    ; tool __ tool
+
+    setTitleMatchMode, 2
+    if(winActive("ahk_class AutoHotkeyGUI")){
+        if(1 && InStr(A_ComputerName,"SL5") )
+            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), msg )
+        return false
+    }
+    if(winExist("fn_functions_global_" A_ThisFunc)){
+        if(1 && InStr(A_ComputerName,"SL5") )
+            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), msg )
+        return false
+    }
+
+
+
 	; TempScript := "#" . "ErrorStdOut`n" . TempScript
 	TempScriptPre := "" . "FileEncoding, UTF-8 `n"
 
@@ -1462,7 +1492,7 @@ DynaRun(TempScript, pipename=""){
 	{
 	;fn := SubStr( jj , 1,3 )
 		If pipename =
-			name := "AHK" A_TickCount "ln" A_LineNumber "fn_functions_global"
+ 			name := "AHK" A_TickCount "ln" A_LineNumber "fn_functions_global_" A_ThisFunc
 		Else
 			name := pipename
 		__PIPE_GA_ := DllCall("CreateNamedPipe","str","\\.\pipe\" name,_,2,_,0,_,255,_,0,_,0,@,0,@,0)
@@ -1489,7 +1519,7 @@ DynaRun(TempScript, pipename=""){
 	catch e  ; Handles the first error/exception raised by the block above.
 	{
 		tip := "Exception in DynaRun:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-		lll(A_LineNumber, A_LineFile, tip)
+		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
 		tooltip, `% tip
 		FileAppend, `% TempScript, `% name
 	}

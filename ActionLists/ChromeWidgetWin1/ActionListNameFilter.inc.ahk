@@ -5,7 +5,7 @@ ActionListFilterPath = .\..\ChromeWidgetWin1\AutoHotkeyGUI\ActionListNameFilter.
 
 
     if(!ActionListNEW)
-        msgbox, % "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+        msgbox, % "ERROR ActionListNEW is EMPTY.  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 
 ; ActionListNEW := "global.ahk" ; 26.09.2018 07:46 if you has to many files
@@ -47,7 +47,7 @@ if( SubStr( ActionListNEW , -3 ) <> ".ahk" ) ; thats corect i proofed it. 11.04.
 	ActionListNEW .= ".ahk"
 	
 if(!ActionListNEW)
-	msgbox, % "ERROR ActionListNEW is EMPTY.  (" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+	msgbox, % "ERROR ActionListNEW is EMPTY.  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ; this days i have to many files into hiere... i want first to activate the superglobal 10.08.2017 09:29
 ActionListNEW := maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveClass )
@@ -56,7 +56,7 @@ ActionListNEW := maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_be
 ; if you want you could use the follwong global variables fot calculating you new ActionListNEW : ActionListDir, ActionListNEW, ActiveClass, activeTitle
 if (!ActionListNEW ){
 	m := "ERROR ActionListNEW is EMPTY 17-03-19_11-51. ActionList=" ActionList "`n(" A_LineNumber " " A_LineFile ")" 
-	ToolTip9sec(m "(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"  )
+	ToolTip9sec(m "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"  )
 	msgbox, % m
 	; Clipboard := ActionListNEW
 }
