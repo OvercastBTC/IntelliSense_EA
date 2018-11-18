@@ -839,6 +839,9 @@ if( !rootDoObj.collectBlock && !rootDoObj.createKeys && CheckValid(rootLineObj.v
 	Return "continue"
 }
 
+firstWordInLine := ( RegexMatch(ALoopField,"i)^\s*(\w+)",Match) ) ? Match1 : ""
+Tooltip, % firstWordInLine
+
         ;/¯¯¯¯ if(rootDoObj.collectBlock) ¯¯ 181111201107 ¯¯ 11.11.2018 20:11:07 ¯¯\
 if(rootDoObj.collectBlock && ( Aindex <> rootLineObj.Aindex ) ){	
 	; lets waiting for the end of the Block 18-11-12_20-13
@@ -926,7 +929,7 @@ if(rootDoObj.collectBlock && ( Aindex <> rootLineObj.Aindex ) ){
 		
 		if( !rootLineObj.newKeywords 
 		&& ( rootDoObj.createKeys || rootCmdTypeObj.is_without_keywords ) ) {
-			rootLineObj.newKeywords := getAutoKeywords(rootLineObj.oldKeywords , rootCollectObj.value)
+			rootLineObj.newKeywords := firstWordInLine getAutoKeywords(rootLineObj.oldKeywords , rootCollectObj.value)
 			lll( A_ThisFunc ":" A_LineNumber , A_LineFile , Aindex ":00000>" rootLineObj.newKeywords "<0000=rootLineObj.newKeywords" )
 		}
 		if(isPrefixMultilineAHK){
@@ -1571,58 +1574,52 @@ ReverseWordNums(LearnedWordsCount){
 
 
 
+;/¯¯¯¯ getAutoKeywords ¯¯ 181106121229 ¯¯ 06.11.2018 12:12:29 ¯¯\
 getAutoKeywords(ByRef oldKeywords, ByRef words){
+    temp := oldKeywords words
+    return getAutoKeywordsNEW(temp)
+}
+getAutoKeywordsNEW(ByRef oldKeywords){
     ; AddWord rootDoObj.createKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
-	
-	newKeyWords := oldKeywords " " words
-	
-	firstWord := "" ; backup if founds nothing
-	
-	addKeysMAX := 4
-	minLength := 4
-	
-	camelCaseOr := "(?:[^A-Z]?)([A-Z][a-z]+)"
-	normalOr := "()([\W_-][a-z]+)"
-	regEx := "(?:(" camelCaseOr "|" normalOr "))"
+	; https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/Source/Includes/ActionList.ahk#L1438
+    ; https://stackoverflow.com/questions/53345266/generate-search-words-from-text-with-camelcase-by-using-regex
+	newKeyWords := oldKeywords
+	resultStr  := ""
+
+	firstWord := RegExMatch(newKeyWords,"(\w+)",m) ? m1 : ""
+	resultStr := firstWord " "
+
+	addKeysMAX := 44
+	minLength := 3
+	regEx := "\b((\w+?(?=[A-Z]|\b))([A-Z][a-z]*)?)([A-Z][a-z]*)?"
 	StartingPosition  := 2
 	addedKeysCounter := 0
-	
 	Array := [] ; or Array := Array()
-	while(foundPos := RegexMatch( " " newKeyWords, "O)" regEx, Match, StartingPosition - 1 )){
-		StartingPosition := Match.Pos(1) + Match.Len(1)
-		
+	while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPosition )){
+		; StartingPosition := Match.Pos(1) + Match.Len(1)
+		StartingPosition += strlen(Match1)
+
 		if(addedKeysCounter >= addKeysMAX)
 			break
-		preCar1 := Match.Value(2)
-		preCar2 := Match.Value(3)
-    		;if(preCar1=="|" || preCar2=="|")
-    		;	break
-		if(Match.Value(4))
-			keyTemp := Match.Value(4)
-		else if(Match.Value(3))
-			keyTemp := Match.Value(3)
-		else if(Match.Value(2))
-			keyTemp := Match.Value(2)
-		
-		
-		s:= ""
-		loop,4
-			s .= A_Index ":" Match.Value(A_Index) "#"
-    	; MsgBox,% s "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-		
-		trim_keyTemp := trim(keyTemp," `t`r`n")
-		if(0)
-			MsgBox,% ">" trim_keyTemp "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-		if(!HasVal(Array,trim_keyTemp)){
-			if(!firstWord)
-				firstWord := trim_keyTemp
-			if(minLength <= strlen(trim_keyTemp))
-				Array.Push(trim_keyTemp) ; Append this line to the array.
-			ArrayCount++
+		loop,3
+		{
+			word := Match%A_Index%
+			; MsgBox,% ">" word "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+			if(!HasVal(Array,word)){
+				if(!firstWord){
+					firstWord := word
+					resultStr .= firstWord " "
+				}
+				if(minLength <= strlen(word))
+					Array.Push(word) ; Append this line to the array.
+				ArrayCount++
+				resultStr .= word " "
+			}
 		}
-		
-    	; MsgBox,% keyTemp
+
 	}
+	; MsgBox,% ">" resultStr "<  `n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+	return RTrim( resultStr )
 	newKeyWords := ""
 	Loop % ArrayCount
 	{
@@ -1635,11 +1632,12 @@ getAutoKeywords(ByRef oldKeywords, ByRef words){
 		if(!newKeyWords := firstWord)
 			newKeyWords := "without keywords"
         ; MsgBox % "Element number " . A_Index . " is " . Array%A_Index%
-	if(0 && InStr(A_ComputerName,"SL5"))
-		feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "newKeyWords=" newKeyWords )
 	return newKeyWords
 }
 ;\____ getAutoKeywords __ 181106121233 __ 06.11.2018 12:12:33 __/
+
+
+
 
 ;/¯¯¯¯ HasVal ¯¯ 181116205402 ¯¯ 16.11.2018 20:54:02 ¯¯\
 HasVal(haystack, needle) { ; return index

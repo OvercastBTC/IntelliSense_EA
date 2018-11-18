@@ -73,7 +73,7 @@ varExist(ByRef v) {
  lll(ByRef ln, scriptName, text := "") {
 global g_ignReg
 
-debugIt := true
+debugIt := 0
 
 	ln .= "`n"
 	n := "`n"
@@ -99,16 +99,18 @@ if(1){
 	if( RegExMatch( ln, g_ignReg["saveLogFiles"]["ln"]) ){
 
 	    if(debugIt)
-	        msgbox, return %ln%
+	        msgbox, return %ln% `n (%A_LineFile%~%A_LineNumber%)
 		return
 	}
 	if( RegExMatch( scriptName, g_ignReg["saveLogFiles"]["scriptName"])	){
 	    if(debugIt)
-	        msgbox, return %scriptName%
+	        msgbox, return %scriptName% `n (%A_LineFile%~%A_LineNumber%)
+
 		return
 	}
     if( RegExMatch( text, g_ignReg["saveLogFiles"]["text"]) ){
-	        msgbox, return %text%
+	    if(debugIt)
+	        msgbox, return %text% `n (%A_LineFile%~%A_LineNumber%)
 		return
 	}}
 }

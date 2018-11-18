@@ -7,7 +7,7 @@ SetTimer,checkWinChangedTitle,off
 Thread, NoTimers , False ; Prevents interruptions from any timers.
 lineFileName := RegExReplace(A_LineFile, ".*\\([\w\s\.]+)$", "$1")
 #SingleInstance,Force
-;<<<<<<<< g_ignReg <<<< 180224082501 <<<< 24.02.2018 08:25:01 <<<<
+;<<<<<<<< g_ignRegm <<<< 180224082501 <<<< 24.02.2018 08:25:01 <<<<
 if(InStr(A_ComputerName,"xxxxxxxxx SL5")) ; do ignore nothing. development computer
 	global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"(WordIndex|CloseListBox|HotKeys|g_ListBox_Id)\b"},                    sqlQuery: {ln:".^", scriptName:".^", text:".^"},                    hotKeyStuff: {ln:".^", scriptName:".^", text:".^"},                    runLogFile: {ln:".^", scriptName:".^", text:".^"} } ;;;; regEx ignoreConfigList ;;;;
 ; please use it like this:     if( 1<RegExMatch(0 . A_ScriptName, g_ignReg["saveLogFiles"]["scriptName"])	|| ......
@@ -31,6 +31,9 @@ global errStr_first := ""
 
 prepareGi()
 
+global g_do_only_this_testCase 
+g_do_only_this_testCase  := "test_short_keywords"
+
 countErrors := 0
 
 SetTitleMatchMode,1
@@ -41,7 +44,9 @@ WinGetActiveTitle,activeTitle
 if(1 && err_multi_rr_stop_by_is_r())
 	countErrors++
 else if(1 && errStr:=err_problemNow())
-    countErrors++
+	countErrors++
+else if(1 && errStr:=test_short_keywords())
+	countErrors++
 else if(1){
 if(1 && test_do_indexFollowingLines4search())
 	countErrors++
@@ -150,22 +155,57 @@ test1 baum testsynonym1|rr||ahk|q
 testsynonym2|rr||ahk|q
 )
 ; expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in := "A bit of a longer text"
 	expected := "longer text"
 	result := getAutoKeywords(oldKeywords:="", in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 }
 ;\____ test_synonym
 
 
+
+
+;/¯¯¯¯ test_short_keywords ¯¯ 181118073220 ¯¯ 18.11.2018 07:32:20 ¯¯\
+test_short_keywords(){
+	in =
+(
+PHP|r|
+Hey PHP
+JS|r|
+Hey JavaScript
+)
+	expected =
+(
+PHP|r|
+Hey PHP
+JS|r|
+Hey JavaScript
+)
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_ThisFunc "° "
+
+    if(0){
+        in := "A bit of a longer text"
+        expected := "longer text"
+        result := getAutoKeywords(oldKeywords:="", in)
+        if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+            Return errStr " °" A_ThisFunc "° "
+    }
+}
+;\____ test_short_keywords __ 181118073226 __ 18.11.2018 07:32:26 __/
+
+
+
+
+
+;/¯¯¯¯ test_dontDeleteComments ¯¯ 181118073106 ¯¯ 18.11.2018 07:31:06 ¯¯\
 test_dontDeleteComments(){
-
-
 	in =
 (
 dontDeleteComments|r|
@@ -178,16 +218,16 @@ dont Delete Comments comment|r|
 )
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	result := getAutoKeywords(oldKeywords:="", in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in := "A bit of a longer text"
 	expected := "longer text"
 	result := getAutoKeywords(oldKeywords:="", in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 }
-
+;\____ test_dontDeleteComments __ 181118073110 __ 18.11.2018 07:31:10 __/
 
 
 ;/¯¯¯¯ test_getAutoKeywords ¯¯ 181116202412 ¯¯ 16.11.2018 20:24:12 ¯¯\
@@ -196,13 +236,13 @@ test_getAutoKeywords(){
 	expected := "weeks years"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	result := getAutoKeywords(oldKeywords:="", in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in := "A bit of a longer text"
 	expected := "longer text"
 	result := getAutoKeywords(oldKeywords:="", in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 }
 ;\____ test_getAutoKeywords __ 181116202416 __ 16.11.2018 20:24:16 __/
@@ -236,8 +276,8 @@ superduper
 send,`% msg
 Skills|r|Skills.pdf
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 }
 ;\____ test_multi_rr_stop_by_is_r __ 181117224255 __ 17.11.2018 22:42:55 __/
@@ -271,8 +311,8 @@ Scripte |r|
 ahkScripte
 PhpScripte
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 
@@ -295,8 +335,8 @@ textlang
 nothing special|r|
 textlang
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -306,8 +346,8 @@ textlang
 		line := "nothing special " A_Index "|r|weeks and forest " A_Index "`n"
 		in .= lines
 		expected := in
-		result := Loop_Parse_ParseWords(in)
-		if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber)){
+
+		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber)){
 			
 			
 			
@@ -320,8 +360,8 @@ special|r|weeks
 (
 special|r|weeks
 )
-			result := Loop_Parse_ParseWords(in)
-			if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+			if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 				Return errStr " °" A_ThisFunc "° "
 			
 			in =
@@ -332,8 +372,8 @@ nothing special 1|r|weeks and forest 1
 (
 nothing special 1|r|weeks and forest 1
 )
-			result := Loop_Parse_ParseWords(in)
-			if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+			if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 				Return errStr " °" A_ThisFunc "° "
 			
 			msgbox,% in "`n" result
@@ -362,9 +402,9 @@ something
 another
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
+
 	; MsgBox, % result
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -383,9 +423,9 @@ Computer better |r|
 Computer is better2
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
+
 	; MsgBox, % result
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 }
@@ -420,8 +460,8 @@ al color
 weeks years |r|
 weeks and years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -441,8 +481,8 @@ weeks forest |r|
 weeks and forest52
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -458,8 +498,8 @@ weeks years |r|
 weeks and years
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -478,8 +518,8 @@ weeks years |r|
 weeks and years
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -504,8 +544,8 @@ a color
 weeks |r|
 weeks
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -528,8 +568,8 @@ weeks years |r|
 a weeks
 years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -550,8 +590,8 @@ a color kindergarten
 weeks years |r|
 a weeks years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -572,8 +612,8 @@ weeks years |r|
 a weeks years
 
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -596,8 +636,8 @@ weeks years |r|
 a weeks years
 
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -615,8 +655,8 @@ weeks years |r|
 a weeks
 years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -636,8 +676,8 @@ weeks years |r|
 a weeks
 years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in =
@@ -656,8 +696,8 @@ weeks years |r|
 a weeks
 years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -681,8 +721,8 @@ weeks years |r|
 a weeks
 years
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -708,8 +748,8 @@ a weeks
 years
 
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -736,8 +776,8 @@ a weeks
 years
 
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -764,8 +804,8 @@ a weeks
 years
 
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -787,8 +827,8 @@ A bit of a longer text
 longer text |r|
 A bit of a longer text
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -802,8 +842,8 @@ a
 a |r|
 a
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in =
@@ -821,9 +861,9 @@ Computer better |r|
 Computer is better
 )
 	feedbackMsgBoxCloseAllWindows()
-	result := Loop_Parse_ParseWords(in)
+
 	; MsgBox, % result
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -834,7 +874,7 @@ a
 b |r|
 b
 )
-	result := Loop_Parse_ParseWords(in)
+
 	expected =
 (
 a |r|
@@ -842,13 +882,13 @@ a
 b |r|
 b
 )
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
 	
 }
-
+;/¯¯¯¯ err_problemNow ¯¯ 181118093655 ¯¯ 18.11.2018 09:36:55 ¯¯\
 err_problemNow(){
 	in =
 (
@@ -865,8 +905,8 @@ With a bit of content
 `)
 Send,`% it
 	)
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(Trim(expected," `t`r`n"),Trim(result," `t`r`n"),A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -885,8 +925,8 @@ busstops is bugieee
 `)
 Send,`% it
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 }
@@ -910,10 +950,10 @@ indexed programming text|rr||ahk|
 Tooltip, is green
 Msgbox, is yellow
 )
-	result := Loop_Parse_ParseWords(in)
+
 	expected := Trim(expected," `t`r`n")
 	result := Trim(result," `t`r`n")
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
     return false
 }
@@ -935,8 +975,8 @@ multiline text|r|
 line 1
 iine 2
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in = test0"["|rr||ahk|[
@@ -952,17 +992,17 @@ test0"["|rr||ahk|
 WinMove,,,-50
 WinMove,,,50
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
 
-if(0){
-	in =
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_ThisFunc "° "
+	
+	if(1){
+		in =
 	(
 A|rr||ahk|(
 B
 )
-	expected =
+		expected =
 (
 A|rr||ahk|(
 it =
@@ -971,26 +1011,27 @@ B
 `)
 Send,`% it
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
-}
 
-if(0){
-	in =
+		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+			Return errStr " °" A_ThisFunc "° "
+	}
+	
+	if(1){
+		in =
 (
 |r|
 almMountain
 )
-	expected =
+		expected =
 (
-almMountain |r|
+Mountain |r|
 almMountain
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
-}
+; future relaise: almMountain
+
+		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+			Return errStr " °" A_ThisFunc "° "
+	}
 	
 	in =
 (
@@ -1002,8 +1043,8 @@ beutiful Brain
 beutiful Brain |r|
 beutiful Brain
 )
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
@@ -1013,34 +1054,31 @@ beutiful Brain
 err_tests_easy_0(){
     ; a short keyword
 	in := "PHP|r|PHP-Frameworks"
-	result := Loop_Parse_ParseWords(in)
+
 	expected := "PHP|r|PHP-Frameworks"
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in = `; Comments are not stored in the database
-	result := Loop_Parse_ParseWords(in)
+
 	expected := ""
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in = simple string
-	result := Loop_Parse_ParseWords(in)
 	expected := in
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	
 	in = a|r|A
-	result := Loop_Parse_ParseWords(in)
 	expected := in
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in = searchWord|rr||ahk|do something
-	result := Loop_Parse_ParseWords(in)
 	expected := in
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
 	in =
@@ -1049,8 +1087,7 @@ searchWord 1|rr||ahk|do something 1
 searchWord 2|rr||ahk|do something 2
 	)
 	expected := in
-	result := Loop_Parse_ParseWords(in)
-	if(errStr := getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber))
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 }
 
@@ -1060,23 +1097,33 @@ err_unitTest1(){
 (
 aaa|r|AAA
 )
-	result := Loop_Parse_ParseWords(in)
 	expected =
     (
     aaa|r|AAA
     )
-	return getAssertEqual_ErrorStr(expected,result,A_ThisFunc ":" A_LineNumber)
+	return getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber)
 }
 
 
 
 
-getAssertEqual_ErrorStr(expected,result,ALineNumber){
+;getAssertEqual_ErrorStr(in,expected,result,ALineNumber){
+getAssertEqual_ErrorStr(ByRef in,ByRef expected,ALineNumber){
 	global strDebugByRef
+	
+	if(!ALineNumber)
+		MsgBox,error: %ALineNumber% must not be empty
+	if(g_do_only_this_testCase && !InStr(ALineNumber,g_do_only_this_testCase))
+		return
+	
+	
+	tooltip,% ALineNumber
+	sleep,5000
 	
 	fileNameResult := "result18-11-13_18-03.txt"
 	fileNameExpected := "expected18-11-13_18-03.txt"
-	
+
+	result := Loop_Parse_ParseWords( in )
 	expected := Trim(expected," `t`r`n")
 	result := Trim(result," `t`r`n")
 	if(result == expected){

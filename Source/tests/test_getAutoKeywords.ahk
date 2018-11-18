@@ -5,81 +5,54 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 o := "someThing else greetings. Recommended for performance and compatibility with future AutoHotkey releases."
 contend := "anotherThing for oma"
-n := getAutoKeywords(o ,contend )
-; ToolTip,% n "   =n" ,190 ,1
-Sleep,4000
+n := getAutoKeywords(oldKeywords := o contend )
+ToolTip,% n "   =n" ,190 ,1
+Sleep,1000
 Reload
 
 
-; https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/Source/Includes/ActionList.ahk#L1438
 ;/¯¯¯¯ getAutoKeywords ¯¯ 181106121229 ¯¯ 06.11.2018 12:12:29 ¯¯\
-getAutoKeywords(ByRef oldKeywords, ByRef words){
+getAutoKeywords(ByRef oldKeywords){
     ; AddWord rootDoObj.createKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
-	
-	newKeyWords := oldKeywords " " words
-	
-	firstWord := "" ; backup if founds nothing
-	
-	addKeysMAX := 4
-	minLength := 4
-	
-	camelCaseOr := "(?:[^A-Z]?)(?P<B>[A-Z][a-z]+)"
-	normalOr := "()(?P<C>[\W_-][a-z]+)"
-	regEx := "(?:(?P<E>" camelCaseOr "|" normalOr "))"
+	; https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/Source/Includes/ActionList.ahk#L1438
+    ; https://stackoverflow.com/questions/53345266/generate-search-words-from-text-with-camelcase-by-using-regex
+	newKeyWords := oldKeywords
+	resultStr  := ""
+
+	firstWord := RegExMatch(newKeyWords,"(\w+)",m) ? m1 : ""
+	resultStr := firstWord " "
+
+	addKeysMAX := 44
+	minLength := 3
+	regEx := "\b((\w+?(?=[A-Z]|\b))([A-Z][a-z]*)?)([A-Z][a-z]*)?"
 	StartingPosition  := 2
 	addedKeysCounter := 0
-	
-	;  ${SubpatternName}
-	
 	Array := [] ; or Array := Array()
-	while(foundPos := RegexMatch( " " newKeyWords, "O)" regEx, Match, StartingPosition - 1 )){
-		StartingPosition := Match.Pos(1) + Match.Len(1)
-		
+	while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPosition )){
+		; StartingPosition := Match.Pos(1) + Match.Len(1)
+		StartingPosition += strlen(Match1)
+
 		if(addedKeysCounter >= addKeysMAX)
 			break
-		preCar1 := "2" Match.Value(2)
-		preCar2 := "3" Match.Value(3)
-    		;if(preCar1=="|" || preCar2=="|")
-    		;	break
-		if(Match.Value(4))
-			keyTemp := "4" Match.Value(4)
-		else if(Match.Value(3))
-			keyTemp := "3" Match.Value(3)
-		else if(Match.Value(2))
-			keyTemp := "2" Match.Value(2)
-		keyTemp .= " s:" MatchF
-		; keyTemp .= " m:#" MatchP "#"
-		
-		m =
-		(
-		%MatchA%
-		%MatchB%
-		%MatchC%
-		%MatchD%
-		%MatchE%
-		%MatchF%
-		)
-		ToolTip,% m MatchD MatchA  ,190 ,1
-		
-		
-		s:= ""
-		loop,4
-			s .= A_Index ":" Match.Value(A_Index) "#"
-    	; MsgBox,% s "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-		
-		trim_keyTemp := trim(keyTemp," `t`r`n")
-		if(0)
-			MsgBox,% ">" trim_keyTemp "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-		if(!HasVal(Array,trim_keyTemp)){
-			if(!firstWord)
-				firstWord := trim_keyTemp
-			if(minLength <= strlen(trim_keyTemp))
-				Array.Push(trim_keyTemp) ; Append this line to the array.
-			ArrayCount++
+		loop,3
+		{
+			word := Match%A_Index%
+			; MsgBox,% ">" word "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+			if(!HasVal(Array,word)){
+				if(!firstWord){
+					firstWord := word
+					resultStr .= firstWord " "
+				}
+				if(minLength <= strlen(word))
+					Array.Push(word) ; Append this line to the array.
+				ArrayCount++
+				resultStr .= word " "
+			}
 		}
-		
-    	; MsgBox,% keyTemp
+
 	}
+	; MsgBox,% ">" resultStr "<  `n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+	return RTrim( resultStr )
 	newKeyWords := ""
 	Loop % ArrayCount
 	{
