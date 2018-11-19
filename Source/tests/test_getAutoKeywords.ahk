@@ -3,9 +3,8 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-o := "someThing else greetings. Recommended for performance and compatibility with future AutoHotkey releases."
-contend := "anotherThing for oma"
-n := getAutoKeywords(oldKeywords := o contend )
+o := "ABC"
+n := getAutoKeywords(o )
 ToolTip,% n "   =n" ,190 ,1
 Sleep,1000
 Reload
