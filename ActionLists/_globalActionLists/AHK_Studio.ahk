@@ -137,6 +137,10 @@ ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_Lin
 ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTip4sec lineFileName|rr|ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip6sec lineFileName|rr|ToolTip6sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip7sec lineFileName|rr|ToolTip7sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip8sec lineFileName|rr|ToolTip8sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip9sec lineFileName|rr|ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 
 
 Sleep, 000|rr|Sleep, 000|ahk|Send,{left 3}

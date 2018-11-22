@@ -1,13 +1,18 @@
-﻿;These functions and labels are related to the shown list of words
-
-
-
+﻿
 ;/¯¯¯¯ InitializeListBox ¯¯ 181107232104 ¯¯ 07.11.2018 23:21:04 ¯¯\
 InitializeListBox(){
    global
    
+   ; Gui, ListBoxGui: Color, 010101 ; works ??? 21.11.2018 22:41
+   ; Gui, ListBoxGui: Color, 010101 ; works ??? 21.11.2018 22:41
    Gui, ListBoxGui: -DPIScale -Caption +AlwaysOnTop +ToolWindow +Delimiter%g_DelimiterChar%
-   
+    ; too to
+
+    ; Gui +LastFound ; ??? has no effect
+    ; WinSet, TransColor, %CustomColor% 150  ; ???? has no effect
+
+   ;
+
    Local ListBoxFont
    if (prefs_ListBoxFontOverride && prefs_ListBoxFontOverride != "<Default>"){
       ListBoxFont := prefs_ListBoxFontOverride
@@ -17,22 +22,42 @@ InitializeListBox(){
    } else {
       ListBoxFont = Tahoma
    }
-      ; to ms ms to
+      ; to too  to1111  to   too   too  tooltip
    ; Gui, ListBoxGui:Font, s%prefs_ListBoxFontSize%, %ListBoxFont% ;
    if(0 && InStr(A_ComputerName,"SL5"))
     ToolTip5sec( g_ListBoxFontSize " = font size of ListBoxGui `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") )
-   Gui, ListBoxGui:Font, s%g_ListBoxFontSize%, %ListBoxFont%
+   ; Gui, ListBoxGui:Font, s%g_ListBoxFontSize%, %ListBoxFont%
+   ;Gui, ListBoxGui:Font, s%g_ListBoxFontSize% cRed Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
+   ; Gui, ListBoxGui:Font, s%g_ListBoxFontSize% cGreen Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
+
+    ; Gui,ListBoxGui:Color, , Black, ; https://autohotkey.com/boards/viewtopic.php?f=76&t=59191&p=249369#p249369
+    ; Gui,ListBoxGui:Color, , Black, ; https://autohotkey.com/boards/viewtopic.php?f=76&t=59191&p=249369#p249369
+    ; Gui,ListBoxGui:Color, , BackgroundTrans , ; this sets background of the listbox ; https://autohotkey.com/boards/viewtopic.php?f=76&t=59191&p=249369#p249369
+    ; Gui,ListBoxGui:Color,Gray ; works: https://autohotkey.com/boards/viewtopic.php?f=76&t=59191&p=249369#p249369
+
+    Gui, ListBoxGui:Font, s%g_ListBoxFontSize% %g_fontColor% Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
+
+    ; t to to too
+
+   ; Gui, ListBoxGui:Font, s%g_ListBoxFontSize% cGreen Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/Gui.htm#Color
+   ; Gui, ListBoxGui:Font,BackgroundTrans  ; ??? too . i seee no effect
+   ;WinSet, TransColor, EEAA99
+   ; too to
+   ; Gui, ListBoxGui: Font, s18 cRed Bold, g_ListBox%A_Index%
+   ; to to to t to too
 
   INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
    Loop, %prefs_ListBoxRows%
    {
+      ; all the not selected lines are here. 21.11.2018 23:01
       ; msg= 1: vg_ListBox%A_Index% ,2: R%A_Index% X0 Y0 ,3: T%prefs_ListBoxFontSize% T32 ,4: hwndg_ListBoxHwnd%A_Index%
       ; feedbackMsgBox(g_ListBox%A_Index%,A_LineNumber . " ListBox.ahk")
       GuiControl, ListBoxGui:-Redraw, g_ListBox%A_Index%
       ;can't use a g-label here as windows sometimes passes the click message when spamming the scrollbar arrows
       ;Gui, ListBoxGui: Add, ListBox, vg_ListBox%A_Index% R%A_Index% X0 Y0 T%prefs_ListBoxFontSize% T32 hwndg_ListBoxHwnd%A_Index%
     try{
+      ; Gui,Color,Black, Black ; no effect too
       Gui, ListBoxGui: Add, ListBox, vg_ListBox%A_Index% R%A_Index% X0 Y0 T%g_ListBoxFontSize% T32 hwndg_ListBoxHwnd%A_Index%
     } catch e{
         if(1 && InStr(A_ComputerName,"SL5"))
@@ -65,17 +90,38 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
    
 
    if (ClickedHwnd != g_ListBoxHwnd%TempRows%)
-   {
       return
-   }
-   
+
+   ; plausibility check
+   if(!g_ListBoxPosX)
+    msgbox,% " ERROR !g_ListBoxPosX `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+   if(!g_ListBoxContentWidth)
+    msgbox,% " ERROR !g_ListBoxContentWidth `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+;/¯¯¯¯ clickedScrollbar ¯¯ 181122141515 ¯¯ 22.11.2018 14:15:15 ¯¯\
    ; if we clicked in the scrollbar, jump out
    if (A_GuiX > (g_ListBoxPosX + g_ListBoxContentWidth))
    {
-      SetSwitchOffListBoxTimer()
+    Speak("clicked Scrollbar","PROD")
+     SetSwitchOffListBoxTimer()
+
+    ; g_ListBoxX := ""
+    ; g_ListBoxY := ""
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX,0
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY,0
+    ; sleep,1500
+    Msgbox,clickedScrollbar `n(%A_LineFile%~%A_LineNumber%)
+    reload
+
+    ;SetTimer,doListBoxFollowMouse,on
+    ;msgbox , , follow mouse, now listbox is follow your mouse again. `n`n clicked in the scrollbar`n(%A_LineFile%~%A_LineNumber%)
+
+
       Return
    }
-   
+;\____ clickedScrollbar __ 181122141522 __ 22.11.2018 14:15:22 __/
+
+; to to to too to to to to to to to tto too too to to
 
       ; global g_doListBoxFollowMouse  __
       if(g_doListBoxFollowMouse){
@@ -150,6 +196,7 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
 SetSwitchOffListBoxTimer(){
     ; is for e.g. triggerd if listbox is scrolled 22.10.2018 21:21
    static DoubleClickTime
+
 
    if !(DoubleClickTime)
    {
@@ -690,7 +737,7 @@ else
 
 
    
-; t too msg  to  too
+; t too msg  to  too to t t t to tooo
 
 
 
@@ -701,7 +748,7 @@ ShowListBox(paraX:="",paraY:=""){
 
    global
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
-    g_ListBoxTitle := "käsewurscht"
+    g_ListBoxTitle := "Word List Appears Here."
     g_ListBoxTitle_firstTimeInMilli := A_TickCount ; milliseconds
 
 
@@ -822,6 +869,7 @@ else if(0){
             Continue
          }
          GuiControl, ListBoxGui: Hide, g_ListBox%A_Index%
+
          GuiControl, ListBoxGui: -Redraw, g_ListBox%A_Index%
          GuiControl, ListBoxGui: , g_ListBox%A_Index%, %g_DelimiterChar%
       }
@@ -867,7 +915,7 @@ try {
    lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"ERROR Gui, ListBoxGui proably not ready ")
    return 
 }      
-      
+
       IfEqual, g_ListBox_Id,
       {
       ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")

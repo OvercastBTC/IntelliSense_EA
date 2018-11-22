@@ -5,6 +5,7 @@ ___your library open|rr||ahk|openInEditor,AutoHotkey_Community.ahk
 
 
 
+newposts autohotkey.com|rr||ahk|run,https://www.autohotkey.com/boards/search.php?search_id=newposts
 
 Please more details, e.g. your previous source code
 
@@ -31,7 +32,7 @@ change 2 '.ahk AutoHotkey_Community'|rr||ahk|sleep,2000 `n WinSetTitle,A,,.ahk A
 start changeing list automatically|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:=false
 
 
-list|rr||ahk|q
+list|rr||ahk|
 s = 
 (
 [list]
@@ -42,7 +43,7 @@ s =
 Clipboard := s
 send, ^v
 
-quote|rr||ahk|q
+quote|rr||ahk|
 ClipboardBackup := Clipboard
 timeoutSec := 9
 userNameDefault := "jeeswg joedf"
@@ -67,7 +68,7 @@ IfMsgBox,yes
 
 quote End|r|[/quote]
 
-center|rr||ahk|q
+center|rr||ahk|
 s = 
 (
 [center]%clipboard%[/center]
@@ -78,7 +79,7 @@ send, ^v
 
 
 
-img image|rr||ahk|q
+img image|rr||ahk|
 sting = 
 (
 [img]%clipboard%[/img]
@@ -86,7 +87,7 @@ sting =
 Clipboard := sting
 send, ^v
 
-docs|rr||ahk|q
+docs|rr||ahk|
 ahkCode = 
 (
 [docs] %clipboard%[/docs]
@@ -97,7 +98,7 @@ send, ^v
 
 
 
-code|rr||ahk|q
+code|rr||ahk|
 ahkCode = 
 (
 [code]
@@ -152,9 +153,3 @@ HomeBoard|r|
 HomeBoard indexAutoHotkeyBug Reports
 Hotkey with ~ modifier has side effects in this case
 
-test 
-
-
-
-Thank you
-Thank you

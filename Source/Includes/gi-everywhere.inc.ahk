@@ -775,6 +775,7 @@ EnableKeyboardHotKeys(){
 ;      lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"HotKey, %" . A_LoopField . "%, On")
 		HotKey, %A_LoopField%, On
 	}
+	g_isEnabledKeyboardHotKeys := true
 	Return
 }
 ;\____ EnableKeyboardHotKeys __ 181027205226 __ 27.10.2018 20:52:26 __/
@@ -786,7 +787,8 @@ EnableKeyboardHotKeys(){
 ;/¯¯¯¯ DisableKeyboardHotKeys ¯¯ 181027205321 ¯¯ 27.10.2018 20:53:21 ¯¯\
 DisableKeyboardHotKeys() {
 	global g_doSaveLogFiles
-	
+	global g_isEnabledKeyboardHotKeys
+
 	lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"DisableKeyboardHotKeys() { ... 17-07-16_13-31 ")
 	
 	global g_DelimiterChar
@@ -803,6 +805,7 @@ DisableKeyboardHotKeys() {
 		
 ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"HotKey, %" . A_LoopField . "%, Off")
 	}
+	g_isEnabledKeyboardHotKeys := true
 	Return
 }
 ;\____ DisableKeyboardHotKeys __ 181027205339 __ 27.10.2018 20:53:39 __/
@@ -1452,7 +1455,7 @@ SuspendOn(){
 	global g_ScriptTitle
    ;ToolTip2sec("Suspend deaktivad TEST " A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
    ;Suspend, On  ; deaktivated now. for testing reasons 16.07.2017 11:34 17-07-16_11-34
-	Menu, Tray, Tip, %g_ScriptTitle% - Inactive
+	; Menu, Tray, Tip, %g_ScriptTitle% - Inactive
 	If A_IsCompiled
 	{
             ; A_IsCompiled	Contains 1 if the script is running as a compiled EXE and an empty string (which is considered false) if it is not.
@@ -1468,7 +1471,7 @@ SuspendOn(){
 SuspendOff(){
 	global g_ScriptTitle
 	Suspend, Off
-	Menu, Tray, Tip, %g_ScriptTitle% - Active
+	; Menu, Tray, Tip, %g_ScriptTitle% - Active
 	If A_IsCompiled
 	{
             ; A_IsCompiled	Contains 1 if the script is running as a compiled EXE and an empty string (which is considered false) if it is not.
@@ -1485,14 +1488,20 @@ SuspendOff(){
 
 
 
+
+
+
 ;/¯¯¯¯ BuildTrayMenu ¯¯ 181024140140 ¯¯ 24.10.2018 14:01:40 ¯¯\
 BuildTrayMenu(){
+    ; https://autohotkey.com/docs/commands/Menu.htm
+
 ;feedbackMsgBox("BuildTrayMenu test 17-11-22_13-52","test 17-11-22_13-52",1,1)
-	
-	Menu, Tray, DeleteAll
-	Menu, Tray, NoStandard
+	Menu, Tray, DeleteAll ; DeleteAll: Deletes all custom menu items from the menu.
+	Menu, Tray, NoStandard ; NoStandard: Removes all standard menu items from the menu. https://autohotkey.com/docs/commands/Menu.htm#NoDefault
+	Menu, Tray, NoDefault ; Reverses setting a user-defined default menu item.
    ; Menu, Tray, add, Settings, Configuration
-	Menu, Tray, add, Pause, PauseResumeScript
+	; Menu, Tray, add, Pause, PauseResumeScript
+	Menu, Tray, add, Help Features online, lbl_HelpOnline_features
 	IF (A_IsCompiled) ; A_IsCompiled	Contains 1 if the script is running as a compiled EXE and an empty string (which is considered false) if it is not.
 	{
 		Menu, Tray, add, Exit, ExitScript
@@ -1501,6 +1510,11 @@ BuildTrayMenu(){
 	}
    ; Menu, Tray, Default, Settings
    ;Initialize Tray Icon
+   ; Menu, Tray, Tip , % Chr(8203) ; i dont want text there. The tray icon's tooltip is displayed when the mouse hovers over it.
+   Menu, Tray, Tip , % Chr(8203) ; i dont want text there. The tray icon's tooltip is displayed when the mouse hovers over it.
+   ; Menu, Tray, Tip ,  ; works not . i dont want text there. The tray icon's tooltip is displayed when the mouse hovers over it.
+	; Menu, Tray, Delete, Open ; dont work: erro nonexistend menu item
+	; Menu, Tray, Rename, Help, AHK Help ; dont work: erro nonexistend menu item
 	Menu, Tray, Icon
 }
 ;\____ BuildTrayMenu __ 181024140152 __ 24.10.2018 14:01:52 __/

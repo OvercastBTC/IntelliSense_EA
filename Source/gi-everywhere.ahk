@@ -50,6 +50,7 @@ class Stuff{
 }
 
 
+global g_isEnabledKeyboardHotKeys
 
 global g_config
 g_config := { list:{ change: { stopRexExTitle: false } } }
@@ -153,11 +154,14 @@ if(1 && InStr(A_ComputerName,"SL5")){
 global g_ListBoxFontSize := 16 ; works
 global g_ListBoxFontSize := 2 ; work but its so small i could not read it too
 global g_ListBoxFontSize := 8 ; work but its so small i could not read it too too tool
+global g_fontColor
+g_fontColor := "cGreen"
+
 listBoxFontSizeOLD := g_ListBoxFontSize
 
 ; ActionList := ActionListActive
 ; msgbox,% ActionList "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-
+; too tool tDateTime test2
 
 feedbackMsgBoxCloseAllWindows()
 
@@ -245,7 +249,7 @@ lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"exit ")
    ExitApp ; this protect hopefully the scipt from building 100drets of instances.
    ; this was happend during looking videos. tv- mediathek oder sometimes youtube.
 }
-Menu, Tray, Tip, %g_ScriptTitle% - Inactive ; make it visible again
+; Menu, Tray, Tip, %g_ScriptTitle% - Inactive ; make it visible again
 WinShow,%g_ScriptTitle%
 DetectHiddenWindows,On ; if this is off it does not find the tool in tray bar 27.04.2017 12:04
 SetTitleMatchMode,2  ; if this is 1 it does not find the tool in tray bar 27.04.2017 12:04
@@ -289,7 +293,7 @@ g_nextCriticalCommandString := ""
 
 ; Gosub, setActionListFileUpdatedTime ; 29.04.2017 14:03
 
-BuildTrayMenu()      
+BuildTrayMenu()
 
 
 ;Change the setup performance speed
@@ -406,24 +410,47 @@ MainLoop()
     ; SetTimer,checkActionListAHKfile_sizeAndModiTime,1200
 ; return
 
-;/¯¯¯¯ doubleCtrlC ¯¯ 181108142340 ¯¯ 08.11.2018 14:23:40 ¯¯\
+
+
+
+isListBoxEnabled := false
+#IfWinActive,
+~ctrl::
+   If (A_TimeSincePriorHotkey < 500) and (A_TimeSincePriorHotkey > 5){
+     toolTip2sec( "Ctrl+Ctrl = toggle listbox`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
+    isListBoxEnabled := !isListBoxEnabled
+    ; g_fontColor := (isListBoxEnabled) ? "cRed" : "cGreen"
+    if(isListBoxEnabled)
+        DestroyListBox()
+    else
+        InitializeListBox()
+;       Gui, ListBoxGui:Font, s%g_ListBoxFontSize% %g_fontColor% Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
+    return
+}
+return
+
+;/¯¯¯¯ doubleCtrlC Ctrl+C¯¯ 181108142340 ¯¯ 08.11.2018 14:23:40 ¯¯\
 ; doubleCtrlC for add entry to actionsList
 #IfWinActive,
 ~^c::
-   ;if(1 && InStr(A_ComputerName,"SL5"))
-    ;toolTip2sec( "BTW: work only in projects `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-    toolTip2sec( "First, create a list (__cre...)`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-   if(instr(ActionList,"\isNotAProject")){
-        toolTip6sec( ActionList "`n`nFirst, create a list`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1 )
-    return
-    }
+
    KeyWait, c, L
    ; KeyWait, Ctrl, L
    diffMilli := A_tickCount - copyCTriggeredTimeMilli
-   if(diffMilli > 750 || diffMilli < 9 ){ ; diffMilli < 10 probably not human triggerd
+   ; diffMilli > 750 ... was not ok 20.11.2018 20:58
+   if( diffMilli > 750 || diffMilli < 18 ){ ; diffMilli < 10 probably not human triggerd
       copyCTriggeredTimeMilli := A_tickCount
       return
    }
+
+  if(instr(ActionList,"\isNotAProject") || !ActionList ){
+       toolTip4sec( ActionList "`n`nFirst, create a list`n before entry can be added. `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1 )
+   return
+  }
+
+
+
     ; MsgBox,262208,% diffMilli "=diffMilli :)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     RegExReplace(A_LineFile,".*\\")
     ; msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -806,9 +833,18 @@ Return
 ; GoSub, LaunchSettings
 ; Return
 
+lbl_HelpOnline_features:
+    t := "open `n`n g-IntelliSense Features`n`n in myjetbrains.com ?"
+    msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Feature`%20order`%20by:`%20updated`%20asc`%20
+return
+
 PauseResumeScript:
 if (g_PauseState == "Paused"){
-    Msgbox,g_PauseState == "Paused"`n (%A_LineFile%~%A_LineNumber%)
+    if(1 && InStr(A_ComputerName,"SL5"))
+        Msgbox,g_PauseState == "Paused"`n (%A_LineFile%~%A_LineNumber%)
    g_PauseState =
    Pause, Off
    EnableWinHook()
@@ -1847,15 +1883,17 @@ check_ActionList_GUI_is_hanging_or_freezed:
      ;/¯¯¯¯ return ¯¯ 181107181830 ¯¯ 07.11.2018 18:18:30 ¯¯\
      m =
      (
-Reload GI? It's frozen? ==> Ctrl+Shift+F5
-Move the ActionLists? ==> Click on it once, move the mouse, click it again. Resize Font by MouseWheel.
+Reload ==> Ctrl+Shift+F5, Move ==> Click it, Resize Font by MouseWheel.
      )
-     ToolTip9sec(m "`n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ") ",60,-5)
+     ToolTip9sec(m "`n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ") ",140,-5)
      return
      ;\____ return __ 181107181826 __ 07.11.2018 18:18:26 __/
 
      ToolTip4sec("check_ActionList_GUI_is_hanging_or_freezed: elapsedSec > 11: DestroyListBox()`n`n" A_LineNumber " " A_ScriptName )
      DestroyListBox()
+
+    ; ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\"; ) ":"  A_LineNumber ")" )
+
 
      ; script hangs at this position
      ;winclose, % g_ListBoxTitle
