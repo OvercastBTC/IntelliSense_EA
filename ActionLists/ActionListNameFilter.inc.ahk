@@ -115,9 +115,11 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 	if(1 && InStr(A_ComputerName,"SL5")){
         ; Sourcetree ahk_class HwndWrapper[SourceTree.exe;;2705bdea-7ac8-4b39-b851-91e598ce9055] ; mouseWindowTitle=0xd508d8
         tip=%activeTitle% = activeTitle`n %ActiveClass% = ActiveClass`n
-        tip .= "(" A_ThisFunc ":" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-        ToolTip,%tip%
-        ;
+        tip .= "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        ToolTip,%tip% , 1,1
+        if(instr(activeTitle,"isNotAProject"))
+            sleep,1000
+        ; t
         ;Clipboard := tip
     }
 	if(!activeTitle && !ActiveClass){

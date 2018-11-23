@@ -4,6 +4,9 @@
 
 FileEncoding, UTF-8
 
+CoordMode, Caret, Screen
+; CoordMode, Mouse, Screen
+
 
 ;<<<<<<<< g_ignReg <<<< 180224082501 <<<< 24.02.2018 08:25:01 <<<<
 if(InStr(A_ComputerName,"SL5")) ; do ignore nothing
@@ -1112,8 +1115,9 @@ activeTitleOLD: %activeTitleOLD%
 
 lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip "reload 17-08-04_14-42")
                 tooltip, =>Reload  `n  `n (%A_LineFile%~%A_LineNumber%)
-ToolTip5sec(tip A_LineNumber . " " . RegExReplace(A_LineFile,".*\\") )
-                 sleep,1500
+CoordMode, Caret, Screen
+ToolTip1sec(tip A_LineNumber " " RegExReplace(A_LineFile,".*\\") , 1 , 1 )
+                 sleep,3500
                  return
              }
              if( 0 ) ; fo debugging really useful.
