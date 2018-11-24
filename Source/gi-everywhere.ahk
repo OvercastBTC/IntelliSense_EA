@@ -3,14 +3,20 @@
 
 FileEncoding, UTF-8
 
+BuildTrayMenu()
+
 #Include %A_ScriptDir%\inc_ahk\init_global.init.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\soundBeep.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\sql_temp.class.inc.ahk
 
+;global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"
+;global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"
+g_ignReg[saveLogFiles][scriptName] := "." ; ignore all. if I do not developing , its not need to constantly save log files. 24.11.2018 10:12
+
+
 lll( A_ThisFunc ":" A_LineNumber , A_LineFile , "i am started 9" )
 ; #Include %A_ScriptDir%\unitTests.inc.ahk ; Use this if you just want to test the preparser 13.11.2018 21:17
 lll( A_ThisFunc ":" A_LineNumber , A_LineFile , "i am started 10" )
-
 
 
 
@@ -293,7 +299,6 @@ g_nextCriticalCommandString := ""
 
 ; Gosub, setActionListFileUpdatedTime ; 29.04.2017 14:03
 
-BuildTrayMenu()
 
 
 ;Change the setup performance speed
@@ -377,6 +382,8 @@ if(!Sql_Temp.valueObj)
 
 InitializeListBox()
 
+
+
 BlockInput, Send
 
 global g_doSaveLogFiles
@@ -408,6 +415,9 @@ if !(g_ListBoxScrollCallback){
 }
    
 GetIncludedActiveWindow() ;Find the ID of the window we are using
+
+
+
 
 MainLoop()
 
