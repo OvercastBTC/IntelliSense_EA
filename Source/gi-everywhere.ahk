@@ -3,15 +3,14 @@
 
 FileEncoding, UTF-8
 
-BuildTrayMenu()
-
 #Include %A_ScriptDir%\inc_ahk\init_global.init.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\soundBeep.inc.ahk
 #Include %A_ScriptDir%\inc_ahk\sql_temp.class.inc.ahk
 
 ;global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"
 ;global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"
-g_ignReg[saveLogFiles][scriptName] := "." ; ignore all. if I do not developing , its not need to constantly save log files. 24.11.2018 10:12
+;g_ignReg["saveLogFiles"]["scriptName"] := "." ; ignore all. if I do not developing , its not need to constantly save log files. 24.11.2018 10:12
+;^--- please do that in: \Source\inc_ahk\init_global.init.inc.ahk
 
 
 lll( A_ThisFunc ":" A_LineNumber , A_LineFile , "i am started 9" )
@@ -35,6 +34,9 @@ SetControlDelay, -1 ; A short delay (sleep) is done automatically after every Co
 lineFileName := RegExReplace(A_LineFile, ".*\\([\w\s\.]+)$", "$1")
 ; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\inc_ahk\soundBeep.inc.ahk
 
+BuildTrayMenu()
+
+
 Process, Priority,, H ; <=== only use this if its not in a critical development 05.11.2018 13:20
 
 
@@ -57,6 +59,7 @@ class Stuff{
 
 
 global g_isEnabledKeyboardHotKeys
+
 
 global g_config
 g_config := { list:{ change: { stopRexExTitle: false } } }
@@ -110,8 +113,10 @@ global g_show_ListBox_Id_EMTY_COUNT := 0
 
 global g_method := "Clipboard"
 
-global g_regExReplaceInVisibleLine := "^([\w\d_-]+).*" ; show only first text , numers _ or -
-global g_regExReplaceInVisibleLine := "^([^|]+).*" ; the string only before the first "|"
+global g_regExReplaceInVisibleLine ; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-24
+g_regExReplaceInVisibleLine := "^([\w\d_-]+).*" ; show only first text , numers _ or -
+g_regExReplaceInVisibleLine := "^([^|]+).*" ; the string only before the first "|"
+
 
 global g_regExReplaceInVisibleLine := "^[_]*([^|\n]+)[^\.\n]*?([^|\n]{3,})$" ; https://autohotkey.com/boards/viewtopic.php?p=215425#p215425 https://regex101.com/r/GQjPg0/1
 global g_regExReplaceInVisibleLine := "^[_]*([^|\n]+)[^\.\n]*?([^|\n]{3,})?$" ; 18-06-10_09-34 https://autohotkey.com/boards/viewtopic.php?p=215425#p215425 https://regex101.com/r/GQjPg0/1
@@ -873,17 +878,45 @@ Return
 ; GoSub, LaunchSettings
 ; Return
 
+lbl_Help_AutoHotkey_online:
+    t := "open `n`n autohotkey help online`n`n ?"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://autohotkey.com/docs/Tutorial.htm
+return
+
 lbl_HelpOnline_features:
     t := "open `n`n g-IntelliSense Features`n`n in myjetbrains.com ?"
-    msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
     run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Feature`%20order`%20by:`%20updated`%20asc`%20
 return
 
+lbl_HelpOnline_shortcut:
+    t := "open `n`n g-IntelliSense about Shortcuts`n`n in myjetbrains.com ?"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23shortcut`%20order`%20by:`%20updated`%20asc`%20
+return
+
+lbl_HelpOnline_issues_open:
+    t := "open `n`n g-IntelliSense open issues `n`n in myjetbrains.com ?"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Unresolved`%20order`%20by:`%20Priority
+return
+
 PauseResumeScript:
 if (g_PauseState == "Paused"){
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(1 && !InStr(A_ComputerName,"SL5"))
         Msgbox,g_PauseState == "Paused"`n (%A_LineFile%~%A_LineNumber%)
    g_PauseState =
    Pause, Off

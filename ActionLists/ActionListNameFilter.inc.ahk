@@ -6,6 +6,8 @@
 ; you could use it as a global filter/routing called from your special .../className/ActionListNameFilter.inc.ahk
 
 #SingleInstance, force
+CoordMode, ToolTip, Screen
+
 ; if you want you could use the follwong global variables for calculating you new ActionListNEW : ActionListDir, ActionListNEW, ActiveClass, activeTitle
 
 if (!ActionListNEW && 1){
