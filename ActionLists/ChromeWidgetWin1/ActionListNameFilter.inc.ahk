@@ -57,7 +57,7 @@ ActionListNEW := maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_be
 if (!ActionListNEW ){
 	m := "ERROR ActionListNEW is EMPTY 17-03-19_11-51. ActionList=" ActionList "`n(" A_LineNumber " " A_LineFile ")" 
 	ToolTip9sec(m "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"  )
-	msgbox, % m
+	msgbox, % m " :((( "
 	; Clipboard := ActionListNEW
 }
 

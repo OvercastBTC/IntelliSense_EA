@@ -1,6 +1,9 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/Einrueckungsstil#SL5small-Stil
 ; # ErrorStdOut
 
+
+
+
 FileEncoding, UTF-8
 
 #Include %A_ScriptDir%\inc_ahk\init_global.init.inc.ahk
@@ -60,6 +63,7 @@ class Stuff{
 
 global g_isEnabledKeyboardHotKeys
 
+global Sql_Temp
 
 global g_config
 g_config := { list:{ change: { stopRexExTitle: false } } }
@@ -85,8 +89,8 @@ if(1 && InStr(A_ComputerName,"SL5") )
 ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 ;msgBox,% g_config["FuzzySearch"]["MAXlines"] "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
-; global g_config := { Send:{ RealisticDelayDynamic: true } }
-g_config .= { Send:{ RealisticDelayDynamic: false } }
+global g_config ; := { Send:{ RealisticDelayDynamic: true } }
+g_config["Send"]["RealisticDelayDynamic"] := false
 ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 
@@ -378,11 +382,6 @@ reload
 ; RebuildDatabase()
 ; Sql_Temp.msgBoxSelectBuild_example( word, listID )
 
-Sql_Temp.sqLite2obj()
-if(!Sql_Temp.valueObj)
-    set_SqlTemplateFiles2TempTable()
-if(!Sql_Temp.valueObj)
-    msgbox,% " ERROR !Sql_Temp.valueObj `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" , 50,50
 
 
 InitializeListBox()
@@ -422,6 +421,12 @@ if !(g_ListBoxScrollCallback){
 GetIncludedActiveWindow() ;Find the ID of the window we are using
 
 
+
+Sql_Temp.sqLite2obj()
+if(!Sql_Temp.valueObj)
+    set_SqlTemplateFiles2TempTable()
+if(!Sql_Temp.valueObj)
+    msgbox,% " ERROR !Sql_Temp.valueObj `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
 
 MainLoop()
@@ -512,6 +517,15 @@ return
      s := regExReplace(s,"^([ ]*)\)","$1`)")
      ; msgbox,% s "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     isMuliline := (regExMatch(trim(s), "m)\n"))
+
+if(isMuliline){
+s =
+(
+|r|
+%s%
+)
+}
+
     ;if(isMuliline)
      ;   msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     ;msgbox,% clipboard "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -529,19 +543,11 @@ SetWorkingDir,%A_ScriptDir%
 ; ActionList_witExt = %ActionList_witExt%
 ; ActionListWithoutGenerated_witExt = %ActionListWithoutGenerated_witExt%
 ; ActionList = %ActionList%
-if("%isMuliline%"){
 s =
 (
 
-|r|
 %s%
 `)
-}else{
-s =
-(
-%s%
-`)
-}
 if(true){
     inputBox, s, add to ActionLists?, add to ``n%sActionListFileName%  ? ``n``n timeoutSec = %timeoutSec% , , 350, 180,,,,%timeoutSec%,`% s
      if ErrorLevel
@@ -557,6 +563,14 @@ FileAppend, `% s , %sActionListWithoutGenerated_witExt%
 exitApp
     )
     ; clipboard := AHKcode AHKcode2 " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+
+; if("%isMuliline%"){
+result := Loop_Parse_ParseWords( s )
+; rootLineObj := { value:s, Aindex: 1 }
+; isCommandType := setCommandTypeS(rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj )
+; AddWordToList(rootCmdTypeObj,strDebug4insert:="",strDebugByRef:="",1,1, s , 0,"ForceLearn",LearnedWordsCount, rootCmdTypeObj.is_IndexedAhkBlock)
+
     DynaRun(AHKcode AHKcode2)
     if(0 && InStr(A_ComputerName,"SL5"))
         msgbox,% AHKcode2 "`n saved to " sActionListWithoutGenerated_witExt "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -693,8 +707,10 @@ return
 #s::
  toggle_RealisticDelayDynamic(){
      global g_config
-     g_config["Send"]["RealisticDelayDynamic"] := ( g_config["Send"]["RealisticDelayDynamic"] ) ? false : true
-     ToolTip2sec("RealisticDelayDynamic = " g_config["Send"]["RealisticDelayDynamic"] " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This,1,1)
+     global test
+     Msgbox,% test "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+     g_config["Send"]["RealisticDelayDynamic"] := !g_config["Send"]["RealisticDelayDynamic"]
+     ToolTip5sec("RealisticDelayDynamic = `n`n`n >" g_config["Send"]["RealisticDelayDynamic"] "< `n`n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This,1,1)
  }
 
 ; SetTitleMatchMode,2
@@ -2029,8 +2045,8 @@ show_ListBox_Id:
         }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){ ; the only think that helps today 24.10.2018 15:11
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " A_now
-            if(1 && InStr(A_ComputerName,"SL5"))
-                soundBeep,3000
+            ; if(1 && InStr(A_ComputerName,"SL5"))
+                sleep,2000
             reload ;  [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47
             ; run,% "..\start.ahk" ; deactivated. test 22.10.2018 05:54
         }

@@ -5,4 +5,4 @@ ___open ActionList|rr||ahk|openInEditor,WEB_DE_Mail.ahk
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au 
 
-HansWurst
+

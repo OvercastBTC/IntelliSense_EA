@@ -97,7 +97,6 @@ send, ^v
 
 
 
-
 code|rr||ahk|
 ahkCode = 
 (
