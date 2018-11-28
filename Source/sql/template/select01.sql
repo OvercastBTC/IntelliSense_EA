@@ -4,4 +4,3 @@ SELECT word, worddescription, wordreplacement
      and   ActionListID > 0
      order by ROWID desc
      LIMIT 9
-
