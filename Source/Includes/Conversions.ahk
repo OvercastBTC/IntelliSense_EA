@@ -469,7 +469,6 @@ ActionListID INTEGER NOT NULL
 
 ; ActionListID,
 ;clipboard := sql
-		tooltip, % sql
 		IF not g_ActionListDB.Query(sql)
 		{
 			ErrMsg := g_ActionListDB.ErrMsg() . "`n" . sql . "`n"

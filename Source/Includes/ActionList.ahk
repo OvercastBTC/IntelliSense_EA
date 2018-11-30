@@ -7,10 +7,16 @@ lll( A_ThisFunc ":" A_LineNumber , A_LineFile , "i am started" )
 
 ;/¯¯¯¯ setTrayIcon ¯¯ 181107175114 ¯¯ 07.11.2018 17:51:14 ¯¯\
 setTrayIcon(status := "loaded" ){
+    global g_isListBoxDisabled
+	if(g_isListBoxDisabled){
+		Menu, Tray, Icon, %A_ScriptDir%\icon\abc123\GI-gray-gradient.ico
+		return
+	}
 	if(status == "RecomputeMatches" ){
 		Menu, Tray, Icon, shell32.dll, 240 ; pretty green clock
 		return
 	}
+
 	if(status <> "loaded" ){
 		Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
     ;  Menu, Tray, Icon, shell32.dll, 44 ; star
@@ -21,7 +27,6 @@ setTrayIcon(status := "loaded" ){
 	Menu, Tray, Icon, %iconAdress%
 }
 ;\____ setTrayIcon __ 181107175118 __ 07.11.2018 17:51:18 __/
-
 
 
 
@@ -260,8 +265,7 @@ from: ActionList.ahk~%A_LineNumber%
 		
 		
 		
-		CoordMode, ToolTip,Screen
-		
+
 		SELECT := "SELECT ActionListmodified, ActionListsize FROM ActionLists WHERE ActionList = '" ActionList "';"
 		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
 			ToolTip4sec(msg "`n`n" SELECT "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", ""),1,1  )
@@ -679,9 +683,9 @@ doAsimpleCopyOfLine(ByRef rootCmdTypeObj,infoBox := ""){
 				&& 	!rootCmdTypeObj.is_IndexedAhkBlock
 				&& 	!rootCmdTypeObj.is_multiline_r
 				&& 	!rootCmdTypeObj.is_multiline_rr
-				&& 	!rootCmdTypeObj.is_synonym
-				&& 	!rootCmdTypeObj.is_without_keywords ) 			
+				&& 	!rootCmdTypeObj.is_synonym  )
 			|| 		rootCmdTypeObj.is_str )
+			; && 	!rootCmdTypeObj.is_without_keywords
 	if(false){
 		m =
 		(
@@ -800,6 +804,15 @@ if(!rootDoObj.collectBlock){ ; dont need it it was may done into the content loo
 
 doAsimpleCopy := doAsimpleCopyOfLine( rootCmdTypeObj ) ; ,rootLineObj.value "?=" ALoopField)
 if(doAsimpleCopy){
+
+		if( rootDoObj.createKeys || rootCmdTypeObj.is_without_keywords ) {
+			AddWordReplacement :=  substr(rootLineObj.value, rootCmdTypeObj.pos_value )
+			rootLineObj.newKeywords := getAutoKeywords(AddWordReplacement)
+			rootLineObj.value := rootLineObj.newKeywords rootLineObj.value
+			lll( A_ThisFunc ":" A_LineNumber , A_LineFile , Aindex ":00000>" rootLineObj.newKeywords "<0000=rootLineObj.newKeywords" )
+
+		}
+
 	if(CheckValid( rootLineObj.value )){
 		AddWordToList(rootCmdTypeObj,strDebug4insert
 		,strDebugByRef
@@ -1254,28 +1267,35 @@ setCommandTypeS(rootLineObj
 	if(trim(!rootLineObj.value)){
 		return false
 	}
-	regIs_r  := "^([^\|\n]+?)\|r\|.+"
+
+    ;/¯¯¯¯ initialization ¯¯ 181125235523 ¯¯ 25.11.2018 23:55:23 ¯¯\
+    ; wee dont need it... was try to bugfix
+    rootCmdTypeObj.is_multiline_r := false
+    rootCmdTypeObj.is_without_keywords := false
+    ;\____ initialization __ 181125235527 __ 25.11.2018 23:55:27 __/
+
+
+
+	regIs_r  := "^([^\|\n]*?)\|r\|.+"
 	if(RegExMatch( rootLineObj.value , regIs_r ,  m )){
 		rootDoObj.collectBlock := false
 		rootCmdTypeObj.is_r := true
 		rootCmdTypeObj.pos_value := strlen(m1) + 4
+		; msgbox,% rootLineObj.value "`n(" A_LineFile "~" A_LineNumber ")"
+		if(!m1)
+		    rootCmdTypeObj.is_without_keywords := true
 	}else{
 		rootCmdTypeObj.is_r := false
 	}
 
-    ;/¯¯¯¯ initialization ¯¯ 181125235523 ¯¯ 25.11.2018 23:55:23 ¯¯\
-    ; wee dont need it... was try to bugfix
-	rootCmdTypeObj.is_multiline_r := false
-	rootCmdTypeObj.is_without_keywords := false
-	;\____ initialization __ 181125235527 __ 25.11.2018 23:55:27 __/
-
 	regIs_multiline_r  := "^([^\|\n]+?)\|r\|([ ]*?)$"
-	if(RegExMatch( rootLineObj.value , regIs_multiline_r ,  m )){
+	if(!rootCmdTypeObj.is_r && RegExMatch( rootLineObj.value , regIs_multiline_r ,  m )){
 		rootDoObj.collectBlock := true
 		rootCmdTypeObj.is_multiline_r := true
 		rootCmdTypeObj.pos_value := strlen(m1) + 4
 		rootCollectObj.value := ALoopField ; <=== === is always empty ??? ;) :D
 		;msgbox, % substr(rootLineObj.value, rootCmdTypeObj.pos_value - 2 )
+		; msgbox,% rootLineObj.value "`n(" A_LineFile "~" A_LineNumber ")"
 	}
 	
 	if(0){
@@ -1345,11 +1365,11 @@ setCommandTypeS(rootLineObj
 	}
 	
     ;/¯¯¯¯ collectBlock ¯¯ 181111082347 ¯¯ 11.11.2018 08:23:47 ¯¯\
-	regIs_without_keywords  := "^\|(r|rr)\|"
+	regIs_without_keywords  := "^\|(r|rr)\|[ ]*$"
 	if(RegExMatch( rootLineObj.value , regIs_without_keywords, m )){
 		if(m1=="r"){
 			; rootLineObj.value := "" A_ThisFunc A_LineNumber " " rootLineObj.value ; for testing during deevlopment 06.11.2018 11:15
-			;rootCmdTypeObj.is_r := true
+			; rootCmdTypeObj.is_r := true
 			rootCmdTypeObj.is_multiline_r := true
 		}if(m1=="rr"){
 			;rootCmdTypeObj.is_rr := true
@@ -1882,7 +1902,7 @@ lll( A_LineNumber , A_LineFile , A_ThisFunc "`n" s )
 ;/¯¯¯¯ is_multiline_r ¯¯ 181125204706 ¯¯ 25.11.2018 20:47:06 ¯¯\
 if(rootCmdTypeObj.is_multiline_r || rootCmdTypeObj.is_r){
         if(rootCmdTypeObj.is_without_keywords){
-            regIs_multiline_r  := "^([^\|\n]+?)\|r\|"
+            regIs_multiline_r  := "^([^\|\n]*?)\|r\|"
             if(RegExMatch( AddWord , regIs_multiline_r ,  m )){
                 rootCmdTypeObj.pos_value := strlen(m1) + 4
             }else

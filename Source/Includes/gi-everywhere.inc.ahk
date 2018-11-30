@@ -116,9 +116,15 @@ ReadInTheActionList(calledFromStr){ ;Read in the ActionList
 MainLoop(){
 	
 	global g_TerminatingEndKeys
+    global g_isListBoxDisabled
 	Loop
 	{
-		
+		if(g_isListBoxDisabled){
+		    sleep,500
+		    continue
+		}
+		; tooltip 5 tlkjk to to ttt t t to totolsotolsotlsolilkj
+
       ;If the active window has changed, wait for a new one
       ;IF (false && !ReturnWinActive() ) { ; "false &&" addet 18-03-31_13-42 lets try
 		IF !( ReturnWinActive() )
@@ -499,10 +505,13 @@ RecomputeMatches( calledFromStr ){
 	global prefs_ShowLearnedFirst
 	global prefs_SuppressMatchingWord
 
+	global g_ListBoxPosX
+	global g_ListBoxPosY
+
 
     ; Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
 
-    ; toot too
+    ; toot too t
 
 	setTrayIcon("RecomputeMatches")
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, RecomputeMatches , % calledFromStr
@@ -544,10 +553,24 @@ RecomputeMatches( calledFromStr ){
         g_SingleMatchReplacement := Object()
 
         ; to to to to to to
+        ; totoo to toot to ttto
 
         loop,6
         {
             o := valueObj[A_Index]
+            if(!o){
+        		; Msgbox,:( Oops >%A_Index%<(%A_LineFile%~%A_LineNumber%)
+			    toolTip, % "Oops no SQL-Template `nNr." A_Index "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),1,1
+                continue
+            }
+            if(!o["word"]["pos"]){
+                tip := "Oops ERROR in SQL-Template `nNr.>" A_Index "<`n`n Could not be found: `n o[word][pos]`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                toolTip,% tip ,1 ,1
+        		Msgbox,:( Oops `n %tip%(%A_LineFile%~%A_LineNumber%)
+                continue
+            }
+            ; t t
+
             o["listID"]["len"] := ""
             sql["pre_Where"] := substr( o["sql"], 1 , o["word"]["pos"] - 1 )
             sql["postWhere"] := substr( o["sql"] , o["word"]["pos"] + 1, - 1 + o["listID"]["pos"] - o["word"]["pos"] )
@@ -613,12 +636,15 @@ RecomputeMatches( calledFromStr ){
 
 	; msgbox,% g_MatchTotal "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 	
-	; tooltip msg box reg
-	
+	; tooltip msg bxox reg tsk ekejskj kjk jjk binat bi bzui tooo bigf fsd asd nnn nnnn nnnvcxcfggdfgvfdfvxcvfdfvvdfdfggbbvms dscxxcdfvx sfvdfvdfss sfd
+	; dsfdsfdfdsafd adfsfd sdffadf dfafds
+
+	; msgbox,% "1: "g_ListBoxPosX " 2:" g_ListBoxX asxsdcxsdsa
 	IfEqual, g_MatchTotal, 0
 	{
-		Tooltip, no match found for `n`n%g_Word%
-		; MsgBox, % SELECT 
+        CoordMode, ToolTip,Screen
+		Tooltip, % g_Word " not found", % g_ListBoxX + 20 , % g_ListBoxY + 10
+		; MsgBox, % SELECT
 		; Clipboard := SELECT
 		ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
 		setTrayIcon()
@@ -1527,6 +1553,8 @@ BuildTrayMenu(){
 	Menu, Tray, add, Help Gi-Features online, lbl_HelpOnline_features
 	Menu, Tray, add, Help Gi-Shortcuts online, lbl_HelpOnline_shortcut
 	Menu, Tray, add, open issues online, lbl_HelpOnline_issues_open
+	; Menu, Tray, add
+	Menu, Tray, add, _______________________________,lbl_noOp
     Menu, Tray, add, Help AutoHotkey online, lbl_Help_AutoHotkey_online
 
 	IF (A_IsCompiled) ; A_IsCompiled	Contains 1 if the script is running as a compiled EXE and an empty string (which is considered false) if it is not.
