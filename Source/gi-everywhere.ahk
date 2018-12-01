@@ -942,12 +942,14 @@ Return
 ; Return
 
 lbl_g_min_searchWord_length_0:
-g_min_searchWord_length := 0
+    g_min_searchWord_length := 0
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
 return
 
 ; 18-12-01_10-50
 lbl_g_min_searchWord_length_1:
-g_min_searchWord_length := 1
+    g_min_searchWord_length := 1
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
 return
 
 lbl_Help_AutoHotkey_online:
