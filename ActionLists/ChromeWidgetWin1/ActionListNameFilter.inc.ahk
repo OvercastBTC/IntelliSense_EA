@@ -29,7 +29,8 @@ else if ( RegExMatch( activeTitle , "i)\b(AutoHotkey Community)\b"  )    ){
 else if (RegExMatch( activeTitle , "(\.ahk)" ) ){
 	if(false && activeClass == "ChromeWidgetWin1") {  ; want to know that. debugging 26.4.218 12:18}
         ; need to be discussed: https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-22
-		tooltip,% activeTitle activeClass
+		; tooltip,% activeTitle activeClass
+		ToolTip4sec(activeTitle activeClass "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		clipboard := activeTitle activeClass
 		sleep,9000
 		log =

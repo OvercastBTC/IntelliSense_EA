@@ -47,7 +47,7 @@ SetBatchLines, -1 ; I can not do recognice any improvement with that right now
 Process, Priority,, H ; <=== only use this if its not in a critical development 05.11.2018 13:20
 ; Process, Priority,, R ; <=== it acts on me as if the script was working more UNstable
 
-; Critical,On  ; I can not do recognice any improvement with that right now
+; Critical, On  ; I can not do recognice any improvement with that right now
 
 ; tooltip tooltip tooltip  tooltip too tool toolt tool tool tool msgbxo ms msgbox m m  m msgb msgbo msgbox tooltip
 ; tooltip tooltip t t t t t tooltip msgbox tooltip msgbxo toolt
@@ -377,10 +377,18 @@ AutoTrim, Off
 ;    LastWord:=Found.1
 ; to tooltiip too
 
+RegRead, g_doSound , HKEY_CURRENT_USER, SOFTWARE\sl5net, g_doSound
+
 global g_isListBoxDisabled
 g_isListBoxDisabled := false
 RegRead, g_isListBoxDisabled    , HKEY_CURRENT_USER, SOFTWARE\sl5net, g_isListBoxDisabled
 RegRead, g_min_searchWord_length, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length ; RegWrite , RegSave
+
+if(g_min_searchWord_length <= 2) ; becouse of performance reasons. thats optional. dont need 02.12.2018 09:25
+    g_min_searchWord_length_2 := g_min_searchWord_length + 2
+
+; box box to to bo bo box ms to sec
+
 if(g_isListBoxDisabled){
     DestroyListBox()
     setTrayIcon("g_isListBoxDisabled")
@@ -472,7 +480,7 @@ MainLoop()
 
 
 
-;/¯¯¯¯ doubleCtrl ¯¯ 181201095644 ¯¯ 01.12.2018 09:56:44 ¯¯\
+;/¯¯¯¯ doubleCtrl double Ctrl ListBoxDisabled¯¯ 181201095644 ¯¯ 01.12.2018 09:56:44 ¯¯\
 #IfWinActive,
 ~ctrl::
    If (A_TimeSincePriorHotkey < 500) and (A_TimeSincePriorHotkey > 5){
@@ -496,19 +504,18 @@ MainLoop()
 ; to too
 ;       Gui, ListBoxGui:Font, s%g_ListBoxFontSize% %g_fontColor% Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_isListBoxDisabled, %g_isListBoxDisabled% ; RegWrite , RegSave , Registry
-, Registry
     return
 }
 return
 ;\____ doubleCtrl __ 181201095649 __ 01.12.2018 09:56:49 __/
 
+; 54625 toool        too___hallo Welt von global too msgbox lkjl451212
 
 
 ;/¯¯¯¯ doubleCtrlC Ctrl+C double CtrlC ¯¯ 181108142340 ¯¯ 08.11.2018 14:23:40 ¯¯\
 ; doubleCtrlC for add entry to actionsList
 #IfWinNotActive,ahk_class #32770 ; let messageboxes out because i won't copy the message completely 22.11.2018 22:11
 ~^c::
-
    KeyWait, c, L
    ; KeyWait, Ctrl, L
    diffMilli := A_tickCount - copyCTriggeredTimeMilli
@@ -606,11 +613,11 @@ return
 ;\____ doubleCtrlC __ 181108142352 __ 08.11.2018 14:23:52 __/
 
 
-
+; to  too5 too msgbox too toolsipt  too
 
 
 ;/¯¯¯¯ esc ¯¯ 181201095059 ¯¯ 01.12.2018 09:50:59 ¯¯\
-#IfWinActive,
+#IfWinActive,asöldkjfasöldkjfaölskjfdaösdlkjfsa ; 01.12.2018 19:04 deactivated. pls use double ctrl
 ~esc::
    toolTip2sec("esc::" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") )
    ; InactivateAll_Suspend_ListBox_WinHook()
@@ -797,6 +804,8 @@ return
 ;  }
 ; return
 
+;
+
 ;return
 
 ; ToolTip3sec("^+esc:: exit-all-scripts",1,1)
@@ -847,72 +856,12 @@ Return
 ; keyState_Numpad := GetKeyState("NumpadAdd","P")
 ; MsgBox,%keyState_Numpad% = keyState_Numpad (line:%A_LineNumber%) `
 
-$1::
-;~ $!::
-$Numpad1::
-CheckWord("$1")
-return
 
+; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_numpad09.inc.ahk
+; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_shiftNumpad09.inc.ahk
+#include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_ctrlNumpad09.inc.ahk
 
-$2:: ; ; some users dont have numpad ; 25.03.2018 15:35
-;~ $":: ; this is working
-; VK07:: ; this is not working 21.04.2017 12:12
-; maybe helful for you: http://www.kbdedit.com/manual/low_level_vk_list.html
-; VK_OEM_7::
-
-$Numpad2::
-CheckWord("$2")
-return
-
-$3::  ; some users dont have numpad ; 25.03.2018 15:35
-; $�:: ; problem with the paragraph sign. probably becouse of the document format. i dont need it so much. lets deactivate it. 21.04.2017 12:02
-$Numpad3::
-CheckWord("$3")
-return
-$4::  ; some users dont have numpad ; 25.03.2018 15:35
-;~ $$::
-$Numpad4::
-CheckWord("$4")
-return
-$5::  ; some users dont have numpad ; 25.03.2018 15:35
-$Numpad5::
-CheckWord("$5")
-return
-$6::  ; some users dont have numpad ; 25.03.2018 15:35
-;~ $&::
-$Numpad6::
-CheckWord("$6")
-return
-$7:: ;  ; some users dont have numpad ; 25.03.2018 15:35
-;~ $/::
-;~ ${::
-$Numpad7::
-CheckWord("$7")
-return
-$8::  ; some users dont have numpad ; 25.03.2018 15:35
-;~ $(::
-;~ $[::
-$Numpad8::
-CheckWord("$8")
-return
-$9::  ; some users dont have numpad ; 25.03.2018 15:35
-;~ $)::
-;~ $]::
-$Numpad9::
-CheckWord("$9")
-return
-$0:: ; some users dont have numpad ; 25.03.2018 15:35
-;msgbox,0
-CheckWord("$0")
-;~ $=::0000
-;~ $}::
-return
-$Numpad0::
-;msgbox,Numpad0
-CheckWord("$Numpad0")
-; CheckWord(A_ThisHotkey)
-Return
-
+; too depreca 1 deprecated
 
 ; $^Enter::
 ; $^Space::
@@ -946,15 +895,28 @@ Return
 ; 4 44 4 4 4  test too
 ; tootool too tools tip
 
+lbl_g_doSoundTRUE:
+g_doSound := TRUE
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_doSound, %g_doSound% ; RegWrite , RegSave
+return
+
+lbl_g_doSoundFALSE:
+g_doSound := FALSE
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_doSound, %g_doSound% ; RegWrite , RegSave
+return
+
+
 lbl_g_min_searchWord_length_0:
     g_min_searchWord_length := 0
-    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length%
+     ; RegWrite , RegSave
 return
 
 ; 18-12-01_10-50 too
 lbl_g_min_searchWord_length_1:
     g_min_searchWord_length := 1
-    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length%
+    ; RegWrite , RegSave
 return
 
 lbl_Help_AutoHotkey_online:

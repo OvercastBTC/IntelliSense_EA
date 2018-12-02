@@ -94,9 +94,9 @@ ReadInTheActionList(calledFromStr){ ;Read in the ActionList
 	global ParseWordsCount
 	global g_min_searchWord_length
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
-	Critical,On	
+	; Critical, On
 	ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
-	Critical,Off
+	; Critical, Off
 	g_min_searchWord_length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
 	return ParseWordsCount
 }
@@ -104,7 +104,9 @@ ReadInTheActionList(calledFromStr){ ;Read in the ActionList
 
 
 
-
+; too tooltip 5 toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+; oooltip tip ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+; MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 
 
@@ -114,7 +116,9 @@ ReadInTheActionList(calledFromStr){ ;Read in the ActionList
 ;<<<<<<<< MainLoop <<<< 180208192114 <<<< 08.02.2018 19:21:14 <<<<
 ;<<<<<<<< MainLoop <<<< 180208192114 <<<< 08.02.2018 19:21:14 <<<<
 MainLoop(){
-	
+	; tooltip E:\fre\private\HtmlDevelop\Human-Connection\WebApp\
+	; msgbox tool tooltip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+	; box msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 	global g_TerminatingEndKeys
     global g_isListBoxDisabled
 	Loop
@@ -129,10 +133,10 @@ MainLoop(){
       ;IF (false && !ReturnWinActive() ) { ; "false &&" addet 18-03-31_13-42 lets try
 		IF !( ReturnWinActive() )
 		{ ; "false &&" addet 18-03-31_13-42 lets try
-			Critical, Off ; on Verhindert, dass der aktuelle Thread von anderen Threads unterbrochen werden kann, oder macht ihn unterbrechbar.
+			; Critical, Off ; on Verhindert, dass der aktuelle Thread von anderen Threads unterbrochen werden kann, oder macht ihn unterbrechbar.
 			GetIncludedActiveWindow()
 		} else {
-			Critical, Off
+			; Critical, Off
 		}
 		
       ;Get one key at a time ; Waits for the user to type a string.
@@ -148,7 +152,7 @@ MainLoop(){
        ; ???????????????????
        ; ???????????????????
        ; ???????????????????
-      ; Critical,On ; Wenn der erste Parameter fehlt (oder das Wort On ist), wird der aktuelle Thread als kritisch eingestuft; das heiÃŸt, dass dieser Thread nicht von anderen Threads unterbrochen werden kann. ; If the first parameter is omitted (or the word On), the current thread is made critical, meaning that it cannot be interrupted by another thread.
+      ; Critical, On ; Wenn der erste Parameter fehlt (oder das Wort On ist), wird der aktuelle Thread als kritisch eingestuft; das heiÃŸt, dass dieser Thread nicht von anderen Threads unterbrochen werden kann. ; If the first parameter is omitted (or the word On), the current thread is made critical, meaning that it cannot be interrupted by another thread.
 		EndKey := ErrorLevel
     ;\____ Critical, __ 181021220525 __ 21.10.2018 22:05:25 __/
 		
@@ -353,7 +357,7 @@ RecomputeMatchesOFF( ByRef calledFromStr ){
    ; if(LoopCount < 2 ) ; 18-03-31_22-43 addet TOD: proof
       ; return
 	
-    Critical,On ; 20.11.2018 09:48 i like that
+    Critical, On ; 20.11.2018 09:48 i like that
 
 
 
@@ -467,7 +471,7 @@ RecomputeMatchesOFF( ByRef calledFromStr ){
 		continue
 	}
 	
-	Critical,Off	
+	; Critical, Off
 	
    ;If no match then clear Tip
 	IfEqual, g_MatchTotal, 0
@@ -506,11 +510,13 @@ RecomputeMatches( calledFromStr ){
 	global prefs_SuppressMatchingWord
 
 	global g_min_searchWord_length
+	global g_min_searchWord_length_2
 
 	global g_ListBoxPosX
 	global g_ListBoxPosY
 
-
+; box box msgb bo
+    ; msgbox,% g_min_searchWord_length_2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
     ; Menu, Tray, Icon, shell32.dll, 266 ; pretty black clock
 
@@ -560,11 +566,19 @@ RecomputeMatches( calledFromStr ){
         g_SingleMatchDescription := Object()
         g_SingleMatchReplacement := Object()
 
-        ; to to to to to to
-        ; totoo to toot to ttto
-
+        ; to to to to to to to tooltip box
+        ; totoo to toot to ttto t to box win
+        ; bo box t m m ms to to box msg box
+        ; ToolTip2sec(g_min_searchWord_length_2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+        StrLen_g_Word := StrLen(g_Word)
         loop,6
         {
+
+            ; becouse of performance reasons. thats optional. dont need 02.12.2018 09:25
+            if(a_index >= 2
+                && StrLen_g_Word < g_min_searchWord_length_2 )
+                break
+
             o := valueObj[A_Index]
             if(!o){
         		; Msgbox,:( Oops >%A_Index%<(%A_LineFile%~%A_LineNumber%)
@@ -577,20 +591,24 @@ RecomputeMatches( calledFromStr ){
         		Msgbox,:( Oops `n %tip%(%A_LineFile%~%A_LineNumber%)
                 continue
             }
-            ; t t
 
-            o["listID"]["len"] := ""
+
+            ; o["listID"]["len"] := 0 ; dont to this ! it changes the data object! its referene !
             sql["pre_Where"] := substr( o["sql"], 1 , o["word"]["pos"] - 1 )
             sql["postWhere"] := substr( o["sql"] , o["word"]["pos"] + 1, - 1 + o["listID"]["pos"] - o["word"]["pos"] )
             sql["rest"] := substr( o["sql"] , o["listID"]["pos"] + 1 + o["listID"]["len"] )
 
             if(o["listID"]["len"])
-                SELECT := sql["pre_Where"] g_Word sql["postWhere"] " = " g_ActionListID sql["rest"]
+                SELECT := sql["pre_Where"] g_Word sql["postWhere"] " = " g_ActionListID " " sql["rest"] ; ; <== dirty bugfix
             ELSE
                 SELECT := sql["pre_Where"] g_Word sql["postWhere"]
 
-            ; clipboard := SELECT "`n`n`n" o["listID"]["len"]
+            ; if(a_index == 1)
+              ;  clipboard := SELECT "`n`n`n" o["listID"]["len"]
+                ; clipboard := SELECT
             ;  msgbox,% SELECT t $ t to
+            ; to
+            ; t b box
 
 	;SELECT := regExReplace(SELECT,"(``|`%)","``$1")
 		try{
@@ -1563,9 +1581,21 @@ BuildTrayMenu(){
    ; Menu, Tray, add, Settings, Configuration
 	; Menu, Tray, add, Pause, PauseResumeScript
 
-	Menu, Tray, add, set g_min_searchWord_length := 0 (it stays open`, experimental feature. `n ESC to close), lbl_g_min_searchWord_length_0
+
+	Menu, Tray, add, set g_doSound TRUE (experimental feature), lbl_g_doSoundTRUE
+	Menu, Tray, add, set g_doSound FALSE (experimental feature), lbl_g_doSoundFALSE
+
+	Menu, Tray, add
+
+	Menu, Tray, add, set g_min_searchWord_length := 0 (it stays open`, experimental feature), lbl_g_min_searchWord_length_0
 	Menu, Tray, add, set g_min_searchWord_length := 1, lbl_g_min_searchWord_length_1
 
+
+
+	Menu, Tray, add
+	Menu, Tray, add, tipps:,lbl_noOp
+	Menu, Tray, add, see \Source\shortcuts\listbox_shortcutStyle_... for trigger an action,lbl_noOp
+	Menu, Tray, add, use double Ctrl to togle Listbox ),lbl_noOp
 	Menu, Tray, add
 
 	Menu, Tray, add, Help Gi-Features online, lbl_HelpOnline_features
