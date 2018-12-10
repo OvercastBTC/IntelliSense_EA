@@ -227,8 +227,8 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 		return "..\_globalActionLists\pfade"
 ;Speichern is used with ToDoList_c_AbstractSpoon
 	
-	AutoHotkey_Community1:
-	if ( RegExMatch( activeTitle , "(AutoHotkey Community)" ) ) 
+	AutoHotkey_Community: ; AHK_Community
+	if (1 && RegExMatch( activeTitle , "(AutoHotkey Community)" ) )
 		return "..\_globalActionLists\AutoHotkey_Community"
 ;Speichern is used with ToDoList_c_AbstractSpoon
 	

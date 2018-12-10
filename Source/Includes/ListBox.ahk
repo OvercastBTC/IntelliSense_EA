@@ -112,8 +112,21 @@ InitializeListBox(){
 ;\____ InitializeListBox __ 181107232111 __ 07.11.2018 23:21:11 __/
 
 
+; t tool msms
 
 
+;/¯¯¯¯ ListBoxRigthButtionClick ¯¯ 181209172003 ¯¯ 09.12.2018 17:20:03 ¯¯\
+; Rigth-Buttion-Click in ListBox opens active action list for edit it
+ListBoxRigthButtionClick(wParam, lParam, msg, ClickedHwnd){
+    global ActionList
+    fileAddress := strReplace(ActionList,"._Generated.ahk") ; better not edit into the _generated 18-12-09_17-31
+    if(fileexist(fileAddress) && !InStr(FileExist(fileAddress), "D"))
+        openInEditorFromIntern( fileAddress )
+    else
+        openInEditorFromIntern( ActionList )
+    ;msgbox,`n(%A_LineFile%~%A_LineNumber%)
+}
+;\____ ListBoxRigthButtionClick __ 181209172006 __ 09.12.2018 17:20:06 __/
 
 ;/¯¯¯¯ ListBoxClickItem ¯¯ 181022211224 ¯¯ 22.10.2018 21:12:24 ¯¯\
 ; needet becouse listbox is moveable by click
@@ -122,6 +135,9 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
    Local NewClickedItem
    Local TempRows
    static LastClickedItem
+
+   ; tip = %wParam%, %lParam%, %msg%
+  ;ToolTip4sec( tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
@@ -160,9 +176,31 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
    }
 ;\____ clickedScrollbar __ 181122141522 __ 22.11.2018 14:15:22 __/
 
-; to to to too to to to to to to to tto too too to to
+; to to to too to to to to to to to tto too too to to t to t
+; toto t too too too to tooltip
+
 
       ; global g_doListBoxFollowMouse  __
+
+       ; if( g_ListBoxX_old == g_ListBoxX && g_ListBoxY_old == g_ListBoxY ){
+       if( A_TickCount - g_TimeMilli_SincePriorMouseClick < 800 ){
+            tip := "Double-click detected in ListBox => ListBox follows caret"
+            ToolTip4sec( "tip`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+            ; MsgBox,262208,% tip "`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            g_doListBoxFollowMouse := false
+            SetTimer,doListBoxFollowMouse,off
+            Hotkey, WheelUp, off
+            Hotkey, WheelDown, off
+            g_ListBoxX := 0 ; lets try box move with caret
+            g_ListBoxY := 0 ; lets try box move with caret
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX, %g_ListBoxX%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY, %g_ListBoxY%
+            g_TimeMilli_SincePriorMouseClick := A_TickCount
+            return
+        }
+        g_TimeMilli_SincePriorMouseClick := A_TickCount
+
+
       if(g_doListBoxFollowMouse){
             tip=STOP follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
             ToolTip1sec(tip)
@@ -183,6 +221,8 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
             Hotkey, WheelDown, on
             ;SetTimer,doListBoxFollowMouse,on ; to
       }
+      g_ListBoxX_old := g_ListBoxX
+      g_ListBoxY_old := g_ListBoxY
       return
 
 ; t t t
@@ -778,7 +818,7 @@ else
    if(ret < 100){
         ret := 100 ; dirty bug fix 07.11.2018 19:08
         if(1 && InStr(A_ComputerName,"SL5"))
-            tooltip,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+            tooltip,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")", 30, 70
             ; msgbox,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     }
    return ret
@@ -932,7 +972,8 @@ else if(0){
       ForceWithinMonitorBounds(g_ListBoxPosX,ListBoxPosY,ListBoxActualSizeW,ListBoxActualSizeH)
       
       g_ListBoxContentWidth := ListBoxActualSizeW - ScrollBarWidth - BorderWidthX
-      tooltip,% g_ListBoxContentWidth
+      if(0)
+        ToolTip, % g_ListBoxContentWidth "`n = g_ListBoxContentWidth `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
       if(g_ListBoxContentWidth<300)
         g_ListBoxContentWidth := 300 ; <=== maybe thi has no effect.
@@ -994,7 +1035,8 @@ try {
       }
       
       OnMessage(g_WM_LBUTTONUP, "ListBoxClickItem")
-      OnMessage(g_WM_LBUTTONDBLCLK, "ListBoxClickItem")
+      OnMessage(g_WM_RBUTTONUP, "ListBoxRigthButtionClick")
+      ; OnMessage(g_WM_LBUTTONDBLCLK, "ListBoxClickItem")
       
       IfNotEqual, prefs_ListBoxOpacity, 255
          WinSet, Transparent, %prefs_ListBoxOpacity%, ahk_id %g_ListBox_Id%

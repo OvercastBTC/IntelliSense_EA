@@ -20,7 +20,7 @@ else if ( RegExMatch( activeTitle , "i)\b(Gmail|Google Contacts|Google Kalender)
 	ActionListNEW := "Gmail_Google_Chrome"
 	; msgbox,% activeTitle " => " ActionListNEW
 }
-else if ( RegExMatch( activeTitle , "i)\b(AutoHotkey Community)\b"  )    ){
+else if ( FALSE && RegExMatch( activeTitle , "i)\b(AutoHotkey Community)\b"  )    ){
 	ActionListNEW := "..\_globalActionLists\AutoHotkey_Community"
 	
 }

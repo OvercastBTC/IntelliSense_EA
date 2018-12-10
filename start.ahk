@@ -37,7 +37,6 @@ while(WinExist(name) && A_Index < 9)
 ; 2: A window's title can contain WinTitle anywhere inside it to be a match.
 ; 3: A window's title must exactly match WinTitle to be a match.
 SetTitleMatchMode,3
-
 name=gi.ahk ahk_class AutoHotkey
 while(WinExist(name) && A_Index < 9)
 	WinClose,% name

@@ -259,7 +259,7 @@ if(!Instr(logFileName,scriptName)){ ; plausibillity check . hopefully never happ
 
 FileSave(ByRef content, fileName ){
 	FormatTime, timestamp, % A_now, yy-MM-dd_HH-mm
-	tempFileName := timestamp . A_TickCount
+	tempFileName := timestamp A_TickCount
 	FileAppend, % content, % tempFileName
 	i := 0
 	while(i++ < 100 && !FileExist(logFileName))
@@ -934,8 +934,7 @@ convert123To_NumPad123(t)
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-clipboardPaste(s)
-{
+clipboardPaste(s){
   ToolTip1sec(A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\")  . " " . A_ThisFunc . A_ThisLabel)
 	if(!s){
 		MsgBox, :(  clipboardPaste(s)  '%s%' = s (line:%A_LineNumber%) `n 

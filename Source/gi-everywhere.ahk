@@ -48,6 +48,7 @@ Process, Priority,, H ; <=== only use this if its not in a critical development 
 ; Process, Priority,, R ; <=== it acts on me as if the script was working more UNstable
 
 ; Critical, On  ; I can not do recognice any improvement with that right now
+; Thread, NoTimers ; https://autohotkey.com/docs/commands/Thread.htm
 
 ; tooltip tooltip tooltip  tooltip too tool toolt tool tool tool msgbxo ms msgbox m m  m msgb msgbo msgbox tooltip
 ; tooltip tooltip t t t t t tooltip msgbox tooltip msgbxo toolt
@@ -117,6 +118,12 @@ g_config["Send"]["RealisticDelayDynamic"] := false
 countNotchangingActiveTitleOLD := 0
 global g_ListBoxX
 global g_ListBoxY
+global g_ListBoxX_old
+global g_ListBoxY_old
+global g_TimeMilli_SincePriorMouseClick := A_TickCount
+
+; too too too to too too
+
 g_ListBoxX := 0 ; if g_ListBoxX (not false > 0) it never usses CaretXorMouseXfallback . if you want go back to default, reload the
 g_ListBoxY := 0 ; if g_ListBoxX (not false > 0) it never usses CaretXorMouseXfallback . if you want go back to default, reload the
 
@@ -382,12 +389,17 @@ RegRead, g_doSound , HKEY_CURRENT_USER, SOFTWARE\sl5net, g_doSound
 global g_isListBoxDisabled
 g_isListBoxDisabled := false
 RegRead, g_isListBoxDisabled    , HKEY_CURRENT_USER, SOFTWARE\sl5net, g_isListBoxDisabled
-RegRead, g_min_searchWord_length, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length ; RegWrite , RegSave
+;/¯¯¯¯ g_min_searchWord_length ¯¯ 181202112524 ¯¯ 02.12.2018 11:25:24 ¯¯\
+RegRead, g_min_searchWord_length, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length
+; regwrite/regread: data normalization of true and false ??? https://autohotkey.com/boards/viewtopic.php?f=76&t=59740
+ ; RegWrite , RegSave
+if(!g_min_searchWord_length && InStr(A_ComputerName,"SL5"))
+    feedbackMsgBox("g_min_searchWord_length:" g_min_searchWord_length, g_min_searchWord_length "`n`n`n" A_LineNumber . " " .  A_LineFile,1,1)
 
 if(g_min_searchWord_length <= 2) ; becouse of performance reasons. thats optional. dont need 02.12.2018 09:25
     g_min_searchWord_length_2 := g_min_searchWord_length + 2
+;\____ g_min_searchWord_length __ 181202112528 __ 02.12.2018 11:25:28 __/
 
-; box box to to bo bo box ms to sec
 
 if(g_isListBoxDisabled){
     DestroyListBox()
@@ -479,13 +491,15 @@ MainLoop()
 ; return
 
 
+;
+
 
 ;/¯¯¯¯ doubleCtrl double Ctrl ListBoxDisabled¯¯ 181201095644 ¯¯ 01.12.2018 09:56:44 ¯¯\
 #IfWinActive,
 ~ctrl::
-   If (A_TimeSincePriorHotkey < 500) and (A_TimeSincePriorHotkey > 5){
+   If (A_TimeSincePriorHotkey < 500) and (A_TimeSincePriorHotkey > 80){ ; 50 was to shourt. i tested it with holding the ctrl key
      toolTip2sec( "Ctrl+Ctrl = toggle listbox`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-
+    ;
     g_isListBoxDisabled := !g_isListBoxDisabled
     ; g_fontColor := (g_isListBoxDisabled) ? "cRed" : "cGreen"
     if(g_isListBoxDisabled){
@@ -495,13 +509,31 @@ MainLoop()
         InitializeListBox()
 
         ; g_min_searchWord_length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
-        g_min_searchWord_length := 0
-    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
+        backup_g_min_searchWord_length := g_min_searchWord_length
+        g_min_searchWord_length := 0  ; temporarily. list pops up short time user could see something was happend 05.12.2018 12:37
         ShowListBox() ; maybe sometimes neeedet 01.12.2018 11:32
         RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
         setTrayIcon()
+
+        if(g_min_searchWord_length <> backup_g_min_searchWord_length){
+            ; sleep,100 ; short time user could see something was happend 05.12.2018 12:37
+            g_min_searchWord_length := backup_g_min_searchWord_length
+        }
+        RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
     }
-; to too
+     if(InStr(A_ComputerName,"SL5")){
+         setTitleMatchMode,2
+     if(WinActive( "ahk_class SunAwtFrame" )){ ; idea use this shortcut also
+     Sleep,30
+     Send,{esc}
+     Sleep,150 ; 50 works 100 works 150 works  200 works 300 works
+     ; works NOT always: 5 10 100
+     Send,{esc}
+    }}
+
+;
+; global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build] - ...\Source\gi-everywhere.ahk [global-IntelliSense-everywhere-Nightly-Build] - IntelliJ IDEA (Administrator) ahk_class SunAwtFrame ; mouseWindowTitle=0x7f12b2  ;
+;
 ;       Gui, ListBoxGui:Font, s%g_ListBoxFontSize% %g_fontColor% Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_isListBoxDisabled, %g_isListBoxDisabled% ; RegWrite , RegSave , Registry
     return
@@ -510,6 +542,7 @@ return
 ;\____ doubleCtrl __ 181201095649 __ 01.12.2018 09:56:49 __/
 
 ; 54625 toool        too___hallo Welt von global too msgbox lkjl451212
+;
 
 
 ;/¯¯¯¯ doubleCtrlC Ctrl+C double CtrlC ¯¯ 181108142340 ¯¯ 08.11.2018 14:23:40 ¯¯\
@@ -927,6 +960,23 @@ lbl_Help_AutoHotkey_online:
        return
     run,https://autohotkey.com/docs/Tutorial.htm
 return
+lbl_HelpOnline_EditCreate_ActionList:
+    t := "open `n`n g-IntelliSense Edit/Create ActionList`n`n in myjetbrains.com ?"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://g-intellisense.myjetbrains.com/youtrack/print/GIS?q=project`%3A+g-IntelliSense+`%23`%7Bedit+list`%7D
+return
+
+lbl_HelpOnline_Search_Keywords:
+    t := "open `n`n g-IntelliSense Search Keywords`n`n in myjetbrains.com ?"
+    if(!InStr(A_ComputerName,"SL5"))
+        msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    IfMsgBox, Cancel
+       return
+    run,https://g-intellisense.myjetbrains.com/youtrack/print/GIS?q=project`%3A+g-IntelliSense+`%23`%7Bsearch+keywords`%7D
+return
 
 lbl_HelpOnline_features:
     t := "open `n`n g-IntelliSense Features`n`n in myjetbrains.com ?"
@@ -934,7 +984,8 @@ lbl_HelpOnline_features:
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
-    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Feature`%20order`%20by:`%20updated`%20asc`%20
+    ; run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Feature`%20order`%20by:`%20updated`%20asc`%20
+    run,https://g-intellisense.myjetbrains.com/youtrack/print/GIS?q=project:`%20g-IntelliSense`%20`%23Feature`%20order`%20by:`%20updated`%20asc`%20
 return
 
 lbl_noOp:
@@ -945,7 +996,8 @@ lbl_HelpOnline_shortcut:
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
-    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23shortcut`%20order`%20by:`%20updated`%20asc`%20
+    ;run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23shortcut`%20order`%20by:`%20updated`%20asc`%20
+    run,https://g-intellisense.myjetbrains.com/youtrack/print/GIS?q=project:`%20g-IntelliSense`%20`%23shortcut`%20order`%20by:`%20updated`%20asc`%20
 return
 
 lbl_HelpOnline_issues_open:
@@ -954,7 +1006,8 @@ lbl_HelpOnline_issues_open:
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
-    run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Unresolved`%20order`%20by:`%20Priority
+    ; run,https://g-intellisense.myjetbrains.com/youtrack/issues/GIS?q=project:`%20g-IntelliSense`%20`%23Unresolved`%20order`%20by:`%20Priority
+    run,https://g-intellisense.myjetbrains.com/youtrack/print/GIS?q=project:`%20g-IntelliSense`%20`%23Unresolved`%20order`%20by:`%20Priority
 return
 
 PauseResumeScript:
@@ -977,14 +1030,20 @@ Return
 ExitScript:
     ExitApp
 Return
-; 
+lblEditThisScript:
+    edit,% A_ScriptFullPath
+return
+
 #Include %A_ScriptDir%\Includes\gi-everywhere.inc.ahk
 
 ;<<<<<<<< reloadActionList <<<< 180208163147 <<<< 08.02.2018 16:31:47 <<<<
 reloadActionList:
-Speak("reload ActionList")
+; Speak("reload ActionList","PROD")
 ; SoundbeepString2Sound(A_ThisFunc)
+
+Critical, On
 ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
+; Critical, Off
 g_min_searchWord_length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
  ;feedbackMsgBox("reloadActionList:",A_LineNumber . " " .  A_LineFile,1,1)
 

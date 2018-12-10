@@ -14,8 +14,6 @@ Speak(,"PROD")
 Speak( A_ThisFunc,"PROD")
 Speak(" found","PROD")
 
-
-
 rTrim(clipboard," `t`r`n")
 
 RegExReplace(A_LineFile,".*\\")
@@ -64,7 +62,13 @@ ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_Lin
 ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTip4sec lineFileName|rr|ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+Alert len ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|MsgBox, % sendingStrLen
+; ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+; Tooltip tToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
+helloCommment71 |rr|HelloWorld2.ahk ; HelloComment|ahk|Msgbox,% substr(Sending,Instr(Sending,"`;"))
+; HelloWorld2.ahk ; HelloComment He HelloWorld2.ahk ; HelloComment
+; HelloWorld2.ahk ; HelloComment
 
 Sleep, 000|rr|Sleep, 000|ahk|Send,{left 3}
 
@@ -474,7 +478,7 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 				ClipboardAll
 				ClipWait 1, 1              ; restore clipboard if no data 
 				close gi-everywhere and
-				Color
+				Color 
 				ComboBox
 				Comobjactive
 				Comobjarray
@@ -644,3 +648,6 @@ I'll apply for your 20 hours administrator job.
 Aber ich glaube das passt nicht nur so zum Spaß. Grüßle aus Wannweil
 
 deprecated
+
+Speak(A_lineNumber " " A_lineFile,"PROD")
+test

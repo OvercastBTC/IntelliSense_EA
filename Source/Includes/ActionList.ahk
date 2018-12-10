@@ -47,9 +47,10 @@ ReadActionList( calledFromStr ){
 	
 	global g_config
 	
-	if(!ActionList)
+	if(!ActionList){
+        ;Speak(A_lineNumber,"PROD")
 		return false
-	
+	}
 	postFixGenerated := "._Generated.ahk"
 	ActionListPostFix  := SubStr(rtrim(ActionList), - StrLen(postFixGenerated) + 1 ) ; That works I've tested it 01.11.2018 14:59
 	itsAGeneratedList := ( postFixGenerated == ActionListPostFix )
@@ -61,6 +62,7 @@ ReadActionList( calledFromStr ){
 			Speak(A_LineNumber ": Prima. zwei Listen " ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
 			ToolTip8sec( ActionList "`n`n`n Sleep 3000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			Sleep, 3000
+        	;Speak(A_lineNumber,"PROD")
 			return false
 		}
 	}
@@ -464,11 +466,14 @@ from: ActionList.ahk~%A_LineNumber%
 		SetTimer,checkActionListAHKfile_sizeAndModiTime, off
 		SetTimer,checkWinChangedTitle,off
 		
-		; Critical, On
-		
+		Critical, On
 		; ParseWords := addListOpenAction_ifNotAlreadyInTheList(ParseWords,ActionList)
+
+        CleanupEntriesOfThisActionList(g_ActionListID)
+
 		Loop_Parse_ParseWords(ParseWords)
-		
+		; Critical, Off
+
 		
 		
 		
@@ -974,6 +979,17 @@ if(rootDoObj.collectBlock && ( Aindex <> rootLineObj.Aindex ) ){
 		if( !rootLineObj.newKeywords 
 		&& ( rootDoObj.createKeys || rootCmdTypeObj.is_without_keywords ) ) {
 			rootLineObj.newKeywords := getAutoKeywords(temp:= firstWordInLine " " rootLineObj.oldKeywords " " rootCollectObj.value)
+			tempK := rootLineObj.newKeywords
+			if(0){
+                tip =
+                (
+                %tempK%#%temp%
+                )
+                clipboard := tip
+                tooltip,% tip
+                pause
+            }
+
 			lll( A_ThisFunc ":" A_LineNumber , A_LineFile , Aindex ":00000>" rootLineObj.newKeywords "<0000=rootLineObj.newKeywords" )
 		}
 		if(isPrefixMultilineAHK){
@@ -1338,6 +1354,7 @@ setCommandTypeS(rootLineObj
 				rootCmdTypeObj.codePrefixChar := m2
 				m2 := "`it =`n(`n"
                 ; MsgBox,% codePrefixChar "=codePrefixChar(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+                ; lll( A_LineNumber , A_LineFile , codePrefixChar "=codePrefixChar" )
 				rootDoObj.collectBlock := true ; may not  unnecessary action
 				rootCmdTypeObj.is_multiline_rr := true ; may not  unnecessary action
 			}
@@ -1360,8 +1377,12 @@ setCommandTypeS(rootLineObj
 	
 	rootCmdTypeObj.is_multiline_rr := false ; todo: thats a dirty bugfix . 10.11.2018 23:19
 	if(RegExMatch( rootLineObj.value , "i)^([^;\n ]*[^\n]+\|ahk\|)([^\s\n]?)[ ]*$",  m )){
-		rootCmdTypeObj.is_multiline_rr := true
-		rootDoObj.collectBlock := true
+	    if(m2 <> "q"){
+            ; MsgBox,% codePrefixChar "=codePrefixChar(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            ; lll( A_LineNumber , A_LineFile , codePrefixChar "=codePrefixChar" )
+		    rootCmdTypeObj.is_multiline_rr := true
+		    rootDoObj.collectBlock := true
+        }
 	}
 	
     ;/¯¯¯¯ collectBlock ¯¯ 181111082347 ¯¯ 11.11.2018 08:23:47 ¯¯\
@@ -1680,9 +1701,103 @@ ReverseWordNums(LearnedWordsCount){
 ;\____ ReverseWordNums __ 181116123242 __ 16.11.2018 12:32:42 __/
 
 
-; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\Includes\ActionList.ahk
+
+
+
+
+
+
+
+
+
+
+
+;/¯¯¯¯ getAutoKeywords ¯¯ 181209222042 ¯¯ 09.12.2018 22:20:42 ¯¯\
+; this i a triy of new getAutoKeywords
+; but it not works in all cases sorry
+getAutoKeywords_NEWTRY(ByRef oldKeywords
+                        , addKeysMAX := 9 , minLength := 4, doFirstWord := true
+                		, regEx := "\b((\w+?(?=[A-Z]|\b))([A-Z][a-z]*)?)([A-Z][a-z]*)?"
+                        , elseIfResulsEmpty := "without keywords" ){
+                		   ; this function works also multiline. you must not use g)
+
+
+    ; AddWord rootDoObj.createKeys https://g-intellisense.myjetbrains.com/youtrack/issues?q=project:%20g-IntelliSense#issueId=GIS-65
+	; https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/Source/Includes/ActionList.ahk#L1438
+    ; https://stackoverflow.com/questions/53345266/generate-search-words-from-text-with-camelcase-by-using-regex
+    oldKeywords := trim(oldKeywords," `t`r`n")
+	newKeyWords := " " oldKeywords " " ; !!!! <= for Camail Case !!!! you really need this space at the beginnin !!
+	;               ^---- importand space !!!!! example: setTitleMatchMode => setTitleMatchMode  setTitleMatch Mode setTitle MatchMode TitleMatchMode
+
+	Array := [] ; or Array := Array()
+	resultStr  := ""
+
+	if(doFirstWord){
+        firstWord := RegExMatch(newKeyWords,"(\w+)",m) ? m1 : ""
+        Array.Push(firstWord) ; Append this line to the array.
+        resultStr := firstWord
+    }
+
+	StartingPosition  := 2
+	addedKeysCounter := 0
+	while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPosition )){
+		; StartingPosition := Match.Pos(1) + Match.Len(1)
+		StartingPosition += strlen(Match1)
+		
+		if(addedKeysCounter >= addKeysMAX)
+			break
+		loop,3
+		{
+			word := Match%A_Index%
+			; strlenWord := MatchLen%A_Index% ; works not 
+			; strlenWord := Match.Len(1) ; works not 
+			; MsgBox, % len " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+			
+			; StartingPosition += strlenWord
+			if(0){
+				strlenWord := strlen(word)
+				wordPast := SubStr(newKeyWords, Match.Pos(1) + strlenWord ) ; + Match.Len(1) ) ; strlenWord +  
+				MsgBox,% ">" wordPast "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+				; MsgBox,% ">" word "<  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+			}
+            word := trim(word," `t`r`n")
+			strlenWord := strlen(word)
+			if(!HasVal(Array,word)){
+				if(minLength <= strlen(word)){
+					Array.Push(word) ; Append this line to the array.
+    				resultStr .= " " word
+					ArrayCount++
+				}
+            }
+            rest := lTrim(SubStr( oldKeywords , strlenWord + 1 )," `t`r`n")  ; strlenWord
+            ; if(pos := Instr(rest," ")){
+            if(pos := RegExMatch( rest, "m)\s" )){
+                rest := SubStr( rest , 1, pos-1) ; strlenWord
+            }
+            ; msgbox,% "oldKeywords=>" oldKeywords "< , rest=>" rest "<"
+            if(!HasVal(Array,rest)){
+				temp := minLength "<=" strlen(rest)
+				if(minLength <= strlen(rest)){
+					Array.Push(rest) ; Append this line to the array.
+                    resultStr .=  " " rest
+                    ;resultStr .= ">" strlenWord "~" rest "-" temp "<"
+					ArrayCount++
+				}
+				; resultStr .= "  " ArrayCount ":" word " " rest
+				; resultStr .= "  " ArrayCount ":" word " (" rest ") "
+			}
+		}
+	}
+	; MsgBox,% ">" resultStr "<  `n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+	return RTrim( resultStr )
+}
+;\____ getAutoKeywords __ 181209222049 __ 09.12.2018 22:20:49 __/
+
+
+
 
 ;/¯¯¯¯ getAutoKeywords ¯¯ 181106121229 ¯¯ 06.11.2018 12:12:29 ¯¯\
+; getAutoKeywords_used_till_181209(ByRef oldKeywords
 getAutoKeywords(ByRef oldKeywords
         , addKeysMAX := 9 , minLength := 4, doFirstWord := true
 		, regEx := "\b((\w+?(?=[A-Z]|\b))([A-Z][a-z]*)?)([A-Z][a-z]*)?"
@@ -1694,8 +1809,9 @@ getAutoKeywords(ByRef oldKeywords
     ; https://stackoverflow.com/questions/53345266/generate-search-words-from-text-with-camelcase-by-using-regex
 
 
+; for some reason we need a leading white space at the beginning !! 18-12-09_21-11
 
-newKeyWords := ltrim( oldKeywords," `t`r`n") ; usefull for comparsison later with first wird is already insiede.
+newKeyWords := " " ltrim( oldKeywords," `t`r`n") ; usefull for comparsison later with first wird is already insiede.
 	; MsgBox,% ">" resultStr "<  `n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 resultStr  := ""
 
@@ -1705,6 +1821,15 @@ if(doFirstWord){
 	if(firstWord){
 		resultStr := firstWord " "
 		Array.Push(firstWord)
+        if( RegexMatch(firstWord,"([A-Z][a-z0-9]+)$",Match) ){
+            lastWordInWord := Match1
+            if(strlen(lastWordInWord) >= minLength && !HasVal(Array,lastWordInWord) ){
+                Array.Push(lastWordInWord) ; Append this line to the array.
+                ArrayCount++
+                resultStr .= lastWordInWord " "
+                ; msgbox,% lastWordInWord " (123456789)"
+            }
+        }
 	}
 }
 
@@ -1729,6 +1854,16 @@ while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPositio
 				resultStr .= word " "
 			}
 		}
+        if( RegexMatch(word,"([A-Z][a-z0-9]+)$",Match) ){
+		    lastWordInWord := Match1
+            ; msgbox,% lastWordInWord " (123456789+++)"
+			if(strlen(lastWordInWord) >= minLength && !HasVal(Array,lastWordInWord) ){
+				Array.Push(lastWordInWord) ; Append this line to the array.
+				ArrayCount++
+				resultStr .= lastWordInWord " "
+				; msgbox,% ">" lastWordInWord "<"
+			}
+        }
 	}
 	if(ArrayCount >= addKeysMAX)
 		break			
@@ -1741,7 +1876,12 @@ return resultStr
 }
 ;\____ getAutoKeywords __ 181106121233 __ 06.11.2018 12:12:33 __/
 
-; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\Includes\ActionList.ahk
+
+
+
+
+
+
 
 
 ;/¯¯¯¯ HasVal ¯¯ 181116205402 ¯¯ 16.11.2018 20:54:02 ¯¯\
@@ -2446,16 +2586,29 @@ UpdateWordCount(word,SortOnly){
 
 
 
-;/¯¯¯¯ CleanupActionListOfThisActionList ¯¯ 181106194013 ¯¯ 06.11.2018 19:40:13 ¯¯\
-CleanupActionListOfThisActionList(ActionList){
-	
+;/¯¯¯¯ CleanupEntriesOfThisActionList ¯¯ 181106194013 ¯¯ 06.11.2018 19:40:13 ¯¯\
+CleanupEntriesOfThisActionList(g_ActionListID){
+	global g_ActionListDB
 	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
-	
    ;Function cleans up all words from given ActionList
-	Msgbox,not yet implemented `n (%A_LineFile%~%A_LineNumber%)
-	g_ActionListDB.Query("DELETE FROM Words WHERE ActionListID = '" . g_ActionListID . "';")
+	; Msgbox,not yet implemented `n (%A_LineFile%~%A_LineNumber%)
+	sql := "DELETE FROM Words WHERE ActionListID = " g_ActionListID ";"
+    try{
+        g_ActionListDB.Query(sql)
+    } catch e{
+        tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
+        sqlLastError := SQLite_LastError()
+        tip .= "`n sqlLastError=" sqlLastError "`n sql=" select " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+        lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
+        tooltip, `% tip
+        feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip )
+        Clipboard := tip
+        msgbox, % tip
+    }
+    ; msgbox,% sql "`n`n deleted?? `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 }
-;\____ CleanupActionListOfThisActionList __ 181106194018 __ 06.11.2018 19:40:18 __/
+;\____ CleanupEntriesOfThisActionList __ 181106194018 __ 06.11.2018 19:40:18 __/
+
 
 
 
@@ -2733,7 +2886,7 @@ INSERT_INTO_ActionLists(ActionList, ActionListModified, ActionListSize ){
 	INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	if(!ActionListModified){
 		msg := "Error`n !ActionListModified `n sql=" sql "`n" ActionList "`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
-		tooltip,% msg,1,1
+		tooltip,% msg ,1,1
 		return false
 	}
 	sql := "INSERT INTO ActionLists "

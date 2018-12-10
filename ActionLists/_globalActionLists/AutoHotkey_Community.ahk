@@ -1,4 +1,11 @@
-﻿#import,_global.ahk
+﻿#Include,..\_globalActionLists\docs_commands_index.ahk
+#Include,..\_globalActionLists\autohotkey_docs_variables_builtIn.ahk
+#Include,..\_globalActionLists\autohotkey_gui_comman_property.ahk
+#Include,..\_globalActionLists\ahk_commands_ErrorLevel.ahk
+#Include,..\_globalActionLists\autohotkey_object_property_method.ahk
+#Include,..\_globalActionLists\autohotkey_INSTALLATION_FOLDERS_FILES_REGISTRY_KEYS.ahk
+#Include,..\_globalActionLists\autohotkey_Command_Function.ahk
+
 
 ___your library open|rr||ahk|openInEditor,AutoHotkey_Community.ahk
 ; if this german au is readable your UTF8 is probalby correct: ä
@@ -42,6 +49,7 @@ s =
 )
 Clipboard := s
 send, ^v
+
 
 quote|rr||ahk|
 ClipboardBackup := Clipboard
@@ -107,9 +115,9 @@ ahkCode =
 Clipboard := ahkCode
 send, ^v
 
+stop|r|stop
 
-
-url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% `n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
+url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
 
 gi-everywhere Command line arg to Start with specific wordList
 gi-everywhere keyboard hotkey to quickly switch word lists = ^!+t|r|[url=https://github.com/ManiacDC/gi-everywhere/issues/32]gi-everywhere keyboard hotkey to quickly switch word lists = ^!+t[/url]

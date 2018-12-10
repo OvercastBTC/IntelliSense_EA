@@ -4,15 +4,15 @@ ___your library open|rr||ahk|openInEditor,..\_globalActionLists\_global.ahk
 
 Hallo von _globalActionLists\_global.ahk
 
-stop changeing list|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:="."
 dont changeing list|rr||ahk|q
 changeing list off|rr||ahk|q
 set changeing list off|rr||ahk|q
+stop changeing list|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:="."
 
-start changeing list automatically|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:=false
 changeing list automatically|rr||ahk|q
 changeing list automatically on|rr||ahk|q
 set changeing list automatically on|rr||ahk|q
+start changeing list automatically|rr||ahk|g_config["list"]["change"]["stopRexExTitle"]:=false
 
 
 

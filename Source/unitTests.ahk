@@ -1,9 +1,15 @@
-﻿
+﻿;/¯¯¯¯ readme ¯¯ 181204164622 ¯¯ 04.12.2018 16:46:22 ¯¯\
+readme =
+(
+Database testing needs exclusive access.
+!!!!!! all scripts are temporarily closed and then restarted !!!!!
+You can disable this if you do not want to eat the database. changing a few lines of code is not difficult.
+Good luck  :-) 04.12.2018 16:48
+)
+;\____ readme __ 181204164624 __ 04.12.2018 16:46:24 __/
+
 
 ;/¯¯¯¯ todo
-; indizier ...... |[
-; ^--- fehlt noch 19.11.2018 23:53
-
 ; intersting may useful for debugging: https://hotkeyit.github.io/v2/docs/commands/ahkExecuteLine.htm
 ;\____ todo __ 181119235301 __ 19.11.2018 23:53:01 __/
 
@@ -18,6 +24,9 @@ Thread, NoTimers , False ; Prevents interruptions from any timers.
 lineFileName := RegExReplace(A_LineFile, ".*\\([\w\s\.]+)$", "$1")
 #SingleInstance,Force
 
+;/¯¯¯¯ g_ignRegm ¯¯ 181124100933 ¯¯ 24.11.2018 10:09:33 ¯¯\
+;/¯¯¯¯ g_ignRegm ¯¯ 181124100933 ¯¯ 24.11.2018 10:09:33 ¯¯\
+;/¯¯¯¯ g_ignRegm ¯¯ 181124100933 ¯¯ 24.11.2018 10:09:33 ¯¯\
 ;/¯¯¯¯ g_ignRegm ¯¯ 181124100933 ¯¯ 24.11.2018 10:09:33 ¯¯\
 if(InStr(A_ComputerName,"xxxxxxxxx SL5")) ; do ignore nothing. development computer
 	global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"(WordIndex|CloseListBox|HotKeys|g_ListBox_Id)\b"},                    sqlQuery: {ln:".^", scriptName:".^", text:".^"},                    hotKeyStuff: {ln:".^", scriptName:".^", text:".^"},                    runLogFile: {ln:".^", scriptName:".^", text:".^"} } ;;;; regEx ignoreConfigList ;;;;
@@ -36,12 +45,18 @@ else
 )
 lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"hey from ini ")
 ;\____ g_ignRegm __ 181124100939 __ 24.11.2018 10:09:39 __/
+;\____ g_ignRegm __ 181124100939 __ 24.11.2018 10:09:39 __/
+;\____ g_ignRegm __ 181124100939 __ 24.11.2018 10:09:39 __/
+;\____ g_ignRegm __ 181124100939 __ 24.11.2018 10:09:39 __/
+;\____ g_ignRegm __ 181124100939 __ 24.11.2018 10:09:39 __/
 
 setTitleMatchMode,2
-if(!winExist("ActionList.ahk.log.txt"))
+if(!winExist("ActionList.ahk.log.txt") && FileExist("log\ActionList.ahk.log.txt") )
     run,log\ActionList.ahk.log.txt
 
 ; to ms ms Spe to Ms mes mes too t mu 
+
+global g_closedAHKlist := []
 
 global errStr_first := ""
 
@@ -55,8 +70,41 @@ global g_ActionListDBfileAdress
 global g_config
 
 
-
 prepareGi()
+ToolTip4sec( "close GI, get DataBase, rund UnitTest`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+closeAllOtherAHK()
+
+SetTitleMatchMode,3
+name=gi ahk_class AutoHotkey
+while(WinExist(name) && A_Index < 9){
+	WinClose,
+	sleep,20
+}
+while(WinExist(name) && A_Index < 9){
+	WinKill,
+	sleep,20
+}
+
+name=gi.ahk ahk_class AutoHotkey
+if(1){
+    while(WinExist(name) && A_Index < 9){
+        WinClose,% name
+        sleep,20
+    }
+    while(WinExist(name) && A_Index < 9){
+        WinKill,% name
+        sleep,20
+    }
+}
+ToolTip,% "winWaitClose `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+winwaitclose,% name
+ifwinexist,gi
+    msgbox,Oops `n(%A_LineFile%~%A_LineNumber%)
+
+
+
+
+
 g_ActionListDB.BeginTransaction()
 
 fromLine := "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
@@ -72,17 +120,22 @@ if(sqlLastError := trim(SQLite_LastError()))
 ;/¯¯¯¯ g_do_only_this_testCase ¯¯ 181118111647 ¯¯ 18.11.2018 11:16:47 ¯¯\
 ;/¯¯¯¯ g_do_only_this_testCase ¯¯ 181118111647 ¯¯ 18.11.2018 11:16:47 ¯¯\
 ;/¯¯¯¯ g_do_only_this_testCase ¯¯ 181118111647 ¯¯ 18.11.2018 11:16:47 ¯¯\
+; how do you use these lines?
+; if you want all tests to run then put an empty string. 04.12.2018 14:10
+; the test in this list must also exist below in the if else statements
 global g_do_only_this_testCase 
 g_do_only_this_testCase  := "test_short_keywords"
-g_do_only_this_testCase  := "test_getAutoKeywords"
 g_do_only_this_testCase  := "err_problemNow"
 g_do_only_this_testCase  := "err_doAsimpleCopyOfLine"
 g_do_only_this_testCase  := "err_indexFollowingLines4search"
+g_do_only_this_testCase  := "err_problemNow"
+g_do_only_this_testCase  := "err_multi_rr_stop_by_is_r"
+g_do_only_this_testCase  := "err_string_ahk_line"
+g_do_only_this_testCase  := "err_is_r_without_keywords"
+g_do_only_this_testCase  := "test_getAutoKeywords"
 g_do_only_this_testCase  := "err_is_without_keywords"
-g_do_only_this_testCase  := "err_problemNow" ; then all test will be run 24.11.2018 20:33
-g_do_only_this_testCase  := "err_multi_rr_stop_by_is_r" ; then all test will be run 24.11.2018 20:33
-g_do_only_this_testCase  := "err_is_r_without_keywords" ; then all test will be run 24.11.2018 20:33
 g_do_only_this_testCase  := "" ; then all test will be run 24.11.2018 20:33
+g_do_only_this_testCase  := "test_synonym"
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
@@ -93,6 +146,44 @@ SetTitleMatchMode,1
 WinWaitNotActive,WinMerge
 WinGetActiveTitle,activeTitle
 
+
+;             SELECT := "SELECT wordreplacement FROM Words Where wordreplacement like '"
+;              SELECT .= timeStampMini "' LIMIT 1 " ";"
+;              Matches := g_ActionListDB.Query(SELECT)
+;              isFound  := false
+;              for each, row in Matches.Rows
+;                  if( row[1] )
+;                      isFound  := true
+
+
+;/¯¯¯¯ err_string_ahk_line ¯¯ 181204152914 ¯¯ 04.12.2018 15:29:14 ¯¯\
+err_string_ahk_line(){
+    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    fileDelete,% f
+    while(0 && fileExist(f))
+        sleep,150
+    in := "searchkeys|rr|stringReplacement|ahk|ahkSource"
+	expected := in
+	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_ThisFunc "° "
+
+    in := "url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}"
+	expected := in
+	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_ThisFunc "° "
+
+    SELECT := "SELECT word FROM Words Where word like '" in "' "
+    SELECT .= " LIMIT 1 " ";"
+    Matches := g_ActionListDB.Query(SELECT)
+    isFound  := false
+    for each, row in Matches.Rows
+        if( row[1] )
+            isFound  := true
+    if(!isFound)
+        Return in " NOT in DB °" A_ThisFunc "° "
+
+}
+;\____ err_string_ahk_line __ 181204152918 __ 04.12.2018 15:29:18 __/
 
 
 
@@ -129,6 +220,8 @@ if(1 && errStr:=test_getAutoKeywords())
 if(false){
 noop=1
 }
+else if(1 && errStr:=err_is_r())
+ 		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_is_r_without_keywords())
  		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(0 && errStr:=err_indexFollowingLines4search())
@@ -138,7 +231,8 @@ else if(1 && errStr:=err_doAsimpleCopyOfLine())
 ;ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 else if(1 && errStr:=err_CheckValid())
 		countErrors++ ; Msgbox,% A_LineNumber  ;
-
+else if(1 && errStr:=err_string_ahk_line())
+ 		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_is_without_keywords())
 		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_problemNow())
@@ -155,8 +249,6 @@ else if(errStr:=err_multi_r_content())
 else if(1 && errStr:=test_short_keywords())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && test_do_indexFollowingLines4search())
-    countErrors++ ; Msgbox,% A_LineNumber  ;
-else if(1 && errStr:=test_synonym())
     countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(false && errStr:=test_dontDeleteComments())
     countErrors++ ; Msgbox,% A_LineNumber  ;
@@ -187,10 +279,13 @@ if(countErrors>0){
 	Speak( countErrors " Error found. " ALineNumber, "PROD" )
 	tooltip,% errStr,1,1
 	Msgbox,,% errStr ,,2
+    feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), errStr )
+    clipboard := errStr
 	sleep,2000
 }
 
 g_ActionListDB.EndTransaction()
+restoreClosedAHK()
 
 
 Critical, Off
@@ -258,6 +353,7 @@ info =
 	global g_config
 )
 
+
 global g_ActionListDB
 g_ActionListDBfileAdress := "G:\fre\private\sql\sqlite\ActionList.db"
 g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
@@ -269,6 +365,7 @@ global g_ActionListID
 global g_ActionListDBfileAdress
 g_ActionListDBfileAdress = G:\fre\private\sql\sqlite\ActionList.db
 global g_config
+
 
 if(!g_ActionListDB)
     g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
@@ -298,8 +395,8 @@ g_ActionListDB.Query(INSERT_INTO_words)
 
 fromLine := "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 if(sqlLastError := trim(SQLite_LastError()))
-    msgbox,:( g_ActionListID = %g_ActionListID%,sqlLastError = %sqlLastError% %fromLine%
-msgbox,, :-) g_ActionListID = %g_ActionListID%,%sqlLastError% %fromLine%,2
+    msgbox,g_ActionListID = %g_ActionListID%,:(  sqlLastError = `n`n>%sqlLastError%< `n`n%fromLine%
+    ; msgbox,, :-) g_ActionListID = %g_ActionListID%,%sqlLastError% %fromLine%,2
 
 }
     ; ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
@@ -326,9 +423,59 @@ err_CheckValid(){
 
 
 
+
+
 ;/¯¯¯¯ test_getAutoKeywords ¯¯ 181116202412 ¯¯ 16.11.2018 20:24:12 ¯¯\
 ; IMPORTEND becouse used by other functions !!!
 test_getAutoKeywords(){
+
+
+	in =
+(
+al color
+no colors
+)
+	expected := "al color colors"
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+
+
+	in =
+(
+weeks   and
+years   and   ears
+)
+	expected := "weeks years ears"
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+
+	in := "weeks weeks years"
+	expected := "weeks years"
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+
+
+if(1){ ;
+	in := "setTitleMatchMode"
+    e := getAutoKeywords(in)
+	expected := "setTitleMatchMode setTitleMatch Mode setTitle MatchMode TitleMatchMode"
+	expected := "setTitleMatchMode Mode setTitleMatch Match setTitle Title"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+}
+
+if(1){ ;
+	in := "SetTitleMatchMode"
+    e := getAutoKeywords(in)
+	expected := "SetTitleMatchMode SetTitleMatch Mode SetTitle MatchMode TitleMatchMode"
+	expected := "SetTitleMatchMode Mode SetTitleMatch Match SetTitle Title"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+}
+
 
 if(false){ ; playground
     in =
@@ -358,12 +505,6 @@ if(false){ ; playground
 		Return errStr " °" A_ThisFunc "° "
 
 
-	in := " weeks weeks years "
-	expected := "weeks years "
-	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
-	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
-
 
 	in := "abcdef"
 	expected := "abcdef"
@@ -378,12 +519,6 @@ if(false){ ; playground
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
 		Return errStr " °" A_ThisFunc "° "
 
-
-	in := "  weeks   and  years   and   ears"
-	expected := "weeks years ears"
-	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
-	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
 
 	in := "A bit of a longer text"
 	expected := "A longer text"
@@ -415,19 +550,29 @@ if(1){ ; playground
 
 ;/¯¯¯¯ test_synonym
 test_synonym(){
-	in =
-(
-test1 baum testsynonym1|rr||ahk|q
-testsynonym2|rr||ahk|q
-)
-	expected =
-(
-test1 baum testsynonym1|rr||ahk|q
-testsynonym2|rr||ahk|q
-)
+    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    fileDelete,% f
+    while(a_index < 5 && fileExist(f))
+        sleep,150
+
+	in :=       "test1 baum testsynonym1|rr||ahk|q"
+	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber, "Loop_Parse_ParseWords")) ; line 727 = Loop_Parse_ParseWords
 		Return errStr " °" A_ThisFunc "° "
-	
+
+	    SELECT := "SELECT word FROM Words Where word like '" in "' "
+        SELECT .= " LIMIT 1 " ";"
+        Matches := g_ActionListDB.Query(SELECT)
+        isFound  := false
+        for each, row in Matches.Rows
+            if( row[1] )
+                isFound  := true
+        if(!isFound)
+            Return in " NOT in DB °" A_ThisFunc "° "
+
+
+
+
 	in := "A bit of a longer text"
 	expected := "A longer text"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
@@ -632,7 +777,7 @@ msg =
 superduper
 `)
 send,`% msg
-ahkScripte PhpScripte|r|
+ahkScripte Scripte PhpScripte|r|
 ahkScripte
 PhpScripte
 )
@@ -769,14 +914,63 @@ if(result <> expected){
 
 
 
-;/¯¯¯¯ err_is_r_without_keywords ¯¯ 181128135906 ¯¯ 28.11.2018 13:59:06 ¯¯\
-err_is_r_without_keywords(){
+;/¯¯¯¯ err_is_r ¯¯ 181128135906 ¯¯ 28.11.2018 13:59:06 ¯¯\
+err_is_r(){
 ; automatically create keywords. by using: |r|value value value ...
     f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
     fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
     while(fileExist(f))
         sleep,100
 
+	in =
+(
+five|r|5
+baum|r|huhu all
+)
+	expected := in
+if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+    Return errStr " °" A_ThisFunc "° "
+
+    in =
+    (
+    baum|r|huhu all
+    )
+	expected := in
+	Critical, Off
+	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_ThisFunc "° "
+
+
+}
+;\____ err_is __ 181128135910 __ 28.11.2018 13:59:10 __/
+
+
+;/¯¯¯¯ err_is_r_without_keywords ¯¯ 181128135906 ¯¯ 28.11.2018 13:59:06 ¯¯\
+err_is_r_without_keywords(){
+; automatically create keywords. by using: |r|value value value ...
+    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    fileDelete, % f
+    while(fileExist(f))
+        sleep,100
+	in =
+(
+|r|setTitleMatchMode
+)
+	expected =
+(
+setTitleMatchMode setTitleMatch Mode setTitle MatchMode TitleMatchMode|r|setTitleMatchMode
+)
+	expected =
+(
+setTitleMatchMode Mode setTitleMatch Match setTitle Title|r|setTitleMatchMode
+)
+if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+    Return errStr " °" A_ThisFunc "° "
+
+    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    fileDelete, % f
+    while(fileExist(f))
+        sleep,100
 	in =
 (
 |r|om is a color
@@ -787,6 +981,7 @@ om color|r|om is a color
 )
 if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
     Return errStr " °" A_ThisFunc "° "
+
 }
 ;\____ err_is_r_without_keywords __ 181128135910 __ 28.11.2018 13:59:10 __/
 
@@ -801,6 +996,23 @@ fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source
 while(fileExist(f))
     sleep,100
 
+	in =
+(
+java and javascript
+)
+	expected := "java javascript"
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
+	in =
+(
+al color
+no colors
+)
+	expected := "al color colors"
+	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+		Return errStr " °" A_ThisFunc "° "
 	in =
 (
 |r|
@@ -852,7 +1064,7 @@ weeks and forest52
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
-	
+
 	
 	
 	in =
@@ -1491,7 +1703,7 @@ almMountain
 )
 		expected =
 (
-almMountain|r|
+almMountain Mountain|r|
 almMountain
 )
 
@@ -1513,7 +1725,7 @@ beutiful Brain
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 		Return errStr " °" A_ThisFunc "° "
 	
-	
+
 	
 } ; endOf test
 
@@ -1670,7 +1882,7 @@ getAssertEqual_ErrorStr(ByRef in,ByRef expected,ALineNumber,myFuncName := "Loop_
 		i2 := "`n\____ in __ `n"
 		
 		strCompareBoth :=  ":( result<>expected" r1 result r2 "<>" e1 expected e2 "" i1 in i2
-		tooltip,% strCompareBoth "`n`n`n`n"  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+		tooltip,% strCompareBoth "`n`n"  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 		result := regExReplace(result,"(``|`%)","``$1")
      ; s := regExReplace(s,"`%","``%")
 		result := regExReplace(result,"([\n\r][ ]*)\)","$1``)")
@@ -1763,8 +1975,12 @@ lbl_HelpOnline_features:
 lbl_HelpOnline_shortcut:
 lbl_HelpOnline_issues_open:
 return
+RenoveToolTip:
+tooltip,
+return
 
 
 
 #Include %A_ScriptDir%\Includes\gi-everywhere.inc.ahk
 #Include,RegWrite181031.ahk
+#Include %A_ScriptDir%\inc_ahk\closeAllAHK_restoreClosedAHK.inc.ahk
