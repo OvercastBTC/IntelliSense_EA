@@ -4,3 +4,5 @@
 ___open ActionList|rr||ahk|openInEditor,Banking_4W.ahk
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
+
+https://subsembly.com/impressum.html

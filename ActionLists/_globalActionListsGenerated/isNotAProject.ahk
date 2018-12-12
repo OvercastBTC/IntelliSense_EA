@@ -5,15 +5,3 @@
 create_own_project|rr||ahk|run,..\..\Source\createOwnProjectDirOrThis.ahk
 ___create own project|rr||ahk|run,..\..\Source\createOwnProjectDirOrThis.ahk
 ; if this german au is readable your UTF8 is probalby corre
-
-
-
-load 
-SpellFixExt.dll
-
-i found and run a sqlite3.exe. wrote .load ./SpellFixExt.dll
-two screenshots: https://imgur.com/a/YFgJVcb and got error
-
-
-https://imgur.com/nzyQUMh
-https://imgur.com/ueuhpG0

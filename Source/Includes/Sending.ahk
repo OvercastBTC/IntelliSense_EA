@@ -1337,7 +1337,12 @@ SendFull(SendValue,ForceBackspace:= false){
 				Clipboard := sending ; " ln=" A_LineNumber "`n`n"
 				AHKcode := "Send,^v"
 				DynaRun(AHKcode) ; <= uese old clipboard.or  simle give it more time
-				sleep,2000
+				; sleep,2000 ; what for???? ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
+				; sleep,1700 ; what for???? ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
+				; sleep,100 ; <= script works not stable. to short ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
+				;sleep,500 ; not stable <= script works not stable. to short ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
+				; sleep,1500 ; 1500 maybe works .  becouse may some the wrong clipboard content is pasted !!!!
+				sleep,1900 ; 2000 maybe to much ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
 				SendLevel 0
 				Clipboard := ClipboardBackup
 				
