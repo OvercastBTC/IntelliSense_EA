@@ -136,6 +136,7 @@ g_do_only_this_testCase  := "test_getAutoKeywords"
 g_do_only_this_testCase  := "err_is_without_keywords"
 g_do_only_this_testCase  := "" ; then all test will be run 24.11.2018 20:33
 g_do_only_this_testCase  := "test_synonym"
+g_do_only_this_testCase  := "err_without_includes_update"
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
@@ -156,9 +157,35 @@ WinGetActiveTitle,activeTitle
 ;                      isFound  := true
 
 
+;/¯¯¯¯ err_without_includes_update ¯¯ 181224102746 ¯¯ 24.12.2018 10:27:46 ¯¯\
+err_without_includes_update(){
+    ActionList := "..\ActionLists\ChromeWidgetWin1\playground_Piratenpad_Google_Chrome.ahk"
+    if(!FileExist(ActionList)){
+        msgbox,% "ERROR `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    }
+content =
+(
+; #Include ..\_globalActionLists\_global.ahk
+; #Include ..\ChromeWidgetWin1\_global.ahk
+; #Include ..\_globalActionLists\examplesForBeginners.ahk
+___open window library |rr||ahk|openInEditor,playground_Piratenpad_Google_Chrome.ahk
+heyho12345
+)
+
+FileAppend, % content, % ActionList "_temp"
+sleep,20
+fileCopy, % ActionList "_temp", % ActionList,1
+filedelete, % ActionList "_temp"
+
+}
+;\____ err_without_includes_update __ 181224102748 __ 24.12.2018 10:27:48 __/
+
+
+
+
 ;/¯¯¯¯ err_string_ahk_line ¯¯ 181204152914 ¯¯ 04.12.2018 15:29:14 ¯¯\
 err_string_ahk_line(){
-    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    f=log\ActionList.ahk.log.txt
     fileDelete,% f
     while(0 && fileExist(f))
         sleep,150
@@ -220,6 +247,8 @@ if(1 && errStr:=test_getAutoKeywords())
 if(false){
 noop=1
 }
+else if(1 && errStr:=err_without_includes_update())
+ 		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_is_r())
  		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_is_r_without_keywords())
@@ -356,6 +385,7 @@ info =
 
 global g_ActionListDB
 g_ActionListDBfileAdress := "G:\fre\private\sql\sqlite\ActionList.db"
+g_ActionListDBfileAdress  =  G:\fre\private\sql\sqlite\ActionList.db
 g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
 global g_LegacyLearnedWords =
 global g_ScriptTitle = gi-everywhere
@@ -363,7 +393,6 @@ global ActionList
 ActionList = ..\ActionLists\ChromeWidgetWin1\lubuntu18-11-19_16-05_Piratenpad_Google_Chrome.ahk._Generated.ahk
 global g_ActionListID
 global g_ActionListDBfileAdress
-g_ActionListDBfileAdress = G:\fre\private\sql\sqlite\ActionList.db
 global g_config
 
 
@@ -550,7 +579,7 @@ if(1){ ; playground
 
 ;/¯¯¯¯ test_synonym
 test_synonym(){
-    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    f=log\ActionList.ahk.log.txt
     fileDelete,% f
     while(a_index < 5 && fileExist(f))
         sleep,150
@@ -782,8 +811,8 @@ ahkScripte
 PhpScripte
 )
 	
-f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
-fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+f=log\ActionList.ahk.log.txt
+fileDelete,log\ActionList.ahk.log.txt
 while(fileExist(f))
     sleep,150
 
@@ -917,8 +946,8 @@ if(result <> expected){
 ;/¯¯¯¯ err_is_r ¯¯ 181128135906 ¯¯ 28.11.2018 13:59:06 ¯¯\
 err_is_r(){
 ; automatically create keywords. by using: |r|value value value ...
-    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
-    fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    f=log\ActionList.ahk.log.txt
+    fileDelete,log\ActionList.ahk.log.txt
     while(fileExist(f))
         sleep,100
 
@@ -948,7 +977,7 @@ if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 ;/¯¯¯¯ err_is_r_without_keywords ¯¯ 181128135906 ¯¯ 28.11.2018 13:59:06 ¯¯\
 err_is_r_without_keywords(){
 ; automatically create keywords. by using: |r|value value value ...
-    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    f=log\ActionList.ahk.log.txt
     fileDelete, % f
     while(fileExist(f))
         sleep,100
@@ -967,7 +996,7 @@ setTitleMatchMode Mode setTitleMatch Match setTitle Title|r|setTitleMatchMode
 if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
     Return errStr " °" A_ThisFunc "° "
 
-    f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+    f=log\ActionList.ahk.log.txt
     fileDelete, % f
     while(fileExist(f))
         sleep,100
@@ -991,8 +1020,8 @@ if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 err_is_without_keywords(){
 
 
-f=G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
-fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+f=log\ActionList.ahk.log.txt
+fileDelete,log\ActionList.ahk.log.txt
 while(fileExist(f))
     sleep,100
 
@@ -1913,7 +1942,7 @@ getAssertEqual_ErrorStr(ByRef in,ByRef expected,ALineNumber,myFuncName := "Loop_
 
 prepareGi(){
 	
-; fileDelete,G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\log\ActionList.ahk.log.txt
+; fileDelete,log\ActionList.ahk.log.txt
 	
 	CoordMode, ToolTip,Screen
 	
@@ -1954,7 +1983,7 @@ settitlematchmode,2
 #IfWinNotActive,ahk_class SunAwtFrame
 esc::
      exitapp
- return
+return
 #IfWinActive,asdjkfhaldjskhfsfhakdsjfasdkaösdjkfh
 	WheelUp::
 return

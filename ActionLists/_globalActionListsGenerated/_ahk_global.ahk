@@ -651,3 +651,11 @@ deprecated
 
 Speak(A_lineNumber " " A_lineFile,"PROD")
 test
+
+RegRead, ActionList, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+
+feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip, closeInSeconds )
+
+lll( A_LineNumber, A_ScriptName, "return")
+
+lll( A_LineNumber, A_LineFile, ActionList )

@@ -309,11 +309,16 @@ ProcessKey(InputChar,EndKey) {
 			tooltip,% "str=" NewInput " , chr=" InputChar "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
       ;Don't do anything if we aren't in the original window and aren't starting a new word
 		Return
-	} else {
+	} else { ; for exampe space was typed
 		if(0 && InStr(A_ComputerName,"SL5"))
 			tooltip,% "str=" NewInput " , chr=" InputChar "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),1,1
       ;AddWordToList(ByRef rootCmdTypeObj,g_Word,0)
-		ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
+      if(false){
+        clipboard .= "`nKey = >" Key "<`n"
+        clipboard .= "`nInputChar = >" InputChar "<`n"
+        clipboard .= "`nEndKey = >" EndKey "<`n"
+      }
+ 		ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
 		Return
 	}
 	
@@ -410,9 +415,6 @@ RecomputeMatches( calledFromStr, is_Recursion := false ){
         g_SingleMatchDescription := Object()
         g_SingleMatchReplacement := Object()
 
-        ; to to to to to to to tooltip box
-        ; totoo to toot to ttto t to box win
-        ; bo box t m m ms to to box msg box
         ; ToolTip2sec(g_min_searchWord_length_2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         StrLen_g_Word := StrLen(g_Word)
         loop,6
@@ -723,14 +725,18 @@ LIMIT 9
 	{
 		; Tooltip, % g_Word " not found", % g_ListBoxX + 20 , % g_ListBoxY + 10
 		; only show a small peace. may sombody typed passwort in? not want show it for everybody... 18-12-10_12-52
-		Tooltip, % ((StrLen_g_Word >=3 ) ? substr( g_Word,1,3 ) ".." : g_Word ) " not found", % g_ListBoxX + 20 , % g_ListBoxY + 10
 		; MsgBox, % SELECT
 		; Clipboard := SELECT
-		; ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
-		setTrayIcon()
+		if(0 && !is_Recursion){
+    		Tooltip, % ((StrLen_g_Word >=3 ) ? substr( g_Word,1,3 ) ".." : g_Word ) " not found", % g_ListBoxX + 20 , % g_ListBoxY + 10
+		    ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),false)
+		    setTrayIcon()
+       }
 		if(0 && InStr(A_ComputerName,"SL5"))
 			tooltip,% " row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" ActionList "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),1,1
+
       ; clipboard := SELECT
+
 		Return
 	}
 	;\____ nothingFound __ 181209180921 __ 09.12.2018 18:09:21 __/
@@ -1017,7 +1023,7 @@ CheckWord(Key) {
 		
 ; if(A_UserName == "Administrator")
 ;    SendInput,%Key%
-;else }}}}} }}}}}}0000000000001230 ToolTip1sec(A_LineNumber   " "   RegExReplace(RegExReplace(A_LineFile,".*\\") , ".*\", "") " " Last_A_This); 75+ lines in Live Edit Live_Edit Pseudo Live Edit for Chrome Firefox PhpStorm.ahk
+;else }}}}} }}}}}}0000000000001230 ToolTip1sec(A_LineNumber   " "   RegExReplace(A_LineFile,".*\\") " " Last_A_This); 75+ lines in Live Edit Live_Edit Pseudo Live Edit for Chrome Firefox PhpStorm.ahk
 		if(lenKey>3){
     ;ToolTip3sec(Key "`n`n" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
 			send,{%keyBackup%}
@@ -1629,7 +1635,7 @@ BuildTrayMenu(){
 ;feedbackMsgBox("BuildTrayMenu test 17-11-22_13-52","test 17-11-22_13-52",1,1)
     if(1 || !InStr(A_ComputerName,"SL5") )
     	Menu, Tray, DeleteAll ; DeleteAll: Deletes all custom menu items from the menu.
-    ; if(0 || !InStr(A_ComputerName,"SL5") )
+    if(0 || !InStr(A_ComputerName,"SL5") )
     	Menu, Tray, NoStandard ; NoStandard: Removes all standard menu items from the menu. https://autohotkey.com/docs/commands/Menu.htm#NoDefault
     if(1 || !InStr(A_ComputerName,"SL5") )
     	Menu, Tray, NoDefault ; Reverses setting a user-defined default menu item.
@@ -1647,7 +1653,6 @@ BuildTrayMenu(){
 
 	Menu, Tray, add, set g_min_searchWord_length := 0 (it stays open`, experimental feature), lbl_g_min_searchWord_length_0
 	Menu, Tray, add, set g_min_searchWord_length := 1, lbl_g_min_searchWord_length_1
-
 
 
 	Menu, Tray, add
@@ -1691,18 +1696,18 @@ BuildTrayMenu(){
 
 ;/¯¯¯¯ ClearAllVars ¯¯ 181024140212 ¯¯ 24.10.2018 14:02:12 ¯¯\
 ; This is to blank all vars related to matches, ListBox and (optionally) word 
-ClearAllVars( calledFromStr , ClearWord ){
+ClearAllVars( ByRef calledFromStr , ClearWord ){
 	
 	global
 
 	; Msgbox,% calledFromStr "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 	if(!instr(calledFromStr,"1614"))
     ;if( !RegExMatch( calledFromStr, "\b(1614|321|734)\b" )	)
-    if(0 && InStr(A_ComputerName,"SL5")){
+    if(false && InStr(A_ComputerName,"SL5")){
         tooltip, %calledFromStr% `n (from: %A_LineFile%~%A_LineNumber%) , 1,200
         clipboard .= "`n" calledFromStr
         if( !RegExMatch( calledFromStr, "\b(1614|321|734|2112|316|687)\b" )	){
-            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), calledFromStr ,1,1 )
+            ; feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), calledFromStr ,1,1 )
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
     }}
 	; boxmsgbxo

@@ -46,27 +46,62 @@ ReadActionList( calledFromStr ){
 	global g_ActionListDBfileAdress
 	
 	global g_config
-	
+
+    if(0 && inStr(ActionList, "playground" )){
+        RegRead, ALinfoOnley, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+        ToolTip5sec( "RegRead=.........  " ALinfoOnley "`n" ActionList "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 10,300 )
+        Sleep, 1000
+
+        WinGetActiveTitle,wintit ;  Retrieves the title of the active window.
+        feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), ActionList, closeInSeconds )
+        sleep,500
+        winactivateTry(wintit,9)
+        sleep,3500
+        return false
+    }
+
+
+
 	if(!ActionList){
-        ;Speak(A_lineNumber,"PROD")
+        if(1 && InStr(A_ComputerName,"SL5"))
+            Speak(A_lineNumber,"PROD")
 		return false
 	}
 	postFixGenerated := "._Generated.ahk"
 	ActionListPostFix  := SubStr(rtrim(ActionList), - StrLen(postFixGenerated) + 1 ) ; That works I've tested it 01.11.2018 14:59
 	itsAGeneratedList := ( postFixGenerated == ActionListPostFix )
 	if(!itsAGeneratedList){
-		fileEx := FileExist ( ActionList postFixGenerated )
-		if(fileEx)
+        if(0 && InStr(A_ComputerName,"SL5"))
+            Speak(A_LineNumber ": Not a Generated List" ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
+		fileEx := FileExist( ActionList postFixGenerated ) ; If no file is found, an empty string is returned.
+		; found a bug in Autohotkey version: v1.1.30.01 - November 11, 2018 https://www.autohotkey.com/boards/viewtopic.php?f=14&t=60288&p=254653#p254653
+		; already reported heere: https://autohotkey.com/board/topic/89401-ahk-syntax-for-function-call-drives-me-crazy/
+		if(fileEx){
 			ActionList .= postFixGenerated ; quick fix 14.11.2018 11:14
-		else if(1 && InStr(A_ComputerName,"SL5")){
-			Speak(A_LineNumber ": Prima. zwei Listen " ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
-			ToolTip8sec( ActionList "`n`n`n Sleep 3000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+            if(1 && InStr(A_ComputerName,"SL5") && !InStr(ActionList,"isNotAProject")){
+                Speak(A_LineNumber ": Not a Generated List but Generated List exist" ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
+			    clipboard := ActionList " `n fileEx= " fileEx
+			    ToolTip8sec( ActionList " `n fileEx= " fileEx "`n`n`n Sleep 3000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+    			Sleep, 3000
+
+
+
+    			; ..\ActionLists\ChromeWidgetWin1\playground_Piratenpad_Google_Chrome.ahk._Generated.ahk
+    			; ..\ActionLists\ChromeWidgetWin1\playground_Piratenpad_Google_Chrome.ahk._Generated.ahk
+			}
+        }else if(0 && InStr(A_ComputerName,"SL5")){
+			Speak(A_LineNumber ": Prima. List is without includes, becouse not generated found" ,"PROD") ; bug entecekt ActionList 12.11.2018 11:02 todo:
+			ToolTip8sec( ActionList "`n`n`n Sleep 3000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 1,1 )
 			Sleep, 3000
-        	;Speak(A_lineNumber,"PROD")
+        	; Speak(A_lineNumber,"PROD")
 			return false
 		}
 	}
-	
+
+
+    ; Speak( regExReplace(ActionList,".*\\") ,"PROD")
+    ; clipboard := ActionList
+
 	
 	
     ; msgBox,% g_config["FuzzySearch"]["keysMAXperEntry"] "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -262,11 +297,21 @@ from: ActionList.ahk~%A_LineNumber%
 	)
 	if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
 		ToolTip4sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
+
+    if(0 && inStr(ActionList, "playground" )){
+        WinGetActiveTitle,wintit ;  Retrieves the title of the active window.
+        feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), ActionList, closeInSeconds )
+        sleep,500
+        winactivateTry(wintit,9)
+        sleep,3500
+        return false
+    }
+
+
 	if (!isTblWordsEmpty && !DatabaseRebuilt) {
     ; thats inside ReadActionList(calledFromStr) ---------------------------------------------
 		
-		
-		
+
 
 		SELECT := "SELECT ActionListmodified, ActionListsize FROM ActionLists WHERE ActionList = '" ActionList "';"
 		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
@@ -312,8 +357,8 @@ from: ActionList.ahk~%A_LineNumber%
 				}
 				
 			}
-			
-			
+
+
 			if(!FileGet_ActionListModified && !ActionListLastModified)
 				msgbox,18-10-28_13-43
 			if (isTblWordsEmpty || diffSize || isModified) {
@@ -639,6 +684,9 @@ from: ActionList.ahk~%A_LineNumber%
 	Return ParseWordsCount
 }
 ;\____ ReadActionList __ 181107175022 __ 07.11.2018 17:50:22 __/
+
+
+
 
 
 ;/¯¯¯¯ ObjToStrTrim ¯¯ 181111193648 ¯¯ 11.11.2018 19:36:48 ¯¯\
@@ -2815,11 +2863,12 @@ ActionList = '%ActionList%' ;
           ; feedbackMsgBox("clipboard:=sql", msg)
           ; msgbox,% msg
           ; 
-		if(  instr(sqlLastError, "no such table") ){
+		if( instr(sqlLastError, "no such table") ){
             ;if(A_TickCount < 1000){
-			tip := "`n sqlLastError=" sqlLastError "`n g_ActionListDB=" g_ActionListDB " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
-			tooltip, % tip
+			tip := "`n Now do RebuildDatabase() because of " sqlLastError "`n g_ActionListDB=" g_ActionListDB
+			ToolTip5sec(tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			RebuildDatabase() ; works ? 22.10.2018 05:23 todo:
+			; Reported by Terka 18-11-05: https://www.autohotkey.com/boards/viewtopic.php?f=6&t=45684&p=254473#p254473
 			sleep,10
 			return getActionListID(ActionList)
                 ; return ; probalby enough only to wait 22.10.2018 04:56

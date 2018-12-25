@@ -14,11 +14,17 @@ if (!ActionListNEW && 1){
 	; 02.11.2018 12:55 attention!! : This is redundant code when changing please consider the other posts also !!
 	ActiveClass := "_globalActionListsGenerated"
 	; activeTitle := "_global" ; used till 07.10.2018 10:12 18-10-07_10-12
-
+	
 	ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
 	ActionList_isNotAProject  := global ActionList_isNotAProject_withoutExt ".ahk"
-
+	
 	activeTitle := ActionList_isNotAProject ; isNotAProject.ahk ; todo: not very pretty silly. 28.10.2018 11:33
+
+	ActionListNEW := ActionList_isNotAProject ; isNotAProject.ahk ; todo: not very pretty silly. 28.10.2018 11:33
+	ToolTip9sec( "Oops (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"  )
+	if(1 && InStr(A_ComputerName,"SL5"))
+	    sleep,5000
+	exitapp
 }
 
 if (!ActionListNEW && 0){
@@ -52,6 +58,11 @@ if(A_ScriptName == "ActionListNameFilter.inc.ahk" ) { ; thats developer mode. th
 	
 	isSlowMotion := true
 } ; demo Mode ende. ( A_ScriptName == "ActionListNameFilter.inc.ahk" )
+
+; playground | Piratenpad - Google Chrome TOP ahk_class Chrome_WidgetWin_1
+; if DeskPins-reloaded-from-SL5net_alwaysOnTop.ahk change the title i would use anyway old list
+ActionListNEW := regexreplace(ActionListNEW, " TOP ")
+
 
 if (!ActionListNEW && 1){
 	m := "ERROR ActionListNEW is EMPTY.  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ") `n (token293)"
@@ -106,7 +117,7 @@ ToolTipSlowMotion(ActionListNEW, A_LineNumber)
 
 getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir ) {
 	
-
+	
  ; 'Q-Dir 6.49.7 [3]' = at  
  ; Bild Ã¶ffnen ahk_class #32770 
  ; Exportieren ahk_class #32770 aus openoffice zu pdf 01.07.2017 20:22
@@ -116,14 +127,14 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 ;
 	if(1 && InStr(A_ComputerName,"SL5")){
         ; Sourcetree ahk_class HwndWrapper[SourceTree.exe;;2705bdea-7ac8-4b39-b851-91e598ce9055] ; mouseWindowTitle=0xd508d8
-        tip=%activeTitle% = activeTitle`n %ActiveClass% = ActiveClass`n
-        tip .= "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-        ToolTip,%tip% , 1,1
-        if(instr(activeTitle,"isNotAProject"))
-            sleep,1000
+		tip=%activeTitle% = activeTitle`n %ActiveClass% = ActiveClass`n
+		tip .= "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+		ToolTip,%tip% , 1,1
+		if(instr(activeTitle,"isNotAProject"))
+			sleep,1000
         ; t
         ;Clipboard := tip
-    }
+	}
 	if(!activeTitle && !ActiveClass){
 		Msgbox,%tip% this should never happens `n (%A_LineFile%~%A_LineNumber%) 
 	}
@@ -181,7 +192,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 	
 	#Include *i .\..\ActionLists\PRIVATE_ActionListNameFilter.inc.ahk
 	
-
+	
 	HumanConnection:
 	if (ActiveClass == "VirtualConsoleClassGhost" && RegExMatch( activeTitle , "Human-Connection" ) ) {
         ; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-27 dirty bugFix
@@ -221,9 +232,11 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 	
 	
 ; Select File - AHK-Studio.ahk ahk_class #32770 ; mouseWindowTitle=0x1604f6  ;
+; 	WinMerge Dateien oder_Ordner_ausw_hlen
+; WinMerge - [Dateien oder Ordner auswählen] ahk_class WinMergeWindowClassW
 	
 	pfade:
-	if ( RegExMatch( activeTitle , "(Double Commander|FreeCommander|Q-Dir \d|Bild öffnen|Anhang speichern|Datei speichern|Speichern|Speichern unter|ffnen|Dateien/Ordner suchen|Exportieren|Dokument speichern|Select Path|Open File or Project|Select File)" ) ) 
+	if ( RegExMatch( activeTitle , "(Ordner ausw|Double Commander|FreeCommander|Q-Dir \d|Bild öffnen|Anhang speichern|Datei speichern|Speichern|Speichern unter|ffnen|Dateien/Ordner suchen|Exportieren|Dokument speichern|Select Path|Open File or Project|Select File)" ) ) 
 		return "..\_globalActionLists\pfade"
 ;Speichern is used with ToDoList_c_AbstractSpoon
 	
@@ -240,7 +253,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 		if(false && activeClass == "ChromeWidgetWin1") {  ; want to know that. debugging 26.4.218 12:18}
         ; need to be discussed: https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-22
 			tooltip,% activeTitle activeClass
-
+			
 			clipboard := activeTitle activeClass
 			sleep,9000
 			log =
@@ -254,7 +267,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 		return "..\_globalActionListsGenerated\_ahk_global.ahk._Generated" ; seems works not 18-04-26_12-44
 		return "..\_globalActionListsGenerated\_ahk_global.ahk._Generated.ahk" ; seems works not 18-04--26_12-44
 	}
-
+	
 	; ll ll ppp ppp ppp ppp
 	
 	SetTitleMatchMode,2 ; 2: A window's title can contain WinTitle anywhere inside it to be a match.
@@ -276,8 +289,8 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				Sleep, 60
 			}
 			if(1 && InStr(A_ComputerName,"SL5"))
-		    	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend, _____global generated lib|r|%wl%`n , % wl
+				RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+			FileAppend, _____global generated lib|r|%wl%`n , % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,%wl%`n, % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,..\_globalActionListsGenerated\_ahk_global.ahk`n, % wl
 			
@@ -308,7 +321,7 @@ FileAppend, _____global generated lib|r|%wl%`n , % wl
 				ExitApp
 			}
 			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend, % fileContent1 . fileContent2  ,% wl
+			FileAppend, % fileContent1 . fileContent2  ,% wl
 			Sleep, 300
 		}
 		return ,% wlRelative
@@ -427,26 +440,33 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
      if(ActionListNEW <> ActionListNEW_time_between)
           return, % ActionListNEW
 	ActionListNEWAddress := "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
-     if(FileExist(ActionListNEWAddress))
+     if(FileExist(ActionListNEWAddress)){
           return, % ActionListNEW
-
-    RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir
-
-    ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
-    if(!CreatedDir)
-        return, % ActionList_isNotAProject_withoutExt
+	}
+	
+	RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir
+	
+	ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
+	if(!CreatedDir){
+		if(false){
+			clipboard := ActionListNEWAddress
+			tooltip,% ActionListNEWAddress " uiuiuiuiuiuiu"
+			Pause,On
+		}
+		return, % ActionList_isNotAProject_withoutExt
+	}
         ; return, % ActionListNEW
-
+	
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
-
+	
      if(0 && !FileExist("..\ActionLists\" . ActiveClass . "\_create_own_project.flag")){
            ; tooltip,ActionListNEWAddress = %ActionListNEWAddress% `n `n (%A_LineFile%~%A_LineNumber%) )
            ; MsgBox,% "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ; happend 07.10.2018 10:33 18-10-07_10-33 inside notepad. dont knoow whey
           return, % "..\_globalActionListsGenerated\_global.ahk" ; ; i think it doesent makes since in some cases 13.05.2018 17:19
      }
-          
+	
 	
           ; created token=17-08-10_16-17
 	if(1 && InStr(activeTitle, "token=17-08-10_16-17")){
@@ -459,9 +479,9 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 		Reload
 		return
 	}
-
+	
      FileDelete, % "..\ActionLists\" ActiveClass "\_create_own_project.flag"
-
+	
 	contend =
 (
 #Include ..\_globalActionLists\_global.ahk
@@ -473,9 +493,9 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 
 )
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-
-    FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
-
+	
+	FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
+	
 	if( FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,ups ActionListNEW = %ActionListNEW% exist already ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
@@ -485,7 +505,7 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 		EXIT
 	}
      RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
+	FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
 	if( !FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,:-( ups !FileExist %ActionListNEW% ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
