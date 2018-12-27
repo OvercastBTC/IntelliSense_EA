@@ -134,9 +134,9 @@ g_do_only_this_testCase  := "err_string_ahk_line"
 g_do_only_this_testCase  := "err_is_r_without_keywords"
 g_do_only_this_testCase  := "test_getAutoKeywords"
 g_do_only_this_testCase  := "err_is_without_keywords"
-g_do_only_this_testCase  := "" ; then all test will be run 24.11.2018 20:33
 g_do_only_this_testCase  := "test_synonym"
 g_do_only_this_testCase  := "err_without_includes_update"
+g_do_only_this_testCase  := "" ; then all test will be run 24.11.2018 20:33
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
@@ -159,6 +159,8 @@ WinGetActiveTitle,activeTitle
 
 ;/¯¯¯¯ err_without_includes_update ¯¯ 181224102746 ¯¯ 24.12.2018 10:27:46 ¯¯\
 err_without_includes_update(){
+    ToolTip5sec( "thats only a stup :) ====> return `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+    return
     ActionList := "..\ActionLists\ChromeWidgetWin1\playground_Piratenpad_Google_Chrome.ahk"
     if(!FileExist(ActionList)){
         msgbox,% "ERROR `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -192,12 +194,12 @@ err_string_ahk_line(){
     in := "searchkeys|rr|stringReplacement|ahk|ahkSource"
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
     in := "url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}"
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
     SELECT := "SELECT word FROM Words Where word like '" in "' "
     SELECT .= " LIMIT 1 " ";"
@@ -207,7 +209,7 @@ err_string_ahk_line(){
         if( row[1] )
             isFound  := true
     if(!isFound)
-        Return in " NOT in DB °" A_ThisFunc "° "
+        Return in " NOT in DB °" A_LineNumber ":" A_ThisFunc "°"
 
 }
 ;\____ err_string_ahk_line __ 181204152918 __ 04.12.2018 15:29:18 __/
@@ -260,8 +262,12 @@ else if(1 && errStr:=err_doAsimpleCopyOfLine())
 ;ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 else if(1 && errStr:=err_CheckValid())
 		countErrors++ ; Msgbox,% A_LineNumber  ;
-else if(1 && errStr:=err_string_ahk_line())
+
+
+else if(1 && InStr(A_ComputerName,"SL5") && errStr:=err_string_ahk_line())
  		countErrors++ ; Msgbox,% A_LineNumber  ;
+
+
 else if(1 && errStr:=err_is_without_keywords())
 		countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(1 && errStr:=err_problemNow())
@@ -272,8 +278,9 @@ else if(1 && errStr:=err_multi_r_content())
 else if(1 && err_multi_rr_stop_by_is_r())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 
-else if(errStr:=err_multi_r_content())
+else if(1 && InStr(A_ComputerName,"SL5") && errStr:=err_multi_r_content())
     countErrors++ ; Msgbox,% A_LineNumber  ;
+;^---- its using selecs without inserts before. so its only works if inserts are finsished before 18-12-25_15-14
 
 else if(1 && errStr:=test_short_keywords())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
@@ -281,8 +288,11 @@ else if(1 && test_do_indexFollowingLines4search())
     countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(false && errStr:=test_dontDeleteComments())
     countErrors++ ; Msgbox,% A_LineNumber  ;
-else if(1 && errStr:=test_synonym())
+
+else if(1 && InStr(A_ComputerName,"SL5") && errStr:=test_synonym())
 		countErrors++ ; Msgbox,% A_LineNumber  ;
+;^---- its using selecs without inserts before. so its only works if inserts are finsished before 18-12-25_15-14
+
 else if(errStr:=err_tests_easy_0())
     countErrors++ ; Msgbox,% A_LineNumber  ;
 else if(errStr:=err_unitTest1())
@@ -386,7 +396,10 @@ info =
 global g_ActionListDB
 g_ActionListDBfileAdress := "G:\fre\private\sql\sqlite\ActionList.db"
 g_ActionListDBfileAdress  =  G:\fre\private\sql\sqlite\ActionList.db
+if(!fileexist(g_ActionListDBfileAdress))
+    g_ActionListDBfileAdress := A_ScriptDir "\ActionListLearned.db"
 g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
+
 global g_LegacyLearnedWords =
 global g_ScriptTitle = gi-everywhere
 global ActionList
@@ -467,7 +480,7 @@ no colors
 	expected := "al color colors"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -478,13 +491,13 @@ years   and   ears
 	expected := "weeks years ears"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 	in := "weeks weeks years"
 	expected := "weeks years"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 if(1){ ;
@@ -493,7 +506,7 @@ if(1){ ;
 	expected := "setTitleMatchMode setTitleMatch Mode setTitle MatchMode TitleMatchMode"
 	expected := "setTitleMatchMode Mode setTitleMatch Match setTitle Title"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 
 if(1){ ;
@@ -502,7 +515,7 @@ if(1){ ;
 	expected := "SetTitleMatchMode SetTitleMatch Mode SetTitle MatchMode TitleMatchMode"
 	expected := "SetTitleMatchMode Mode SetTitleMatch Match SetTitle Title"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 
 
@@ -531,7 +544,7 @@ if(false){ ; playground
 	expected := "abc"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 
@@ -539,20 +552,20 @@ if(false){ ; playground
 	expected := "abcdef"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in := "al color"
 	expected := "al color"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in := "A bit of a longer text"
 	expected := "A longer text"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 if(1){ ; playground
     line := "|rr|"
@@ -587,7 +600,7 @@ test_synonym(){
 	in :=       "test1 baum testsynonym1|rr||ahk|q"
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber, "Loop_Parse_ParseWords")) ; line 727 = Loop_Parse_ParseWords
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 	    SELECT := "SELECT word FROM Words Where word like '" in "' "
         SELECT .= " LIMIT 1 " ";"
@@ -597,7 +610,7 @@ test_synonym(){
             if( row[1] )
                 isFound  := true
         if(!isFound)
-            Return in " NOT in DB °" A_ThisFunc "° "
+            Return in " NOT in DB °" A_LineNumber ":" A_ThisFunc "°"
 
 
 
@@ -605,7 +618,7 @@ test_synonym(){
 	in := "A bit of a longer text"
 	expected := "A longer text"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 ;\____ test_synonym
 
@@ -630,14 +643,14 @@ Hey JavaScript
 )
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	if(0){
 		in := "A bit of a longer text"
 		expected := "longer text"
 		result := getAutoKeywords(in)
 		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-			Return errStr " °" A_ThisFunc "° "
+			Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	}
 }
 ;\____ test_short_keywords __ 181118073226 __ 18.11.2018 07:32:26 __/
@@ -663,7 +676,7 @@ Hey JavaScript
 )
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 ;\____ err_indexFollowingLines4search __ 181124195036 __ 24.11.2018 19:50:36 __/
 
@@ -685,12 +698,12 @@ dont Delete Comments comment|r|
 )
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in := "A bit of a longer text"
 	expected := "longer text"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber),"getAutoKeywords")
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 ;\____ test_dontDeleteComments __ 181118073110 __ 18.11.2018 07:31:10 __/
 
@@ -711,7 +724,7 @@ Skills2|r|Skills2.pdf
 Skills3|r|Skills3.pdf
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 in =
 (
@@ -728,7 +741,7 @@ Skills|r|Skills.pdf
 Skills2|r|Skills2.pdf
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 in =
 (
@@ -745,7 +758,7 @@ Skills|r|Skills.pdf
 Skills2|r|Skills2.pdf
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 	in =
 (
@@ -777,7 +790,7 @@ Skills2|r|Skills2.pdf
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 ;\____ test_multi_rr_stop_by_is_r __ 181117224255 __ 17.11.2018 22:42:55 __/
 
@@ -817,7 +830,7 @@ while(fileExist(f))
     sleep,150
 
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 }
@@ -841,7 +854,7 @@ textlang
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	lines := ""
@@ -851,7 +864,7 @@ textlang
 		in .= lines
 		expected := in
 		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-            Return errStr " °" A_ThisFunc "° "
+            Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
     }
 
 			in =
@@ -863,7 +876,7 @@ special|r|weeks
 special|r|weeks
 )
 			if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-				Return errStr " °" A_ThisFunc "° "
+				Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 			
 			in =
 (
@@ -874,7 +887,7 @@ nothing special 1|r|weeks and forest 1
 nothing special 1|r|weeks and forest 1
 )
 			if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-				Return errStr " °" A_ThisFunc "° "
+				Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 ;\____ err_multi_r_content __ 181119113151 __ 19.11.2018 11:31:51 __/
 
@@ -901,7 +914,7 @@ another
 	
 	; MsgBox, % result
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in =
@@ -920,7 +933,7 @@ Computer is better2
 )
 	feedbackMsgBoxCloseAllWindows()
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 }
 ;\____ err_open_issues __ 181114094059 __ 14.11.2018 09:40:59 __/
@@ -936,7 +949,7 @@ isCommandType := setCommandTypeS(rootLineObj, rootCmdTypeObj, rootCollectObj, ro
 result := doAsimpleCopyOfLine(ByRef rootCmdTypeObj,infoBox := "")
 if(result <> expected){
     feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), A_This )
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 }
 ;\____ err_doAsimpleCopyOfLine __ 181124201215 __ 24.11.2018 20:12:15 __/
@@ -958,7 +971,7 @@ baum|r|huhu all
 )
 	expected := in
 if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
     in =
     (
@@ -967,7 +980,7 @@ if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 	expected := in
 	Critical, Off
 	if(errStr := getAssertEqual_ErrorStr( in, expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 }
@@ -994,7 +1007,7 @@ setTitleMatchMode setTitleMatch Mode setTitle MatchMode TitleMatchMode|r|setTitl
 setTitleMatchMode Mode setTitleMatch Match setTitle Title|r|setTitleMatchMode
 )
 if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
     f=log\ActionList.ahk.log.txt
     fileDelete, % f
@@ -1009,7 +1022,7 @@ if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
 om color|r|om is a color
 )
 if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 }
 ;\____ err_is_r_without_keywords __ 181128135910 __ 28.11.2018 13:59:10 __/
@@ -1032,7 +1045,7 @@ java and javascript
 	expected := "java javascript"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	in =
 (
 al color
@@ -1041,7 +1054,7 @@ no colors
 	expected := "al color colors"
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	in =
 (
 |r|
@@ -1071,7 +1084,7 @@ java javascript|r|
 java and javascript
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 
@@ -1092,7 +1105,7 @@ weeks and forest52
 	feedbackMsgBoxCloseAllWindows()
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 	
 	
@@ -1109,7 +1122,7 @@ weeks and years
 	feedbackMsgBoxCloseAllWindows()
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1128,7 +1141,7 @@ weeks and years
 )
 	feedbackMsgBoxCloseAllWindows()
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in =
@@ -1154,7 +1167,7 @@ weeks
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in =
@@ -1178,7 +1191,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1200,7 +1213,7 @@ a weeks years
 )
 
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1222,7 +1235,7 @@ a weeks years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1246,7 +1259,7 @@ a weeks years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1265,7 +1278,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1286,7 +1299,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in =
 (
@@ -1295,31 +1308,6 @@ a color
 |r|
 a weeks
 years
-)
-	expected =
-(
-a color|r|
-a color
-a weeks years|r|
-a weeks
-years
-)
-	
-	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
-	
-	
-	
-	
-	
-	in =
-(
-|r|
-a color
-|r|
-a weeks
-years
-
 )
 	expected =
 (
@@ -1331,7 +1319,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1341,7 +1329,6 @@ years
 (
 |r|
 a color
-
 |r|
 a weeks
 years
@@ -1354,11 +1341,37 @@ a color
 a weeks years|r|
 a weeks
 years
+)
+	
+	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
+	
+	
+	
+	
+	
+	in =
+(
+|r|
+a color
+
+|r|
+a weeks
+years
+
+)
+	expected =
+(
+a color|r|
+a color
+a weeks years|r|
+a weeks
+years
 
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1386,7 +1399,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1414,7 +1427,7 @@ years
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 }
@@ -1436,7 +1449,7 @@ A longer text|r|
 A bit of a longer text
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in =
@@ -1451,7 +1464,7 @@ a
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in =
 (
@@ -1469,7 +1482,7 @@ Computer is better
 )
 	feedbackMsgBoxCloseAllWindows()
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in =
@@ -1488,7 +1501,7 @@ b|r|
 b
 )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	
@@ -1504,7 +1517,7 @@ abca
 abca
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in =
 (
@@ -1515,7 +1528,7 @@ abc|r|With a bit of content
 abc|r|With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1527,7 +1540,7 @@ abc def|r|With a bit of content
 abc def|r|With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 	in =
 (
@@ -1538,7 +1551,7 @@ Abca|r|With a bit of content
 Abca|r|With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 
@@ -1554,7 +1567,7 @@ abcdef|r|
 With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1568,7 +1581,7 @@ abcd|r|
 With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1582,7 +1595,7 @@ Abc def[a|r|
 With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1596,7 +1609,7 @@ Abc def[a|rr||ahk|
 With a bit of content
 )
 if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-    Return errStr " °" A_ThisFunc "° "
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1615,7 +1628,7 @@ With a bit of content
 Send,`% it
 	)
 	if(errStr := getAssertEqual_ErrorStr(in,Trim(expected," `t`r`n"),A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 
 
 	in =
@@ -1635,7 +1648,7 @@ Send,`% it
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 }
 
@@ -1662,7 +1675,7 @@ Msgbox, is yellow
 	expected := Trim(expected," `t`r`n")
 	result := Trim(result," `t`r`n")
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	return false
 }
 ;\____ indexed_programming __ 181117200827 __ 17.11.2018 20:08:27 __/
@@ -1685,7 +1698,7 @@ iine 2
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in = test0"["|rr||ahk|[
 	in =
@@ -1702,7 +1715,7 @@ WinMove,,,50
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	if(1){
 		in =
@@ -1721,7 +1734,7 @@ Send,`% it
 )
 		
 		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-			Return errStr " °" A_ThisFunc "° "
+			Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	}
 	
 	if(1){
@@ -1737,7 +1750,7 @@ almMountain
 )
 
 		if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-			Return errStr " °" A_ThisFunc "° "
+			Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	}
 	
 	in =
@@ -1752,7 +1765,7 @@ beutiful Brain
 )
 	
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 
 	
@@ -1765,33 +1778,33 @@ err_tests_easy_0(){
 	in := "Speak(,""PROD"")"
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in := "PHP|r|PHP-Frameworks"
 	expected := "PHP|r|PHP-Frameworks"
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in = `; Comments are not stored in the database
 	expected := ""
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in = simple string
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	
 	in = a|r|A
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in = searchWord|rr||ahk|do something
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 	
 	in =
 	(
@@ -1800,7 +1813,7 @@ searchWord 2|rr||ahk|do something 2
 	)
 	expected := in
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 
 
@@ -1814,7 +1827,7 @@ aaa|r|AAA
     aaa|r|AAA
     )
 	if(errStr := getAssertEqual_ErrorStr(in,expected,A_ThisFunc ":" A_LineNumber))
-		Return errStr " °" A_ThisFunc "° "
+		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
 }
 
 

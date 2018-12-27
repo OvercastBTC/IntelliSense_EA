@@ -254,7 +254,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
         ; need to be discussed: https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-22
 			tooltip,% activeTitle activeClass
 			
-			clipboard := activeTitle activeClass
+			clipboard := activeTitle activeClass " (18-12-26_11-08)"
 			sleep,9000
 			log =
         (
@@ -449,7 +449,7 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 	ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
 	if(!CreatedDir){
 		if(false){
-			clipboard := ActionListNEWAddress
+			clipboard := ActionListNEWAddress " (18-12-26_11-07)"
 			tooltip,% ActionListNEWAddress " uiuiuiuiuiuiu"
 			Pause,On
 		}

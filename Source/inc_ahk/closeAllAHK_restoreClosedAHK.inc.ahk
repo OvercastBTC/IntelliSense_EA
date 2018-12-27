@@ -1,6 +1,6 @@
-;/¯¯¯¯ restoreClosedAHK ¯¯ 181204162841 ¯¯ 04.12.2018 16:28:41 ¯¯\
-;/¯¯¯¯ restoreClosedAHK ¯¯ 181204162841 ¯¯ 04.12.2018 16:28:41 ¯¯\
-;/¯¯¯¯ restoreClosedAHK ¯¯ 181204162841 ¯¯ 04.12.2018 16:28:41 ¯¯\
+﻿;/Â¯Â¯Â¯Â¯ restoreClosedAHK Â¯Â¯ 181204162841 Â¯Â¯ 04.12.2018 16:28:41 Â¯Â¯\
+;/Â¯Â¯Â¯Â¯ restoreClosedAHK Â¯Â¯ 181204162841 Â¯Â¯ 04.12.2018 16:28:41 Â¯Â¯\
+;/Â¯Â¯Â¯Â¯ restoreClosedAHK Â¯Â¯ 181204162841 Â¯Â¯ 04.12.2018 16:28:41 Â¯Â¯\
 restoreClosedAHK() {
   global g_closedAHKlist
   loop, % g_closedAHKlist.MaxIndex()
@@ -16,9 +16,9 @@ restoreClosedAHK() {
 
 
 
-;/¯¯¯¯ closeAllOtherAHK ¯¯ 181204162710 ¯¯ 04.12.2018 16:27:10 ¯¯\
-;/¯¯¯¯ closeAllOtherAHK ¯¯ 181204162710 ¯¯ 04.12.2018 16:27:10 ¯¯\
-;/¯¯¯¯ closeAllOtherAHK ¯¯ 181204162710 ¯¯ 04.12.2018 16:27:10 ¯¯\
+;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
+;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
+;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
 ; global g_closedAHKlist := []
 closeAllOtherAHK(){
   global g_closedAHKlist
