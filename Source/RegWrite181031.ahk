@@ -14,13 +14,16 @@ setRegistry_ActionList( ActionListNewTemp_withoutExt ){   ; RegWrite , RegSave ,
         ActionListNewTemp_withoutExt := SubStr( ActionListNewTemp_withoutExt, 1, -4 )
 
     ; toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-    ; tool
+    ; msggb
 
-    if(!ActionList){
+    if(!ActionListNewTemp_withoutExt){
         if(1 && InStr(A_ComputerName,"SL5"))
             ToolTip9sec( "UPS !ActionList`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         return false
     }
+
+    ; fallback if somebody gives addresses like ..\....\G:\\... then take the second absolut path 18-12-29_21-13
+    ActionListNewTemp_withoutExt := regexreplace(ActionListNewTemp_withoutExt , "i).*(\b[a-z]\:\\)", "$1" )
 
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList, % ActionListNewTemp_withoutExt  ; RegWrite , RegSave , Registry
 

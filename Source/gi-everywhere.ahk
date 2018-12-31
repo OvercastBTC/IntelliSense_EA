@@ -68,6 +68,10 @@ class Stuff{
     }
 }
 
+global g_paste_ActipList_in_ListBoxGui_as_Last_entry
+g_paste_ActipList_in_ListBoxGui_as_Last_entry := true
+
+; too too
 
 global g_isEnabledKeyboardHotKeys
 
@@ -191,7 +195,6 @@ if(1 && InStr(A_ComputerName,"SL5")){
     ; g_ActionListDBfileAdress := "E:\fre\private\HtmlDevelop\AutoHotKey\tools\TypingAid-master\Source\ActionListLearned.db"
     g_ActionListDBfileAdress := "G:\fre\private\sql\sqlite\ActionList.db"
 }
-; cre
 
 
 global g_ListBoxFontSize := 16 ; works
@@ -241,7 +244,7 @@ maxLinesOfCode4length1 := 900 ;
 ; SetTimer, saveIamAllive, 8000 ; setinterval
 ; SetTimer,checkInRegistryChangedActionListAddress,600 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 SetTimer,checkInRegistryChangedActionListAddress,2000 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
-; SetTimer,checkInRegistryChangedActionListAddress,off ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+SetTimer,checkInRegistryChangedActionListAddress,off ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 lbl_default_checkActionListAHKfile_sizeAndModiTime := 8123456789
 lbl_default_checkActionListAHKfile_sizeAndModiTime := 500
 ; lbl_default_checkActionListAHKfile_sizeAndModiTime := 8000
@@ -252,6 +255,7 @@ SetTimer,checkWinChangedTitle,1000 ; RegRead, ActionListActive, HKEY_CURRENT_USE
 ; activeTitleOLD := activeTitle
 
 ; tool tool tooltip too tooltip
+; tooltip
 
 SetTimer,doListBoxFollowMouse,off
 ;SetTimer,doListBoxFollowMouse,off
@@ -509,9 +513,13 @@ MainLoop()
 ;/¯¯¯¯ doubleCtrl double Ctrl ListBoxDisabled¯¯ 181201095644 ¯¯ 01.12.2018 09:56:44 ¯¯\
 #IfWinActive,
 ~ctrl::
-   If (A_TimeSincePriorHotkey < 300) and (A_TimeSincePriorHotkey > 80){ ; 50 was to short. i tested it with holding the ctrl key
+   If (A_TimeSincePriorHotkey < 200) and (A_TimeSincePriorHotkey > 80){ ; 50 was to short. i tested it with holding the ctrl key
      toolTip2sec( "Ctrl+Ctrl = toggle listbox`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     ;
+
+    if(0 && InStr(A_ComputerName,"SL5"))
+        msgbox,% "toggle Listbox `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
     g_isListBoxDisabled := !g_isListBoxDisabled
     ; g_fontColor := (g_isListBoxDisabled) ? "cRed" : "cGreen"
     if(g_isListBoxDisabled){
@@ -856,15 +864,34 @@ SetTitleMatchMode,regEx
     }
  return
 
-
+;test too tool tool
 
 #IfWinActive, ; thats probably needet. 27.09.2018 10:29 was problem that hitting 1 , 2 , 3 ... not triggered any. triggers notihng.. with this line it works again.
 RecomputeMatchesTimer:
    Thread, NoTimers
-   if(1 && InStr(A_ComputerName,"SL5"))
-        tooltip,% "RecomputeMatchesTimer: " g_Word "(" StrLen(g_Word) ") (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")",1,-20
+   RegRead, RegReadActionList_DebugInfo, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+   short_RegReadActionList_DebugInfo := RegExReplace(RegReadActionList_DebugInfo,".*\\")
+   short_actionList := RegExReplace(actionList,".*\\")
+   isInIn := (instr(actionList,short_RegReadActionList_DebugInfo) || instr(RegReadActionList_DebugInfo,short_actionList) )
+   ;  1 is the first character; this is because 0 is synonymous with "false",
+    if(!actionList || !isInIn){
+        ; actionList := RegReadActionList_DebugInfo ; todo: not pretty 18-12-28_08-27 quck and dirty
+        gosub,checkInRegistryChangedActionListAddress
+    }
 
-;
+   if(0 && InStr(A_ComputerName,"SL5")){
+       isInIn := (instr(actionList,short_RegReadActionList_DebugInfo) || instr(RegReadActionList_DebugInfo,short_actionList) )
+        tooltip,% "RecomputeMatchesTimer: " g_Word "(" StrLen(g_Word) ") (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")" ((!isInIn) ? "Oops: al=" RegExReplace(actionList,".*\\") "<> reg=" RegExReplace(RegReadActionList_DebugInfo,".*\\") : RegExReplace(actionList,".*\\") ) ,1,-20
+        ; tes
+        ; plausibilty-check (18-12-28_08-03):
+        ; WinGetActiveTitle,at
+        if( 0 && instr(at, ".ahk") && instr(actionList, "isNotAProject" ))
+            tooltip,% "ERROR: wrong list: " actionList "(" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\"),1,20,9
+}
+
+
+; tool too to too  too too tool to
+; tool tool too tool to too tool
 
     ;/¯¯¯¯ Temporary ¯¯ 181107201243 ¯¯ 07.11.2018 20:12:43 ¯¯\
     ; Temporary switched off
@@ -892,10 +919,12 @@ Return
 ; MsgBox,%keyState_Numpad% = keyState_Numpad (line:%A_LineNumber%) `
 
 
-; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_numpad09.inc.ahk
-; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_shiftNumpad09.inc.ahk
-#include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_ctrlNumpad09.inc.ahk
+; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_numpad09.inc.ahk ; <=== works 28.12.2018 00:31
+; #include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_shiftNumpad09.inc.ahk ; <=== ;( seems not working 18-12-28_00-29
+#include,%A_ScriptDir%\shortcuts\listbox_shortcutStyle_ctrlNumpad09.inc.ahk ; <=== default 18-12-28_00-24
 
+
+; tooltip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 ; too depreca 1 deprecated
 
 ; $^Enter::
@@ -1306,16 +1335,19 @@ return
 
 ; msgb
 
+; tool tooltip
 
 
 
 
 ; ActiveTitleOLD2 := activeTitleOLD
-;/¯¯¯¯ checkIncChangedActionListAddress ¯¯ 181025104242 ¯¯ 25.10.2018 10:42:42 ¯¯\
+;/¯¯¯¯ checkInRegistryChangedActionListAddress ¯¯ 181025104242 ¯¯ 25.10.2018 10:42:42 ¯¯\
 ; it reads: RegRead, ActionListNewTemp_RAW, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
 ; SetTimer,checkInRegistryChangedActionListAddress,2000 ; RegRead, ActionListActive, HKEY_CURRENT_USER, SOFTWARE\sl5net, ActionList
+; called from \Window.ahk > WinChanged( :
+; SetTimer,checkInRegistryChangedActionListAddress,on
 checkInRegistryChangedActionListAddress:
-    return ; it seems we need this function ????? 18-12-27_20-50
+    ; return ; it seems we need this function ????? 18-12-27_20-50
 
     ;toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     if(g_doListBoxFollowMouse){

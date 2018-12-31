@@ -190,6 +190,9 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 		return "..\_globalActionLists\VirtualConsoleClassGhost\Human-Connection"
 	}
 	
+	g_ActionList_PRIVATE := "G:\fre\private\ActionLists\"	
+	if(false){
+	}
 	#Include *i .\..\ActionLists\PRIVATE_ActionListNameFilter.inc.ahk
 	
 	
@@ -479,9 +482,12 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 		Reload
 		return
 	}
-	
+
+
+
      FileDelete, % "..\ActionLists\" ActiveClass "\_create_own_project.flag"
 	
+; %activeTitle% <=== leider nicht verfügbar 18-12-29_18-04
 	contend =
 (
 #Include ..\_globalActionLists\_global.ahk

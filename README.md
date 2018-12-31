@@ -8,6 +8,16 @@ Ist eine unaufdringliche IntelliSense für alle Programmen, alle Webseiten, alle
 
 - - -
 
+Was es nicht ist/what its not:
+
+- Its not Swiftkey for Windows
+DE: Die SwiftKey Tastatur erleichtert das Tippen und passt sich an Ihren Schreibstil an.
+https://support.swiftkey.com/hc/en-us
+
+- Its not ...
+
+
+
 Its Sponsored!
 This project is sponsored by JetBrains.  JetBrains is a software development company whose mission is to make the strongest, most effective developer tools on earth. Their tools speed up production, freeing developers to grow, discover and create. 
 
