@@ -16,6 +16,83 @@ isInteger(var) {
 }
  
 
+;/¯¯¯¯ update_configMinify_incAhkFile ¯¯ 190111201847 ¯¯ 11.01.2019 20:18:47 ¯¯\
+update_configMinify_incAhkFile(configIncAhkAddress := "\config\config.inc.ahk"
+        , configMinifyIncAhkAddress := "\config.minify.inc.ahk" ){
+    ; needs start with: g_config (12.01.2019 10:57, 19-01-12_10-57)
+    configIncAhkAddress         := A_ScriptDir configIncAhkAddress
+    configMinifyDIR   := A_ScriptDir "\inc_ahk\minify"
+    configMinifyIncAhkAddress   := configMinifyDIR configMinifyIncAhkAddress
+
+; call it like (11.01.2019 20:19):
+useItLike =
+(
+SetTimer,check_configFile_Changed,2000
+g_config := {} ; <= or every name you like
+if(... := update_configMinify_incAhkFile()){
+    ; reload ...
+}
+# Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahk
+)
+; Changes always become active on the next next call. becouse include is a preparser command. 19-01-11_18-33
+; discussion here: https://stackoverflow.com/questions/54149980/remove-all-unnecessary-whitespaces-from-json-string-with-regex-in-autohotkey
+
+
+    doUpdate := false
+    FileGetTime, modifiedTime_configMinify, % configMinifyIncAhkAddress
+    if(!modifiedTime_configMinify){
+        doUpdate := true
+        FileCreateDir, % configMinifyDIR
+        if(!instr(FileExist(configMinifyDIR), "D")) ; would be true only if the file exists and is a directory.
+            MsgBox,262160,% "problem with :" configMinifyDIR " `n`n :(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    }else{
+        FileGetTime, modifiedTime, % configIncAhkAddress
+        toOldMilliSec := modifiedTime - modifiedTime_configMinify
+        if(modifiedTime
+        && modifiedTime_configMinify
+        && toOldMilliSec > 0  ) ; + 900 becouse humans are not so fast 19-01-14_13-56
+            doUpdate := true
+         else if(toOldMilliSec < -2000){
+            msgbox, % "ups error hacker attack? please dont edit the minify version. toOldMilliSec = " toOldMilliSec " (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+         }
+    }
+
+    If(!doUpdate)
+        return
+
+        ; msgbox,% toOldMilliSec " = toOldMilliSec   "
+
+    msg := toOldMilliSec " = toOldMilliSec   " doUpdate " = doUpdate (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    feedbackMsgBox( msg, msg )
+    ToolTip9sec( msg, 1, 200, 9 )
+
+	FileRead, configContent , % configIncAhkAddress
+	; configContentminify := ""
+	; configContentminify := "configContent =`n(`n" ; configContentminify .= "`n)`n"
+	; ((?!\bg_config\b).)*$
+	; configContentminify .= RegExReplace( configContent , "i)[\s\t ]*[\n\r]+([^\n\r]+)(?!\[a-z][_\d]\b)[\s\t ]*", "`n$1" )
+
+	; dont work 19-01-13_11-00: configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(/\*|\*/|[a-z]+[_\d]*))", " " )
+	configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(\*|/|`;|[a-z]+[_\d]*))", " " )
+	; configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!([a-z]+[_\d]*))", " " )
+	tempFileAddress := A_ScriptDir "\" A_TickCount ".temp.txt"
+	FileAppend, % configContentminify, % tempFileAddress
+	FileCopy,% tempFileAddress, % configMinifyIncAhkAddress, 1
+	Sleep,200
+	FileDelete,% tempFileAddress
+	; reload
+
+	configMinify := { Address: configMinifyIncAhkAddress, content: configContentminify }
+    ; configMinifyIncAhkContent := configMinify["content"]
+    ; configMinifyIncAhkAddress := configMinify["Address"]
+    msg := configMinify["Address"] " = Address (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+; feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), msg, 1, 1, 6 )
+  	Return configMinify
+}
+;\____ update_configMinify_incAhkFile __ 190111201850 __ 11.01.2019 20:18:50 __/
+;\____ update_configMinify_incAhkFile __ 190111201850 __ 11.01.2019 20:18:50 __/
+;\____ update_configMinify_incAhkFile __ 190111201850 __ 11.01.2019 20:18:50 __/
+
 
 JEE_millis_since_midnight(vOpt:=""){ ; renamed from JEE_TimeNowMSec
     VarSetCapacity(SYSTEMTIME, 16, 0)
@@ -245,7 +322,6 @@ if(!Instr(logFileName,scriptName)){ ; plausibillity check . hopefully never happ
 	}
     FormatTime, timestampHHmmss, %A_now%,HH:mm:ss
 	FileAppend, % timestampHHmmss . "   " .  lll, % logFileName
-	;~ ToolTip,%logFileName% := logFileName `n
 	;~ MsgBox,%lll%
 	;Suspend,off
 	text := "" ; iam suspicious with autohotkey dis days ;) 16.07.2017 21:03 usally we dont need to do so
@@ -334,7 +410,7 @@ if(StrLen_source < 100 )
 	errormsg=ERROR StrLen(source of %f%) < 100 `n source=%source% `n f=%f% `n
 	;~ MsgBox,,,errormsg=%errormsg% `n , 2
 	; ToolTip,errormsg=%errormsg% `n
-	ToolTip4sec( errormsg " = errormsg `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+	ToolTip4sec( errormsg " = errormsg `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-41" )
 	;~ Reload
 	return -1
 }
@@ -433,7 +509,7 @@ isDir(Path)
    Return !!InStr(FileExist(Path), "D") 
 }
 
-;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;/¯¯¯¯ runIfNotExist ¯¯ 190110155137 ¯¯ 10.01.2019 15:51:37 ¯¯\
 runIfNotExist(m_r , m_WinTitle = "",m_category="", doFeedbackMsgBox:=258){
 
 DetectHiddenWindows,On
@@ -495,7 +571,7 @@ fileNameWithoutPATHandEXT := m_r
 	}
 	fExist := FileExist(m_r)
 	if(!fExist && doFeedbackMsgBox)
-		feedbackMsgBox(A_ScriptName,":-( !FileExist(" . fileName . ") `n runIfNotExist, line = " . doFeedbackMsgBox . ">" . A_LineNumber,1,1)
+		feedbackMsgBox(A_ScriptName,":-( !FileExist(" fileName ") `n runIfNotExist, line = " . doFeedbackMsgBox . ">" . A_LineNumber,1,1)
 
 if(isHttp || fExist) {
 		IfWinNotExist,%fileNameWithoutPATHandEXT%
@@ -507,7 +583,7 @@ if(isHttp || fExist) {
 			;~ ExitApp
 
 			tip = %m_category%: %fileNameWithoutPATHandEXT%
-			ToolTip5sec( tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+			ToolTip5sec( tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-41" )
 			;feedbackMsgBox(A_ScriptName,"run," . m_r . " `n line = " . A_LineNumber)
 			run,%m_r%
 			; Waits until the specified window exists.
@@ -549,15 +625,17 @@ if(isHttp || fExist) {
 	return,runCount
 
 }
-;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;\____ runIfNotExist __ 190110155142 __ 10.01.2019 15:51:42 __/
 
- winGetPos(){
+;/¯¯¯¯ winGetPos ¯¯ 190110155148 ¯¯ 10.01.2019 15:51:48 ¯¯\
+winGetPos(){
          WinGetPos , left, top, width, height, A   ;, %needle
 		    ;~ mm := {left:left, top:top, width:width, height:height}
 		    mm := {left:left, top:top, width:width, height:height,right:left + width, bottom:top + height}
 return mm
 		
 }
+;\____ winGetPos __ 190110155152 __ 10.01.2019 15:51:52 __/
 
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 WinActivateTry(wintit,tries){
@@ -607,7 +685,7 @@ contextHelp(HardDriveLetter){
 	temT := SubStr( RegExReplace(activeTitle, "([\d\w])\w*\W*", "$1", ReplacementCount) , 1 , 6 )
 
 	; ToolTip3sec(temT )
-	ToolTip5sec(temT  "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+	ToolTip5sec(temT  "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-41" )
 
 	fNameContextHelp=%temp%.txt ; class_spezifisch
   ;MsgBox, %temT% 91
@@ -1435,6 +1513,7 @@ DynaRunFROMAhkSudio(Script,Wait:=true,name:="Untitled"){
 		Script.="`n" "m(x*){`nfor a,b in x`nlist.=b Chr(10)`nMsgBox,,AHK Studio,% list`n}"
 	if(Script~="i)t(.*)\{"=0)
 		Script.="`n" "t(x*){`nfor a,b in x`nlist.=b Chr(10)`nToolTip,% list`n}"
+    msgBox, 19-01-16_19-59 19-01-16_19-59 19-01-16_19-59 19-01-16_19-59 19-01-16_19-59
 	shell:=ComObjCreate("WScript.Shell"),exec:=shell.Exec("AutoHotkey.exe /ErrorStdOut *"),exec.StdIn.Write(Script),exec.StdIn.Close(),started:=A_Now
 	v.Running[Name]:=exec
 	SetTimer,CheckForError,120
@@ -1461,22 +1540,23 @@ DynaRun(TempScript, pipename=""){
     ; msgbox,18-11-16_13-19 ; to tool
     ; tool __ tool
 
-    if(1 && InStr(A_ComputerName,"SL5") )
-        ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+    if(false && InStr(A_ComputerName,"SL5") )
+        ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") tokden:19-01-16_18-40" ) ; token becouse somtimes lineNumber is wrong
 
     setTitleMatchMode, 2
-    if(0 && winActive("ahk_class AutoHotkeyGUI")){
+    if(false && winActive("ahk_class AutoHotkeyGUI")){
         ; what was the motivation for this attitude? 18-12-29_11-40
         ; which error should that fix?
         ; which difficulty`?
         ; ==> then some script i not usabal with gi. nearly all GUIs ant also AHK_Studio
-        if(1 && InStr(A_ComputerName,"SL5") )
-            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), msg )
+        if(false && InStr(A_ComputerName,"SL5") )
+            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "19-01-16_17-53" )
         return false
     }
     if(winExist("fn_functions_global_" A_ThisFunc)){
-        if(1 && InStr(A_ComputerName,"SL5") )
-            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), msg )
+        if(false && InStr(A_ComputerName,"SL5") ) ; whats this ????
+            feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "19-01-16_17-51" )
+        ; sleep,1000
         return false
     }
 
@@ -1499,7 +1579,7 @@ DynaRun(TempScript, pipename=""){
     ;msgbox,% TempScript
 
 		if(0 && InStr(A_ComputerName,"SL5") )
-            ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+            ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-41" )
 
 	static _:="uint",@:="Ptr"
 	try  ; i dont want disturbing error messages
@@ -1568,16 +1648,16 @@ DynaRun(TempScript, pipename=""){
 ;>>>>>>>> DynaRun >>>> 180228151009 >>>>
 
 ;<<<<<<<< removesSymbolicLinksFromFileAdress <<<< 180305085209 <<<< 05.03.2018 08:52:09 <<<<
-removesSymbolicLinksFromFileAdress(ActionList){
+removesSymbolicLinksFromFileAdress(actionList){
 	pLength := 0
-	while(pLength <> StrLen(ActionList )){
+	while(pLength <> StrLen(actionList )){
 	; tooltip,`% A_index . "# Line:" . A_LineNumber . " Name:" . A_ScriptName . " "
-	pLength := StrLen(ActionList )
-	ActionList := RegExReplace(ActionList ,"(\\[^\\]+\\\.\.)+") ; works. removes all symbolic links 24.02.2018  cleanPath
+	pLength := StrLen(actionList )
+	actionList := RegExReplace(actionList ,"(\\[^\\]+\\\.\.)+") ; works. removes all symbolic links 24.02.2018  cleanPath
 	}
-	ActionList := RegExReplace(ActionList,"\\\.\\")  ; works. removes all symbolic link 24.02.2018 cleanPath
-	ActionList := RegExReplace(ActionList,"^\.\\")  ; works. removes all symbolic link 24.02.2018  cleanPath
-	 return ActionList
+	actionList := RegExReplace(actionList,"\\\.\\")  ; works. removes all symbolic link 24.02.2018 cleanPath
+	actionList := RegExReplace(actionList,"^\.\\")  ; works. removes all symbolic link 24.02.2018  cleanPath
+	 return actionList
 }
 ;>>>>>>>> removesSymbolicLinksFromFileAdress >>>> 180305085214 >>>> 05.03.2018 08:502:14 >>>>
 
@@ -1586,6 +1666,8 @@ ProcessExist(Name){
 	return Errorlevel
 }
 
+
+; too too
 
 ;/¯¯¯¯ json ¯¯ 181122225021 ¯¯ 22.11.2018 22:50:21 ¯¯\
 ; from: https://stackoverflow.com/questions/33989042/json-parsing-generating-and-beautifiying-formatting-with-autohotkey
@@ -1653,6 +1735,16 @@ json(i){
 }
 ;\____ json __ 181122225031 __ 22.11.2018 22:50:31 __/
 
+
+
+
+;/¯¯¯¯ str_repeat ¯¯ 190113091852 ¯¯ 13.01.2019 09:18:52 ¯¯\
+str_repeat(vText, vNum){
+	if (vNum <= 0)
+		return false
+	return StrReplace(Format("{:" vNum "}","")," ",vText)
+}
+;\____ str_repeat __ 190113091855 __ 13.01.2019 09:18:55 __/
 
 ; lll(A_LineNumber, "inc_ahk\functions_global.inc.ahk")
 #Include *i %A_ScriptDir%\inc_ahk\ToolTipSec.inc.ahk

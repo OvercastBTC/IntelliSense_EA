@@ -15,7 +15,6 @@ restoreClosedAHK() {
 
 
 
-
 ;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
 ;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
 ;/Â¯Â¯Â¯Â¯ closeAllOtherAHK Â¯Â¯ 181204162710 Â¯Â¯ 04.12.2018 16:27:10 Â¯Â¯\
@@ -25,6 +24,8 @@ closeAllOtherAHK(){
 text:="it's highly recommended to close all other autohotkey script before run this test. should we close oterher autohotkey script now?"
 DetectHiddenWindows On
 WinGet, WList,List,ahk_class AutoHotkey ; <== the anonymous then are without .ahk extension
+
+
 
 ;msgbox, % WList.count() "`n" WList
 if(WList>=3) {
@@ -63,6 +64,8 @@ if(WList>=3) {
       }
       arrayCount += 1
       ; g_closedAHKlist.Push(Title) ; dont work
+
+
 
       if(Title){
         fAddress:=Title

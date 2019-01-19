@@ -164,6 +164,10 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 	if ( RegExMatch( activeTitle , "^Banking 4W" ) )
 		return "..\_globalActionLists\Banking_4W"
 	
+	Smarty:
+	if (1 && RegExMatch( activeTitle , "\bSmarty\b" ) )
+		return "..\_globalActionLists\Smarty"
+	
 	
 	StackOverflow:
 	if (0 && RegExMatch( activeTitle , "Stack Overflow\b" ) )
@@ -239,7 +243,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 ; WinMerge - [Dateien oder Ordner auswählen] ahk_class WinMergeWindowClassW
 	
 	pfade:
-	if ( RegExMatch( activeTitle , "(Ordner ausw|Double Commander|FreeCommander|Q-Dir \d|Bild öffnen|Anhang speichern|Datei speichern|Speichern|Speichern unter|ffnen|Dateien/Ordner suchen|Exportieren|Dokument speichern|Select Path|Open File or Project|Select File)" ) ) 
+	if ( RegExMatch( activeTitle , "(Ordner ausw|Double Commander|FreeCommander|Q-Dir \d|Datei öffnen|Bild öffnen|Anhang speichern|Datei speichern|Speichern|Speichern unter|ffnen|Dateien/Ordner suchen|Exportieren|Dokument speichern|Select Path|Open File or Project|Select File)" ) ) 
 		return "..\_globalActionLists\pfade"
 ;Speichern is used with ToDoList_c_AbstractSpoon
 	
@@ -292,7 +296,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				Sleep, 60
 			}
 			if(1 && InStr(A_ComputerName,"SL5"))
-				RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+				RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 			FileAppend, _____global generated lib|r|%wl%`n , % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,%wl%`n, % wl
 			FileAppend, _____global generated lib|rr||ahk|openInEditor,..\_globalActionListsGenerated\_ahk_global.ahk`n, % wl
@@ -300,7 +304,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 			Sleep, 100
 			
 			if(!FileExist(scriptDIR)){
-				MsgBox, :-( !FileExist(%scriptDIR% = scriptDIR) `n=> exitApp (17-03-19_15-16 )
+				MsgBox, :-( !FileExist(%scriptDIR% = scriptDIR) `n token07 `n  => exitApp (17-03-19_15-16 )
 				ExitApp
 			}
 			
@@ -323,7 +327,7 @@ getActionListNEW173129( activeTitle, ActiveClass, ActionListNEW, ActionListDir )
 				MsgBox, :-( !fileContent `n f=%f% `n 17-03-19_15-21 exitApp
 				ExitApp
 			}
-			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 			FileAppend, % fileContent1 . fileContent2  ,% wl
 			Sleep, 300
 		}
@@ -447,7 +451,7 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
           return, % ActionListNEW
 	}
 	
-	RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net, CreatedDir
+	RegRead, CreatedDir, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, CreatedDir
 	
 	ActionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\ActionLists\_globalActionListsGenerated\isNotAProject" )
 	if(!CreatedDir){
@@ -460,9 +464,9 @@ maybeSuperglobalActionList(ActionListNEW, ActionListNEW_time_between , ActiveCla
 	}
         ; return, % ActionListNEW
 	
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite ,
 	
      if(0 && !FileExist("..\ActionLists\" . ActiveClass . "\_create_own_project.flag")){
            ; tooltip,ActionListNEWAddress = %ActionListNEWAddress% `n `n (%A_LineFile%~%A_LineNumber%) )
@@ -498,7 +502,7 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 ; if this german au is readable your UTF8 is probalby correct: ä
 
 )
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 	
 	FileAppend,% "",   % "..\ActionLists\" . ActiveClass . "\_global.ahk"
 	
@@ -510,7 +514,7 @@ ___open window library |rr||ahk|openInEditor,%ActionListNEW%
 		Msgbox,ups ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
 		EXIT
 	}
-     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 	FileAppend,% contend,   % "..\ActionLists\" . ActiveClass . "\" . ActionListNEW
 	if( !FileExist("..\ActionLists\" . ActiveClass . "\" . ActionListNEW) ){
 		Msgbox,:-( ups !FileExist %ActionListNEW% ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )

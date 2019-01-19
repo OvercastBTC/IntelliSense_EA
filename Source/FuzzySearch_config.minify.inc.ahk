@@ -1,0 +1,1 @@
+﻿g_config.FuzzySearch := {enable: true,MAXlines : 87654,keysMAXperEntry : 6,minKeysLen: 4,doValueCopy : false} ; difficult to implement symlink copy for not rr lines doValueCopy. todo: issue . doValueCopy : false  is not fully implemented

@@ -122,12 +122,14 @@ InitializeListBox(){
 ;/¯¯¯¯ ListBoxRigthButtionClick ¯¯ 181209172003 ¯¯ 09.12.2018 17:20:03 ¯¯\
 ; Rigth-Buttion-Click in ListBox opens active action list for edit it
 ListBoxRigthButtionClick(wParam, lParam, msg, ClickedHwnd){
-    global ActionList
-    fileAddress := strReplace(ActionList,"._Generated.ahk") ; better not edit into the _generated 18-12-09_17-31
+    global actionList
+    fileAddress := strReplace(actionList,"._Generated.ahk") ; better not edit into the _generated 18-12-09_17-31
     if(fileexist(fileAddress) && !InStr(FileExist(fileAddress), "D"))
         openInEditorFromIntern( fileAddress )
     else
-        openInEditorFromIntern( ActionList )
+        openInEditorFromIntern( actionList )
+    if(1 && InStr(A_ComputerName,"SL5"))
+        ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-42" )
     ;msgbox,`n(%A_LineFile%~%A_LineNumber%)
 }
 ;\____ ListBoxRigthButtionClick __ 181209172006 __ 09.12.2018 17:20:06 __/
@@ -169,8 +171,8 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
 
     ; g_ListBoxX := ""
     ; g_ListBoxY := ""
-    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX,0
-    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY,0
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxX,0
+    RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxY,0
     ; sleep,1500
     Msgbox,clickedScrollbar `n(%A_LineFile%~%A_LineNumber%)
     reload
@@ -198,8 +200,8 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
             Hotkey, WheelDown, off
             g_ListBoxX := 0 ; lets try box move with caret
             g_ListBoxY := 0 ; lets try box move with caret
-            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX, %g_ListBoxX%
-            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY, %g_ListBoxY%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxX, %g_ListBoxX%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxY, %g_ListBoxY%
             g_TimeMilli_SincePriorMouseClick := A_TickCount
             return
         }
@@ -214,14 +216,14 @@ ListBoxClickItem(wParam, lParam, msg, ClickedHwnd){
             Hotkey, WheelUp, off
             Hotkey, WheelDown, off
             ;
-            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxX, %g_ListBoxX%
-            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, g_ListBoxY, %g_ListBoxY%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxX, %g_ListBoxX%
+            RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxY, %g_ListBoxY%
       }else{
             tip=START follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
             ToolTip1sec(tip)
             g_doListBoxFollowMouse := true ; toggle it.
             ; SetTimer,doListBoxFollowMouse,200
-            SetTimer,doListBoxFollowMouse,50 ; 07.11.2018 20:33 update. absolute no problem for CPU
+            SetTimer,doListBoxFollowMouse,40 ; 40 seems a good balue 07.11.2018 20:33 update. absolute no problem for CPU
             Hotkey, WheelUp, on
             Hotkey, WheelDown, on
             ;SetTimer,doListBoxFollowMouse,on ; to
@@ -398,7 +400,7 @@ if(0 && calledFromName)
         ToolTip9sec( calledFromStr "`n" calledFromName "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 ; to too  too too too too msg too tool i tool  tool cal t
-   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net, % A_ThisFunc , % calledFromStr
+   RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, % A_ThisFunc , % calledFromStr
    IfNotEqual, g_ListBox_Id,
    {
    ; thats the place were listbox will be closed  17-03-17_17-12 17.03.2017 17:12
@@ -457,7 +459,7 @@ ListBoxEnd() {
       g_ScrollEventHookThread =
       MaybeCoUninitialize()
    }
-   lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"DisableKeyboardHotKeys()")
+   ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"DisableKeyboardHotKeys()")
    DisableKeyboardHotKeys()
    return
 }
@@ -647,9 +649,6 @@ AddToMatchList(position, MaxLength, HalfLength, LongestBaseLength, ComputeBaseLe
 
    global g_MatchTotal ; addet 18-12-31_13-56
 
-   global g_paste_ActipList_in_ListBoxGui_as_Last_entry ; 18-12-31_14-00
-
-
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    blankprefix = `t
    
@@ -668,7 +667,7 @@ AddToMatchList(position, MaxLength, HalfLength, LongestBaseLength, ComputeBaseLe
    }
 
 
-    if(g_paste_ActipList_in_ListBoxGui_as_Last_entry
+    if(false && g_config["listBoxGui"]["tipps"]["show"]
         && (g_MatchTotal == position || g_MatchTotal-1 == position )) ; if we use last inty only for information. show the action list. dont use a profix
         prefix := ""
 
@@ -819,9 +818,9 @@ else
    ListBoxPosX := CaretXorMouseXfallback()
 if(g_ListBoxY)  ; if g_ListBoxY (not false > 0) it never usses  CaretYorMouseYfallback
    ListBoxPosY := g_ListBoxY -  60
-else
+else{
    ListBoxPosY := CaretYorMouseYfallback()
-   
+}
    SysGet, NumMonitors, %g_SM_CMONITORS%
 
    IfLess, NumMonitors, 1
@@ -848,9 +847,9 @@ else
 
 
    ret := Floor((Width-ListBoxBaseSizeX)/ g_ListBoxCharacterWidthComputed)
-   if(ret < 100){
-        ret := 100 ; dirty bug fix 07.11.2018 19:08
-        if(1 && InStr(A_ComputerName,"SL5"))
+   if(ret < 180){
+        ret := 180 ; dirty bug fix 07.11.2018 19:08
+        if(0 && InStr(A_ComputerName,"SL5"))
             tooltip,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")", 30, 70
             ; msgbox,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     }
@@ -861,8 +860,8 @@ else
 
    
 ; t too msg  to  too to t t t to tooo
-; to to
-
+; to to tooltip tooltip msgbox box testbox testbox oooo oo test testo hans oo test op omaa box
+; msgbox msb ms too l tool  tooltip b
 
 ;Show matched values
 ; Any changes to this function may need to be reflected in ComputeListBoxMaxLength()
@@ -871,7 +870,7 @@ ShowListBox(paraX:="",paraY:=""){
 
    global
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
-    g_ListBoxTitle := "Word List Appears Here."
+    g_ListBoxTitle := "Action List Appears Here" ; search help: ListBox, Gui, Show,
     g_ListBoxTitle_firstTimeInMilli := A_TickCount ; milliseconds
 
 
@@ -912,6 +911,10 @@ ShowListBox(paraX:="",paraY:=""){
       
       g_ListBoxPosX := CaretXorMouseXfallback()
       ListBoxPosY := CaretYorMouseYfallback()
+      if(g_config["listBoxGui"]["tipps"]["show"]){
+        ListBoxPosY += 39
+      }
+
       ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 SetTitleMatchMode,2
 IfWinActive,SciTE4AutoHotkey ahk_class SciTEWindow
@@ -1016,13 +1019,17 @@ if(0 && InStr(A_ComputerName,"SL5")){
 ; to tool tooltip msg tooltip test lkjl
       ; that box is not out of monitor, out of sceen:
       ForceWithinMonitorBounds(g_ListBoxPosX,ListBoxPosY,ListBoxActualSizeW,ListBoxActualSizeH)
-      
-      g_ListBoxContentWidth := ListBoxActualSizeW - ScrollBarWidth - BorderWidthX
-      if(0)
-        ToolTip, % g_ListBoxContentWidth "`n = g_ListBoxContentWidth `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
-      if(g_ListBoxContentWidth<300)
-        g_ListBoxContentWidth := 300 ; <=== maybe thi has no effect.
+      ; tool msg box bo box tooltip
+      ; tool tool box x ms
+
+      g_ListBoxContentWidth := ListBoxActualSizeW - ScrollBarWidth - BorderWidthX
+      g_ListBoxContentWidth *= 4 ; seems has same effect then factor 2
+      if(0 && InStr(A_ComputerName,"SL5"))
+        ToolTip, % g_ListBoxContentWidth "`n = g_ListBoxContentWidth `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 500,1,5
+
+      if(g_ListBoxContentWidth < 600)
+        g_ListBoxContentWidth := 600 ; <=== maybe thi has no effect.
 
       IfEqual, g_ListBox_Id,
       {
@@ -1041,10 +1048,13 @@ if(0 && InStr(A_ComputerName,"SL5")){
          }
             
       }
+; tooo
 
+; ListBoxActualSizeH += 100 ; that adds a grey area bellow the listbox. useless 18-12-31_15-09
 
 try {
-       g_ListBoxTitle := "ListBoxTitle (sec=" A_Sec ")"
+       ; g_ListBoxTitle := "ListBoxTitle (sec=" A_Sec ")"
+       g_ListBoxTitle := "Action List Appears Here"
       Gui, ListBoxGui: Show, NoActivate X%g_ListBoxPosX% Y%ListBoxPosY% H%ListBoxActualSizeH% W%ListBoxActualSizeW%,% g_ListBoxTitle
       Gui, ListBoxGui: +LastFound +AlwaysOnTop
       g_ListBoxTitle_firstTimeInMilli := A_TickCount ; milliseconds
@@ -1059,8 +1069,7 @@ try {
 
       IfEqual, g_ListBox_Id,
       {
-      ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")
-         lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"EnableKeyboardHotKeys()")
+         ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"EnableKeyboardHotKeys()")
          EnableKeyboardHotKeys()
       }
       
@@ -1080,16 +1089,21 @@ try {
          g_ScrollEventHookThread := ListBoxThread
       }
       
-      OnMessage(g_WM_LBUTTONUP, "ListBoxClickItem")
-      OnMessage(g_WM_RBUTTONUP, "ListBoxRigthButtionClick")
+      ; todo: little bug: if leftclick it always runs also ListBoxRigthButtionClick 19-01-05_08-23
+      ; https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-lbuttonup
+      ;OnMessage(g_WM_LBUTTONUP, "ListBoxClickItem") ; https://autohotkey.com/docs/commands/OnMessage.htm
+      OnMessage(0x0202, "ListBoxClickItem") ; https://autohotkey.com/docs/commands/OnMessage.htm
+
+      ; https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-rbuttonup
+      ; OnMessage(WM_RBUTTONUP, "ListBoxRigthButtionClick") ; https://autohotkey.com/docs/commands/OnMessage.htm
+      ; OnMessage(WM_RBUTTONUP, "ListBoxRigthButtionClick") ; https://autohotkey.com/docs/commands/OnMessage.htm
+      OnMessage(0x0205, "ListBoxRigthButtionClick") ; https://autohotkey.com/docs/commands/OnMessage.htm
       ; OnMessage(g_WM_LBUTTONDBLCLK, "ListBoxClickItem")
       
       IfNotEqual, prefs_ListBoxOpacity, 255
          WinSet, Transparent, %prefs_ListBoxOpacity%, ahk_id %g_ListBox_Id%
 ; WinSet, TransColor, 096FBF 150
 ; WinSet, TransColor, 0078D7 255
-
-; ; too too tott  to to to t t t to to t to tr
 
    }
 }
@@ -1107,6 +1121,10 @@ ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSize
    global g_ListBoxCharacterWidthComputed
    global g_ListBoxOffsetComputed
    global g_ListBoxMaxWordHeight
+
+   global g_min_MonitorBound_right
+
+   global g_ListBoxActualSizeH_maxFound ; addet 04.01.2019 11:11
     INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
    ;Grab the number of non-dummy monitors
    SysGet, NumMonitors, %g_SM_CMONITORS%
@@ -1123,23 +1141,30 @@ ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSize
       if (ListBoxActualSizeH > g_ListBoxMaxWordHeight) {
          g_ListBoxMaxWordHeight := ListBoxActualSizeH
       }
-      
+
       ; + g_ListBoxOffsetComputed Move ListBox down a little so as not to hide the caret. 
       ListBoxPosY := ListBoxPosY + g_ListBoxOffsetComputed
       if (g_ListBoxFlipped) {
-         ListBoxMaxPosY := CaretYorMouseYfallback() - g_ListBoxMaxWordHeight
-         
-         if (ListBoxMaxPosY < MonTop) {
-            g_ListBoxFlipped =
-         } else {
-           ListBoxPosY := CaretYorMouseYfallback() - ListBoxActualSizeH
-         }
+          If ( (ListBoxPosY + g_ListBoxMaxWordHeight ) <= MonBottom ){
+            ListBoxMaxPosY := CaretYorMouseYfallback() + g_ListBoxMaxWordHeight
+          }else{
+             if (ListBoxMaxPosY < MonTop) {
+                g_ListBoxFlipped =
+             } else {
+               ListBoxPosY := CaretYorMouseYfallback() - ListBoxActualSizeH
+             }
+          }
       }
-      
+
+        ; in ForceWithinMonitorBounds
+
+
       ; make sure we don't go below the screen.
       If ( (ListBoxPosY + g_ListBoxMaxWordHeight ) > MonBottom ){
          ListBoxPosY := CaretYorMouseYfallback() - ListBoxActualSizeH
          g_ListBoxFlipped := true
+         if(1 && InStr(A_ComputerName,"SL5"))
+            ToolTip2sec(g_ListBoxFlipped "`n=g_ListBoxFlipped`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
       }
       
       ; make sure we don't go above the top of the screen.
@@ -1149,7 +1174,8 @@ ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSize
          ListBoxPosX += g_ListBoxCharacterWidthComputed
       }
       
-      If ( (ListBoxPosX + ListBoxActualSizeW ) > MonRight ){
+      ; If ( (ListBoxPosX + ListBoxActualSizeW ) > MonRight ){ ; <== works great. version before 04.01.2019 12:40 19-01-04_12-40
+      If ( (ListBoxPosX + g_min_MonitorBound_right ) > MonRight ){
          ListBoxPosX := MonRight - ListBoxActualSizeW
          If ( ListBoxPosX < MonLeft )
             ListBoxPosX := MonLeft
@@ -1159,14 +1185,11 @@ ForceWithinMonitorBounds(ByRef ListBoxPosX, ByRef ListBoxPosY, ListBoxActualSize
       Break
    }
 
-   Return      
+   if(g_ListBoxActualSizeH_maxFound < ListBoxActualSizeH) ; addet 04.01.2019 11:12 19-01-04_11-12
+    g_ListBoxActualSizeH_maxFound := ListBoxActualSizeH ; addet 04.01.2019 11:12 19-01-04_11-12
+   Return
 }
 ;\____ ForceWithinMonitorBounds __ 181120003127 __ 20.11.2018 00:31:27 __/
-
-
-
-
-;------------------------------------------------------------------------
 
 
 ;/¯¯¯¯ GetRows ¯¯ 181120003132 ¯¯ 20.11.2018 00:31:32 ¯¯\
@@ -1183,10 +1206,9 @@ GetRows(){
 
 
 
-
 ;/¯¯¯¯ CaretXorMouseXfallback ¯¯ 181120003149 ¯¯ 20.11.2018 00:31:49 ¯¯\
 ; function to grab the X position of the caret for the ListBox
-CaretXorMouseXfallback() {
+CaretXorMouseXfallback(){
    global g_DpiAware
    global g_DpiScalingFactor
    global g_Helper_Id
@@ -1221,7 +1243,7 @@ CaretXorMouseXfallback() {
 
 ;/¯¯¯¯ CaretYorMouseYfallback ¯¯ 181120003206 ¯¯ 20.11.2018 00:32:06 ¯¯\
 ; function to grab the Y position of the caret for the ListBox
-CaretYorMouseYfallback() {
+CaretYorMouseYfallback(){
    global g_DpiAware
    global g_DpiScalingFactor
    global g_Helper_Id

@@ -1,5 +1,5 @@
 ﻿;/Â¯Â¯Â¯Â¯ Sql_Temp Â¯Â¯ 181123025153 Â¯Â¯ 23.11.2018 02:51:53 Â¯Â¯\
-class Sql_Temp {
+class Sql_Temp { ; search help: sqltemp tempsql
     ; Static declarations are evaluated only once, before the auto-execute section,
     ; https://autohotkey.com/docs/Objects.htm#Custom_Classes
     valueObj := {}
@@ -14,10 +14,11 @@ class Sql_Temp {
 
 ; too tot too too toot toot t
 
+
         o := array()
-        loop,6
+        loop,7
         {
-            fileName := fileNamePrefix A_Index ".sql"
+            fileName := fileNamePrefix (A_Index-1) ".sql"
 
             fileAdress := A_ScriptDir "\sql\template\" fileName
             if(!FileExist(fileAdress)){
@@ -40,27 +41,30 @@ class Sql_Temp {
             if(RegExMatch(SELECT,"Oim)" regex,Found)){
                 oWord := { pos : Found.Pos(3), len : Found.Len(3) }
                 ; msgbox,% ObjToStrTrim(oWord) "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-            }
-            regex := "ActionListID\s+(>\s*\d+)"
+            } else
+                oWord := "" ; importend add 19-01-11_22-41 ; if you dont set it back it always using the old before
+            regex := "actionListID\s+(>\s*\d+)"
             if(RegExMatch(SELECT,"Oim)" regex,Found)){
                 oListID := { pos : Found.Pos(1), len : Found.Len(1) }
                 ; msgbox,% ObjToStrTrim(oListID) "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-            }
+            } else
+                oListID := "" ; importend add 19-01-11_22-41 ; if you dont set it back it always using the old before
             o[fileIndex] := { sql: SELECT, word: oWord, listID : oListID }
-        }
+        } ; endOf loop,7
+
         jsonStr := json(o)
-        ; g_ActionListDB.BeginTransaction()
+        ; g_actionListDB.BeginTransaction()
 
-        global g_ActionListDB
+        global g_actionListDB
 
-        if(!g_ActionListDB)
-            g_ActionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_ActionListDBfileAdress ) ;
+        if(!g_actionListDB)
+            g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
          escaped_string := RegExReplace(jsonStr, "'", "''")
         sql := "REPLACE INTO temp (fileModiTime, key, value) VALUES ('" fileModiTime "', '" fileNamePrefix "','" escaped_string "');"
         ; clipboard := sql
 
         try{
-            g_ActionListDB.Query(sql)
+            g_actionListDB.Query(sql)
         } catch e{
             tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
             sqlLastError := SQLite_LastError()
@@ -93,11 +97,11 @@ class Sql_Temp {
         if(!This.fileNamePrefix)
             msgbox,% " ERROR !This.fileNamePrefix `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
         key := This.fileNamePrefix
-        global g_ActionListDB
+        global g_actionListDB
         sql := "select value from temp where key = '" key "';"
         ; clipboard := sql
         try{
-            Matches  := g_ActionListDB.Query(sql)
+            Matches  := g_actionListDB.Query(sql)
         } catch e{
             tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
             sqlLastError := SQLite_LastError()
@@ -126,7 +130,7 @@ class Sql_Temp {
             msgbox,% " ERROR  `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
         valueObj := This.valueObj ; Sql_Temp
         sql := Array()
-        loop,6
+        loop,7
         {
             o := valueObj[A_Index]
             sql["pre_Where"] := substr( o["sql"], 1 , o["word"]["pos"] - 1 )

@@ -8,21 +8,28 @@ Ist eine unaufdringliche IntelliSense für alle Programmen, alle Webseiten, alle
 
 - - -
 
-Was es nicht ist/what its not:
+Audience/target group: Programmers, writers, Windows Power users, Autohotkey lovers
+
+what its not:
+- although that is originally was , its not anymore a simple auto-completion list.
+you can still use it for that, but that's just a subset of the features.
 
 - Its not Swiftkey for Windows
-DE: Die SwiftKey Tastatur erleichtert das Tippen und passt sich an Ihren Schreibstil an.
-https://support.swiftkey.com/hc/en-us
+The SwiftKey keyboard makes typing easier and adapts to your writing style.
+It's a good idea to use both at the same time. it wokrs very well in parallel with other intellisense or auto-completion lists ( https://support.swiftkey.com/hc/en-us )
 
-- Its not ...
+- - -
 
+if you use it, please share your ActionLists with the community.
+
+- - -
 
 
 Its Sponsored!
 This project is sponsored by JetBrains.  JetBrains is a software development company whose mission is to make the strongest, most effective developer tools on earth. Their tools speed up production, freeing developers to grow, discover and create. 
 
-[![JetBrains Logo](https://www.isic.nl/media/1391607/jetbrains.jpg?width=448&height=277&mode=crop&scale=both) 
- 
+![JetBrains Logo](https://www.isic.nl/media/1391607/jetbrains.jpg?width=448&height=277&mode=crop&scale=both) 
+
 This international company has a user base of 4+ million users across 140 countries.  The company has won over 300+ awards.  Their customer base includes, The New York Times, CitiBank, Twitter, Pinterest, NASA, Salesforce and Samsung.
 
 - - -
@@ -43,7 +50,7 @@ or: https://autohotkey.com/
  [github.com...master](https://codeload.github.com/sl5net/global-IntelliSense-everywhere/zip/master)
   or 
   [github.com...zipball/master/](https://github.com/sl5net/global-IntelliSense-everywhere/zipball/master/)
-  or 
+  or perhaps 
   [github.com...zipball Nightly-Build](https://github.com/sl5net/global-IntelliSense-everywhere-Nightly-Build/zipball/master/)
 - Start start.ahk
 
@@ -70,32 +77,15 @@ or https://github.com/sl5net/global-IntelliSense-everywhere/issues
 or https://autohotkey.com/boards/viewtopic.php?f=6&t=45684 
 or essential-freebies.de/board/viewtopic.php?f=33&t=18557 
 
-
-
-
 its using (many thanks for it):
-- regex (very often)
-- windows OS
+- regex (Regular expressions are extremely useful in read/change information from any text)
+- SQLite (fast, self-contained, high-reliability, full-featured, SQL database engine) 
+- windows OS (experimental: reactos)
 - autohotkey
-- TypingAid.ahk
-- ADO.ahk
-- ArchLogger.ahk
-- Base.ahk
-- clean.bat
-- Collection, ahk
-- DataBaseAbstract. ahk
-- DataBaseADO.ahk
-- DataBaseFactory.ahk
-- DataBaseMySQL.ahk
-- DataBaseSQLLite .ahk
-- DBA.ahk
-- MemoryBufFer.ahk
-- mySQL.ahk
-- RecordSetADO.ahk
-- RecordSetMySQL, ahk
-- RecordSetSqlLite .ahk
-- sizeof.ahk
-- SQLite_L.ahk
+
+![Autohotkey Logo](https://www.autohotkey.com/assets/images/ahk-logo-no-text241x78-180.png) 
+
+
 
 Credits:
 - Maniac
