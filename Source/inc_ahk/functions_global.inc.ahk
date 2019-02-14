@@ -9,6 +9,23 @@ global g_CaretY_Old
 global feedbackMsgBox1PosBackup_x
 global feedbackMsgBox1PosBackup_y
 
+;/¯¯¯¯ getRunPHP_link ¯¯ 190124154512 ¯¯ 24.01.2019 15:45:12 ¯¯\
+getRunPHP_link(phpFileAddress , argv, phpCgiExe ){
+   ;~ argv = --source1="%oSciTE_CurrentFile%"
+   ; path= %A_ScriptDir%\phpdesktop-msie-1.14-php-5.4.33
+   ; if(!FileExist( path   ))
+   ;    MsgBox,:(  !FileExist  `n  %path% = path (line:%A_LineNumber%) `n
+   ; phpCgiExe = %path%\php\php-cgi.exe
+   if(!FileExist( phpCgiExe ))
+       MsgBox,:( %phpCgiExe% = phpCgiExe (line:%A_LineNumber%) `n
+   ; E:\fre\private\HtmlDevelop\AutoHotKey\SL5_AHK_Refactor_engine_gitHub\phpdesktop-msie-1.14-php-5.4.33\www\SL5_preg_contentFinder\examples\AutoHotKey\Reformatting_Autohotkey_Source.php
+   ;script = %path%\www\SL5_preg_contentFinder\examples\AutoHotKey\%phpFile%
+   target := phpCgiExe " " phpFileAddress " " argv
+   Clipboard:=target
+   ;~ MsgBox,%target% = target (line:%A_LineNumber%) `n
+   return target
+}
+;\____ getRunPHP_link __ 190124154515 __ 24.01.2019 15:45:15 __/
 
 
 isInteger(var) {
@@ -52,15 +69,27 @@ if(... := update_configMinify_incAhkFile()){
         && modifiedTime_configMinify
         && toOldMilliSec > 0  ) ; + 900 becouse humans are not so fast 19-01-14_13-56
             doUpdate := true
-         else if(toOldMilliSec < -2000){
-            msgbox, % "ups error hacker attack? please dont edit the minify version. toOldMilliSec = " toOldMilliSec " (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+         else{
+            FileGetTime, creationTime_configMinify, %modifiedTime_configMinify%, C  ; Retrieves the creation time.
+            if( true
+                && toOldMilliSec < -2000
+                && modifiedTime_configMinify < creationTime_configMinify ){
+            msg =
+             (
+             ups error hacker attack? please dont edit the minify version.
+             toOldMilliSec := modifiedTime - modifiedTime_configMinify
+             %toOldMilliSec% := %modifiedTime% - %modifiedTime_configMinify%
+             )
+             msg .= "`n (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            msgbox, % msg
+         }
          }
     }
 
     If(!doUpdate)
         return
 
-        ; msgbox,% toOldMilliSec " = toOldMilliSec   "
+       ; msgbox,% toOldMilliSec " = toOldMilliSec   "
 
     msg := toOldMilliSec " = toOldMilliSec   " doUpdate " = doUpdate (" A_ThisFunc ": " A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     feedbackMsgBox( msg, msg )
@@ -75,7 +104,7 @@ if(... := update_configMinify_incAhkFile()){
 	; dont work 19-01-13_11-00: configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(/\*|\*/|[a-z]+[_\d]*))", " " )
 	configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(\*|/|`;|[a-z]+[_\d]*))", " " )
 	; configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!([a-z]+[_\d]*))", " " )
-	tempFileAddress := A_ScriptDir "\" A_TickCount ".temp.txt"
+	tempFileAddress := A_ScriptDir "\" A_TickCount ".temp." A_ThisFunc ".txt"
 	FileAppend, % configContentminify, % tempFileAddress
 	FileCopy,% tempFileAddress, % configMinifyIncAhkAddress, 1
 	Sleep,200
@@ -668,17 +697,17 @@ contextHelp(HardDriveLetter){
 	wText2:=wText
 	;WinGetText, wText, %activeTitle%
 
-	WinGetClass, ActiveClass, A
-	ActiveClass2:=ActiveClass
+	WinGetClass, activeClass, A
+	ActiveClass2:=activeClass
 
 	WinGetActiveStats, ActiveTitle3, w, h, x, y 
 
 	;SendPlay,{f1}
 
 	; F1 hatte keine auswirkung, wir machen unser eigenes Hilfe
-	;WinGetClass, ActiveClass, %activeTitle%, %wText%
+	;WinGetClass, activeClass, %activeTitle%, %wText%
 ;###############################
-	temp := RegExReplace(ActiveClass, "\W+", "", ReplacementCount)  ;
+	temp := RegExReplace(activeClass, "\W+", "", ReplacementCount)  ;
 
   ; nur anfangsbuchstaben des titells, maximal begrentzt stï¿½ck
   ; nur anfangsbuchstaben des titells, maximal begrentzt stï¿½ck
@@ -703,11 +732,11 @@ contextHelp(HardDriveLetter){
 	wTitleContextHelp2=%fNameContextHelp2% ahk_class Notepad
 
 
-	visible1:=runContextHelpFile(fNameContextHelp, HardDriveLetter, ActiveClass, activeTitle)
+	visible1:=runContextHelpFile(fNameContextHelp, HardDriveLetter, activeClass, activeTitle)
 
 
 	if(fNameContextHelp <> fNameContextHelp2)
-  	visible2:=runContextHelpFile(fNameContextHelp2, HardDriveLetter, ActiveClass, activeTitle)
+  	visible2:=runContextHelpFile(fNameContextHelp2, HardDriveLetter, activeClass, activeTitle)
   else
     	visible2:=visible1
 
@@ -868,7 +897,7 @@ file_put_contents(f, c, doOverwrite=1)
 }
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ;~ hilft bei der Adress-Suche vom Icon
-runContextHelpFile(fNameContextHelp, HardDriveLetter, ActiveClass, activeTitle)
+runContextHelpFile(fNameContextHelp, HardDriveLetter, activeClass, activeTitle)
 {	
   SetTitleMatchMode, 2
 	IfWinExist, %fNameContextHelp%
@@ -887,7 +916,7 @@ runContextHelpFile(fNameContextHelp, HardDriveLetter, ActiveClass, activeTitle)
     FileCreateDir, %HardDriveLetter%:\fre\private
   IfNotExist, %path%
     FileCreateDir, %path%
-		FileAppend, `n`n`n%ActiveClass%-%activeTitle% - ShortCut-Notizen und ï¿½hnliches:`n`;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`n%path%, %fAdressContextHelp%
+		FileAppend, `n`n`n%activeClass%-%activeTitle% - ShortCut-Notizen und ï¿½hnliches:`n`;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`n%path%, %fAdressContextHelp%
   }
 	Run,%fAdressContextHelp%
 	Sleep,100
@@ -1536,10 +1565,6 @@ DynaRunFROMAhkSudio(Script,Wait:=true,name:="Untitled"){
 
 ;/¯¯¯¯ DynaRun ¯¯ 181029190515 ¯¯ 29.10.2018 19:05:15 ¯¯\
 DynaRun(TempScript, pipename=""){
-
-    ; msgbox,18-11-16_13-19 ; to tool
-    ; tool __ tool
-
     if(false && InStr(A_ComputerName,"SL5") )
         ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") tokden:19-01-16_18-40" ) ; token becouse somtimes lineNumber is wrong
 
@@ -1649,12 +1674,13 @@ DynaRun(TempScript, pipename=""){
 
 ;<<<<<<<< removesSymbolicLinksFromFileAdress <<<< 180305085209 <<<< 05.03.2018 08:52:09 <<<<
 removesSymbolicLinksFromFileAdress(actionList){
+;	 return actionList
 	pLength := 0
-	while(pLength <> StrLen(actionList )){
-	; tooltip,`% A_index . "# Line:" . A_LineNumber . " Name:" . A_ScriptName . " "
-	pLength := StrLen(actionList )
-	actionList := RegExReplace(actionList ,"(\\[^\\]+\\\.\.)+") ; works. removes all symbolic links 24.02.2018  cleanPath
-	}
+    while(pLength <> StrLen(actionList )){
+        ; tooltip,`% A_index . "# Line:" . A_LineNumber . " Name:" . A_ScriptName . " "
+        pLength := StrLen(actionList )
+        actionList := RegExReplace(actionList ,"(\\[^\\]+\\\.\.)+") ; works. removes all symbolic links 24.02.2018  cleanPath
+    }
 	actionList := RegExReplace(actionList,"\\\.\\")  ; works. removes all symbolic link 24.02.2018 cleanPath
 	actionList := RegExReplace(actionList,"^\.\\")  ; works. removes all symbolic link 24.02.2018  cleanPath
 	 return actionList
@@ -1668,6 +1694,7 @@ ProcessExist(Name){
 
 
 ; too too
+;
 
 ;/¯¯¯¯ json ¯¯ 181122225021 ¯¯ 22.11.2018 22:50:21 ¯¯\
 ; from: https://stackoverflow.com/questions/33989042/json-parsing-generating-and-beautifiying-formatting-with-autohotkey
@@ -1746,10 +1773,16 @@ str_repeat(vText, vNum){
 }
 ;\____ str_repeat __ 190113091855 __ 13.01.2019 09:18:55 __/
 
+
+
+
+
+
 ; lll(A_LineNumber, "inc_ahk\functions_global.inc.ahk")
 #Include *i %A_ScriptDir%\inc_ahk\ToolTipSec.inc.ahk
 ; lll(A_LineNumber, "inc_ahk\functions_global.inc.ahk")
 #Include *i %A_ScriptDir%\inc_ahk\UPDATEDSCRIPT_global.inc.ahk
 ; lll(A_LineNumber, "inc_ahk\functions_global.inc.ahk")
+
 
 

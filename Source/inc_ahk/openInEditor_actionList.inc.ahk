@@ -3,7 +3,7 @@
 
 
 ;<<<<<<<< openInEditor <<<< 1810111507 <<<< 01.10.2018 11:54:07 <<<<
-; called from 				was_a_Editor_open_command := openInEditor(actionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib) if(was_a_Editor_open_command) return ; endOf function: SendWord(WordIndex)
+; called from 				was_a_Editor_open_command := openInEditor(actionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib) if(was_a_Editor_open_command) return ; endOf function: SendWord(WordIndex, g_Word)
 
 ; tooltip tool ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 ; ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
@@ -101,12 +101,30 @@ lll( A_ThisFunc ":" A_LineNumber , A_LineFile)
 
 
 
-;/¯¯¯¯ openInEditor ¯¯ 181028104913 ¯¯ 28.10.2018 10:49:13 ¯¯\
+;/¯¯¯¯ openInEditorFromIntern ¯¯ 181028104913 ¯¯ 28.10.2018 10:49:13 ¯¯\
 openInEditorFromIntern(m1CorrectedAhkFileAddress){
     global g_config
 
+    if(!m1CorrectedAhkFileAddress){
+        msg =
+        (
+        >%m1CorrectedAhkFileAddress%< = ...Backup
+        )
+        if(1 && InStr(A_ComputerName,"SL5")){
+            feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( " msg , msg ,1,1)
+            ; Msgbox,% msg "`n`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        }
+        return false
+    }
+
     ; fallback if somebody gives addresses like ..\....\G:\\... then take the second absolut path
+    m1CorrectedAhkFileAddress_Backup := m1CorrectedAhkFileAddress
     m1CorrectedAhkFileAddress := regexreplace(m1CorrectedAhkFileAddress , "i).*(\b[a-z]\:\\)", "$1" )
+
+    if(RegExMatch(m1CorrectedAhkFileAddress, "^\w+\:\\"))
+        itsAbsolutePath := true
+
+    if(!itsAbsolutePath){
     if(g_config.ScriptDir)
         m1CorrectedAhkFileAddress := g_config.ScriptDir "\" m1CorrectedAhkFileAddress
     else{
@@ -114,23 +132,44 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
         RegRead, aScriptDir, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, aScriptDir
         m1CorrectedAhkFileAddress := aScriptDir "\" m1CorrectedAhkFileAddress
     }
+    }
 
 
     		if(InStr(FileExist(m1CorrectedAhkFileAddress ), "D") ){
-    		    msg := "ops. Cant open a folder.?"
+msg =
+(
+ops. Cant open a folder?
+you try opening:
+'%m1CorrectedAhkFileAddress%'
+file not folder ecpected.
+
+somme additional info:
+%aScriptDir% = aScriptDir
+%m1CorrectedAhkFileAddress_Backup% = ...Backup
+)
     		    feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( " msg , msg ,1,1)
-                Msgbox,% msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+                Msgbox,% msg "`n`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     		}
 
     ; m1CorrectedAhkFileAddress := regexreplace(m1CorrectedAhkFileAddress , "i).*(\b[a-z]\:\\)", "$1" )
     if(0 && InStr(A_ComputerName,"SL5"))
         clipboard := m1CorrectedAhkFileAddress
     if(!isFileExist := FileExist(m1CorrectedAhkFileAddress)){
-        ;feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( File NOT Exist: File: `n`n`n`n >>" m1CorrectedAhkFileAddress "<<`n`n`n`n" , A_LineNumber,1,1)
-        if(!isFileExist := FileExist(m1CorrectedAhkFileAddress))
-            feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( File NOT Exist: File: `n`n`n`n >>" m1CorrectedAhkFileAddress "<<`n`n`n`n" , A_LineNumber,1,1)
-        if(1 && InStr(A_ComputerName,"SL5"))
-            sleep,5000
+        ; if(!isFileExist := FileExist(m1CorrectedAhkFileAddress))
+        feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( File NOT Exist: File: `n`n`n`n >>" m1CorrectedAhkFileAddress "<<`n`n`n`n" , A_LineNumber,1,1)
+        if(1 && InStr(A_ComputerName,"SL5")){
+            g_configScriptDir := g_config.ScriptDir
+            msg =
+            (
+%itsAbsolutePath% = itsAbsolutePath
+%g_configScriptDir% = g_config.ScriptDir
+%aScriptDir% = aScriptDir
+%m1CorrectedAhkFileAddress_Backup% = m1CorrectedAhkFileAddress_Backup
+%m1CorrectedAhkFileAddress% = m1CorrectedAhkFileAddress
+            )
+            clipboard := msg
+            Msgbox,% msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        }
         return false
     }
     c =
@@ -157,22 +196,27 @@ the emeditor.ahk is going to be the name of the program then the file extension.
 )
 
 
+
 isEditorExist := false
-For editorName, editorAddress in g_config.editor
+; For editorName, editorAddress in g_config.editor
+
+;	MsgBox,% n "=" g_config["editor"][n]
+for editorName, editorAddress in g_config["editor"]
 	if(isEditorExist := FileExist(editorAddress))
 	    break
 if(!isEditorExist)
     editorAddress = notepad.exe
 runString = "%editorAddress%" "%m1CorrectedAhkFileAddress%"
     ; clipboard := runString
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(0 && InStr(A_ComputerName,"SL5")){
         feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), editorName ": " runString )
-    ; Msgbox,% runString " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        Msgbox,% runString " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    }
 run,% runString
 return true
 
 
-    ToolTip,`n (%A_LineFile%~%A_LineNumber%)
+    ToolTip,ahk-studio special helps `n (%A_LineFile%~%A_LineNumber%)
     AHKcode =
     (
     winTitleError := " ahk_class #32770"
@@ -195,7 +239,7 @@ return true
     ;ToolTip5sec(msg A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This)
     return true
 }
-;\____ openInEditor __ 181028104756 __ 28.10.2018 10:47:56 __/
+;\____ openInEditorFromIntern __ 181028104756 __ 28.10.2018 10:47:56 __/
 
 
 

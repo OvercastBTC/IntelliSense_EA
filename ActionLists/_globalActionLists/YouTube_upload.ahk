@@ -20,6 +20,7 @@ kotlin,
 swing
 
 
+title AutoHotKey + global-IntelliSense-everywhere|r|AutoHotKey + global-IntelliSense-everywhere v
 title 1 doSqlWeb|r|Live coding Debugging doSqlWeb CV webpage. wrong PHP-Version
 title 2 doSqlWeb|r|Live coding Debugging doSqlWeb CV webpage. wrong PHP-Version
 beschreibung|r|Live coding Debugging doSqlWeb CV webpage. wrong PHP-Version
@@ -29,7 +30,7 @@ Global-intellisense-everywhere in the following Gi.
 
 Source of Example above here:
 
-https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/ActionLists/_globalActionLists/AutoHotkey_Community.ahk
+https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/actionLists/_globalActionLists/AutoHotkey_Community.ahk
 
 Global-intellisense-everywhere in the following Gi.
 

@@ -5,14 +5,56 @@
 #Include,..\_globalActionLists\autohotkey_object_property_method.ahk
 #Include,..\_globalActionLists\autohotkey_INSTALLATION_FOLDERS_FILES_REGISTRY_KEYS.ahk
 #Include,..\_globalActionLists\autohotkey_Command_Function.ahk
+#Include,..\_globalActionLists\PRIVATE_AutoHotkey_Community.inc.ahk
 
+; PRIVATE_AutoHotkey_Community.inc.ahk  
+; AHK-Studio|r|[url=https://github.com/maestrith/AHK-Studio]AHK-Studio[/url]
 
 ___your library open|rr||ahk|openInEditor,AutoHotkey_Community.ahk
 ; if this german au is readable your UTF8 is probalby correct: ä
 
+AhkSpy from serzh82saratov|r|https://github.com/serzh82saratov/AhkSpy
 
+; C:\...\actionLists
+; SendWorkingDir|rr||ahk|send,% A_WorkingDir
+
+; should work:
+
+; tries to run from virtuel directory (this is not woring)
+; codeSpoilerScriptDir|rr||ahk|run,% A_ScriptDir "\..\_globalActionListsGenerated\AutoHotkey_Community_globalActionListsGenerated\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk"
+
+; is not working at the moment 19-01-20_20-48:
+; codeSpoiler|rr||ahk|run,_globalActionLists\incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk"
+
+; folowing works
+; codeSpoilerWorkingDir|rr||ahk|run,% A_WorkingDir "\_globalActionLists\incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk"
+
+; folowing works
+; codeSpoilerIncDynAhk|rr||ahk|#incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk
+
+; folowing works
+;codeSpoilerIncDyn_externExe|rr||code_AutoHotkey_Community|#incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk
+
+; folowing works
+; externExeCode|rr||code_AutoHotkey_Community|MsgBox,Hi key :-)
+
+; folowing works
+; code_externExe_Hi_all|rr||code_AutoHotkey_Community|MsgBox,Hi key :-D
+; folowing works (fastest version! much faster then the clipboard versions!)
+
+; folowing works
+externExeCode clipboard2Community|rr||code_AutoHotkey_Community|
+ 
+;[youtube]https://www.youtube.com/watch?v=aE9ugfCTpi0[/youtube]
+; [y2be=https://youtu.be/aE9ugfCTpi0[/y2be]
+youtube|rr|[youtube]|ahk|
+link := RegExReplace(clipboard, "youtu\.be/(\w+)", "youtube.com/watch?v=$1")
+Send,% "" link "[/youtube]"
+
+End|r|End
 
 newposts autohotkey.com|rr||ahk|run,https://www.autohotkey.com/boards/search.php?search_id=newposts
+; run,..\..\Source\plugins\ahk\QuickSearch4Autohotkey.ahk
 
 Please more details, e.g. your previous source code
 
@@ -103,21 +145,6 @@ ahkCode =
 Clipboard := ahkCode
 send, ^v
 
-
-
-code|rr||ahk|
-shortName := substr(clipboard,1,20) "..."
-ahkCode = 
-(
-[spoiler2=%shortName%]
-[code]
-%clipboard%
-[/code]
-[/spoiler2]
-)
-Clipboard := ahkCode
-send, ^v
-
 stop|r|stop
 
 url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
@@ -129,7 +156,7 @@ gi-everywhere keyboard hotkey to quickly switch word lists = ^!+t|r|[url=https:/
 AHK-Studio|r|[url=https://github.com/maestrith/AHK-Studio]AHK-Studio[/url]
 AutoGUI|r|[url=https://autohotkey.com/boards/viewtopic.php?f=64&t=10157]AutoGUI[/url]
 SciTE4AutoHotkey|r|[url=https://autohotkey.com/boards/viewtopic.php?t=62]SciTE4AutoHotkey[/url]
-AHK4websites is a actionList used in g_IntelliSense|r|[url=https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/ActionLists/_globalActionListsGenerated/_ahk_global.ahk._Generated.ahk]AHK4websites is a actionList used in g_IntelliSense[/url]
+AHK4websites is a actionList used in g_IntelliSense|r|[url=https://github.com/sl5net/global-IntelliSense-everywhere/blob/master/actionLists/_globalActionListsGenerated/_ahk_global.ahk._Generated.ahk]AHK4websites is a actionList used in g_IntelliSense[/url]
 visualstudio code vscode autohotkey plugin|r|[url=https://marketplace.visualstudio.com/items?itemName=slevesque.vscode-autohotkey]visualstudio code vscode autohotkey plugin[/url]
 
 
@@ -169,4 +196,8 @@ Autohotkey
 
 explanation
 
-explanation
+explanation 
+
+
+
+externExeCode clipboard2Community|rr||code_AutoHotkey_Community|

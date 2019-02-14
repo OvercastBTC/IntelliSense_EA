@@ -123,7 +123,7 @@ Server IRQ: chat.freenode.net
 Port IRQ: 6667 (6697 for SSL)
 Channel IRQ: #ahk
 
-ActionLists
+actionLists
 Source
 
 Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"

@@ -74,11 +74,7 @@ while(!isFolderExist && A_Index < 31){
     ExitApp
   }
 
-
-
 Speak("Start registry write")
-
-
 
 ;/¯¯¯¯ try_faster_reload_if_created ¯¯ 181025152605 ¯¯ 25.10.2018 15:26:05 ¯¯\
 ; I hope the with this method is reloaded after creating a new list (much faster). 25.10.2018 15:25
@@ -90,26 +86,16 @@ RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionListNEW, %globalA
 setRegistry_actionList( globalActionList )
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_ScriptName, %globalActionList% ; RegWrite , RegSave , Registry
 
-
-
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_ScriptName, % A_ScriptName ; RegWrite , RegSave , Registry
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite , RegSave , Registry
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_LineFileShort, % RegExReplace(A_LineFile,".*\\") ; RegWrite , RegSave , Registry
 
-
-
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, CreatedDir, % d1 ; RegWrite , RegSave , Registry
 ;\____ try_faster_reload_if_created __ 181025152609 __ 25.10.2018 15:26:09 __/
 
-
-
 ; msgbox,,% " Created  (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",1
 
-
-
 Speak("CreatedDir with d1")
-
-
 
 run,Typing_Aid_everywhere_multi_clone.ahk
 ; run,gi-everywhere.ahk
@@ -131,6 +117,7 @@ if(1){
 
 
 
+
 ; MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,1 ; thats only trick. so it should reload another wordklist.
 ; MsgBox,0,created token=17-08-10_16-17,token=17-08-10_16-17,99 ; thats only trick. so it should reload another wordklist.
 ; it not need to be closed active bevor 13.05.2018 19:23. now we close it active. so its litle faster then a second . thats nice
@@ -148,7 +135,21 @@ if(1){
 
 
 
-;FileDelete, % "..\actionLists\" . ActiveClass . "\_create_own_project.flag"
+;FileDelete, % "..\actionLists\" . activeClass . "\_create_own_project.flag"
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
+ExitApp
 ExitApp
 
 
@@ -163,7 +164,7 @@ if(!actionListNEW){
 contend =
 (
 #Include ..\_globalActionLists\_global.ahk
-#Include ..\%ActiveClass%\_global.ahk
+#Include ..\%activeClass%\_global.ahk
 
 
 
@@ -174,10 +175,10 @@ ___open actionList|rr||ahk|openInEditor,%actionListNEW%
 ; if you could read this germen special character (umlaute) your file format is correct (please use UTF8)
 ; ä = thats a au
 )
-globalClassTxtAddress := "..\actionLists\" . ActiveClass . "\_global.ahk"
+globalClassTxtAddress := "..\actionLists\" . activeClass . "\_global.ahk"
 if(!FileExist(globalClassTxtAddress))
   FileAppend,% "", % globalClassTxtAddress
-actionListNEWAddress := "..\actionLists\" . ActiveClass . "\" . actionListNEW
+actionListNEWAddress := "..\actionLists\" . activeClass . "\" . actionListNEW
 
 
 
@@ -188,7 +189,7 @@ if( SubStr( actionListNEWAddress , -3 ) <> ".ahk" ) ; 06.03.2018 13:09
 
 if( FileExist( actionListNEWAddress ) ){
     ; run, % actionListNEWAddress ; this works for .txt extension. that we dont use anymore 01.10.2018 11:12
-    openInEditor("..\actionLists\" . ActiveClass, true, "run," actionListNEW, true, true, true)
+    openInEditor("..\actionLists\" . activeClass, true, "run," actionListNEW, true, true, true)
 
 
 
@@ -217,10 +218,10 @@ Sleep,100
 
 
  ; run, % actionListNEWAddress ; this works for .txt extension. that we dont use anymore 01.10.2018 11:12
-; actionListNEWAddress := "..\actionLists\" . ActiveClass . "\" . actionListNEW
+; actionListNEWAddress := "..\actionLists\" . activeClass . "\" . actionListNEW
 ; openInEditor(isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib)
 ; openInEditor(actionListFolderOfThisActionList, isAHKcode, AHKcode, isStartingUnderline, is_OpenA_edit_open_lib, isDeprecated_OpenA_edit_open_lib){
-  openInEditor("..\actionLists\" . ActiveClass, true, "run," actionListNEW, true, true, true)
+  openInEditor("..\actionLists\" . activeClass, true, "run," actionListNEW, true, true, true)
 
 
 

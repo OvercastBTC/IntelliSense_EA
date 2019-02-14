@@ -72,7 +72,7 @@ Sleep,100
 run,gi-everywhere.ahk,%A_ScriptDir%\Source
 winwait,gi-everywhere.ahk,,9
 Sleep,1000
-run,Typing_Aid_everywhere_multi_clone.ahk,%A_ScriptDir%\Source
+; run,Typing_Aid_everywhere_multi_clone.ahk,%A_ScriptDir%\Source
 
 
 exitApp

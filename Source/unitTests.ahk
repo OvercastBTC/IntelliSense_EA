@@ -101,8 +101,13 @@ winwaitclose,% name
 ifwinexist,gi
     msgbox,Oops `n(%A_LineFile%~%A_LineNumber%)
 
+g_config := {}
+#Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahk ; update_configMinify_incAhkFile()
 
-
+if(!g_config["sql"]["template"]["dir"]){
+    msgbox,% "ERROR !g_config[sql][template][dir] `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    exitapp
+}
 
 
 g_actionListDB.BeginTransaction()
@@ -377,7 +382,7 @@ return
 
 
 
-;/¯¯¯¯ ReadActionList ¯¯ 181028133202 ¯¯ 28.10.2018 13:32:02 ¯¯\
+;/¯¯¯¯ err_ReadActionList ¯¯ 181028133202 ¯¯ 28.10.2018 13:32:02 ¯¯\
 err_ReadActionList(){
 
 info =
@@ -412,13 +417,16 @@ global g_config
 if(!g_actionListDB)
     g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
 
-if(!g_actionListID := getActionListID(actionList)){ ; 24.03.2018 23:02
+if(!g_actionListID := getActionListID(g_config["sql"]["template"]["dir"], actionList)){ ; 24.03.2018 23:02
 	sql := "INSERT INTO actionLists "
 	sql .= " (id, actionList, actionListmodified, actionListsize) VALUES "
 	sql .= " (null, '" actionList "', '" actionListModified "', '" actionListSize "' );"
     g_actionListDB.Query(sql)
     fromLine := "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-    if(!g_actionListID := getActionListID(actionList))
+    	if(!sql_template_dir){
+    		msgbox,% "!sql_template_dir`n `n (" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ")"
+    	}
+if(!g_actionListID := getActionListID(g_config["sql"]["template"]["dir"], actionList))
         if(sqlLastError := trim(SQLite_LastError()))
             msgbox,:( g_actionListID = %g_actionListID%,sqlLastError = %sqlLastError% %fromLine%
 }
@@ -1995,13 +2003,13 @@ return
 settitlematchmode,2
 #IfWinNotActive,ahk_class SunAwtFrame
 esc::
-     exitapp
+exitapp
 return
 #IfWinActive,asdjkfhaldjskhfsfhakdsjfasdkaösdjkfh
-	WheelUp::
+WheelUp::
 return
 #IfWinActive,asdjkfhaldjskhfsfhakdsjfasdkaösdjkfh
-	WheelDown::
+WheelDown::
 return
 
 
@@ -2022,7 +2030,7 @@ tooltip,
 return
 
 
-
+#Include %A_ScriptDir%\inc_ahk\gi\ReadActionList.inc.ahk
 #Include %A_ScriptDir%\Includes\gi-everywhere.inc.ahk
 #Include,RegWrite181031.ahk
 #Include %A_ScriptDir%\inc_ahk\closeAllAHK_restoreClosedAHK.inc.ahk
