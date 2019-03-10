@@ -40,6 +40,8 @@
 #!actionLists/**
 !actionLists/_globalActionLists/**
 
+!actionLists/_globalActionListsGenerated/**
+
 # Ignore some files (found in actionLists-Folder)
 actionLists/**/Bank*
 actionLists/**/Bewe*
