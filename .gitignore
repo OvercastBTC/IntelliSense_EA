@@ -1,0 +1,79 @@
+﻿# Ignore everything
+*
+
+# Blacklist files/folders in same directory as the .gitignore file
+# /*
+
+# Whitelist some files
+!.gitignore
+!README.md
+# Whitelist folder files files, not subfolders
+# !Source/
+# Whitelist folder files files, and subfolders
+!Source/**
+
+
+# Ignore some files (found in Source-Folder)
+**/*.log
+**/*.txt
+**/*.bak
+**/* Backup
+**/temp
+**/*.temp
+**/temp.*
+**/*.temp.*
+# Git ignore understands glob pattern, so you can use this *.[jJ][pP][gG]
+**/test.ahk
+**/PRIVATE*
+**/private*
+**/off_*
+**/OFF_*
+# ignore files with spaces beetween
+**/* *
+**/.idea
+
+# Whitelist folder files files, not subfolders
+!actionLists/
+
+
+# Whitelist folder files files, and subfolders
+#!actionLists/**
+!actionLists/_globalActionLists/**
+
+# Ignore some files (found in actionLists-Folder)
+actionLists/**/Bank*
+actionLists/**/Bewe*
+actionLists/**/pfade.*
+actionLists/**/Plesk*
+actionLists/**/DocumentEditor.ahk._Generated.ahk
+**/* Backup
+**/*fn_functions_global.ahk
+**/*.log
+**/*.txt
+**/*.bak
+**/* Backup
+**/temp
+**/temp.*
+**/*.temp
+**/*.temp.*
+# Git ignore understands glob pattern, so you can use this *.[jJ][pP][gG]
+# BTW Windows is case insensitive, but sometimes (more frequently today) case preserving.
+**/test.ahk
+**/PRIVATE*
+**/private*
+**/off_*
+**/OFF_*
+# ignore files with spaces beetween
+**/* *
+**/.idea
+
+
+
+
+
+
+
+
+
+
+
