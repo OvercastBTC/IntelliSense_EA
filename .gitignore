@@ -1,4 +1,8 @@
-﻿# Ignore everything
+﻿# BTW: Converting regular expressions glob patterns -"glob to" -"glob patterns to"
+# ???? "regex to glob" -"glob to" -"glob patterns to" preparser
+# some git commands in german, as vocabulary list: https://github.com/lathspell/learning-git
+
+# Ignore everything
 *
 
 # Blacklist files/folders in same directory as the .gitignore file
@@ -7,6 +11,7 @@
 # Whitelist some files
 !.gitignore
 !README.md
+!start.ahk
 # Whitelist folder files files, not subfolders
 # !Source/
 # Whitelist folder files files, and subfolders
