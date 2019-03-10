@@ -12,30 +12,33 @@
 !.gitignore
 !README.md
 !start.ahk
+
 # Whitelist folder files files, not subfolders
 # !Source/
 # Whitelist folder files files, and subfolders
 !Source/**
 
 
+# Source\config\config.inc.ahk
+
 # Ignore some files (found in Source-Folder)
-**/*.log
-**/*.txt
-**/*.bak
-**/* Backup
-**/temp
-**/*.temp
-**/temp.*
-**/*.temp.*
+Source/**/*.log
+Source/**/*.txt
+Source/**/*.bak
+Source/**/* Backup
+Source/**/temp
+Source/**/*.temp
+Source/**/temp.*
+Source/**/*.temp.*
 # Git ignore understands glob pattern, so you can use this *.[jJ][pP][gG]
-**/test.ahk
-**/PRIVATE*
-**/private*
-**/off_*
-**/OFF_*
+Source/**/test.ahk
+Source/**/PRIVATE*
+Source/**/private*
+Source/**/off_*
+Source/**/OFF_*
 # ignore files with spaces beetween
-**/* *
-**/.idea
+Source/**/* *
+Source/**/.idea
 
 # Whitelist folder files files, not subfolders
 !actionLists/
@@ -53,26 +56,25 @@ actionLists/**/Bewe*
 actionLists/**/pfade.*
 actionLists/**/Plesk*
 actionLists/**/DocumentEditor.ahk._Generated.ahk
-**/* Backup
-**/*fn_functions_global.ahk
-**/*.log
-**/*.txt
-**/*.bak
-**/* Backup
-**/temp
-**/temp.*
-**/*.temp
-**/*.temp.*
+actionLists/**/*fn_functions_global.ahk
+actionLists/**/*.log
+actionLists/**/*.txt
+actionLists/**/*.bak
+actionLists/**/* Backup
+actionLists/**/temp
+actionLists/**/temp.*
+actionLists/**/*.temp
+actionLists/**/*.temp.*
 # Git ignore understands glob pattern, so you can use this *.[jJ][pP][gG]
 # BTW Windows is case insensitive, but sometimes (more frequently today) case preserving.
-**/test.ahk
-**/PRIVATE*
-**/private*
-**/off_*
-**/OFF_*
+actionLists/**/test.ahk
+actionLists/**/PRIVATE*
+actionLists/**/private*
+actionLists/**/off_*
+actionLists/**/OFF_*
 # ignore files with spaces beetween
-**/* *
-**/.idea
+actionLists/**/* *
+actionLists/**/.idea
 
 
 
