@@ -14,14 +14,14 @@
 !start.ahk
 
 # Whitelist folder files files, not subfolders
-# !Source/
-# Whitelist folder files files, and subfolders
+!Source/
+# Whitelist files in subfolders, but before, you nee Whitelist the parent folder without subfolders
 !Source/**
 
 
-# Source\config\config.inc.ahk
-
 # Ignore some files (found in Source-Folder)
+Source/Welcome_to_IntelliJ_IDEA_Administrator.ahk
+Source/**/*.minify.inc.ahk
 Source/**/*.log
 Source/**/*.txt
 Source/**/*.bak
