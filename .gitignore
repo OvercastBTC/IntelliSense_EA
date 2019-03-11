@@ -21,7 +21,7 @@
 
 # Ignore some files (found in Source-Folder)
 Source/Welcome_to_IntelliJ_IDEA_Administrator.ahk
-Source/**/*.minify.inc.ahk
+Source/**/*.minify.inc.ahk*
 Source/**/*.log
 Source/**/*.txt
 Source/**/*.bak
@@ -49,6 +49,9 @@ Source/**/.idea
 !actionLists/_globalActionLists/**
 
 !actionLists/_globalActionListsGenerated/**
+
+
+!actionLists/activeClassManipulation.inc.ahk
 
 # Ignore some files (found in actionLists-Folder)
 actionLists/**/Bank*
