@@ -15,15 +15,9 @@ if(false
 
 ;/¯¯¯¯ plausibility ¯¯ 190219200351 ¯¯ 19.02.2019 20:03:51 ¯¯\
 ; plausibility
-
 lastLetter := substr(actionListNEW,-1)
-
-
-
 if(lastLetter == "\"){
-
     msgbox, % "Oops should not an folder: `n`n" actionListNEW "`n`n(" RegExReplace(A_LineFile,".*\\") ":" A_LineNumber
-
 }
 ;\____ plausibility __ 190219200354 __ 19.02.2019 20:03:54 __/
 
