@@ -16,9 +16,15 @@ errorMsg := ""
         errorMsg :=  actionListReg "`n ups actionListReg `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     }
 
-    else if(substr(rtrim(actionListReg),-4) == "\.ahk")
+    else if(actionListReg == ".ahk"){
         errorMsg :=  actionListReg "`n`n ups actionListReg `n `n is \.ahk?`n`n" thisLine "=thisLine`n`n " actionListNEW "`n=actionListNEW`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
+        RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList, % "" ;  , ValueName, Value
+        sleep,5000
+        return ; we are not inside a functon
+        ; reload ; <===================== quck and dirtey. todo: happen with googlecalender in chrome, with telegam desptop app 19-03-15_22-45
+        ; ToolTooltip, `n (from: %A_LineFile%~%A_LineNumber%)
+   }
 
 ;\____ al_result_plausibility_check __ 190219210219 __ 19.02.2019 21:02:19 __/r
 

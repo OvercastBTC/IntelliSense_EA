@@ -320,7 +320,7 @@ global g_activeClassOLD
    if(false && !actionListDirBase)
        msgbox,!actionListDirBase `n(%A_LineFile%~%A_LineNumber%)
 
-    if(1 && InStr(A_ComputerName,"SL5")){
+    if(0 && InStr(A_ComputerName,"SL5")){
         FormatTime, timestampHHmmss, %A_now%,HH:mm:ss
         ToolTip,% timestampHHmmss " " g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " ", 880 , 1 , 6
     }
@@ -361,11 +361,11 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 setTrayIcon()
 
 ; too tool
-; tooltip Tool
+; tooltip Tool Tool
 
-msg := "actionList = >" actionList "<`n `n actionListNEW = >" actionListNEW "< `n`n`" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+; msg := "actionList = >" actionList "<`n `n actionListNEW = >" actionListNEW "< `n`n`" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 ; feedbackMsgBox(msg, msg, 1, 1, 6 )
-ToolTip9sec(msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",20,20,20 )
+; ToolTip9sec(msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",20,20,20 )
 ; msgbox,% msg
 
    gosub,checkInRegistryChangedActionListAddress

@@ -352,7 +352,7 @@ verticalText(ByRef wb,text,x, y,hiddenTitle,fontSize := 16,fontFamily := "Arial 
 WM_LBUTTONDOWN() {
 	PostMessage, WM_NCLBUTTONDOWN := 0xA1, HTCAPTION := 2
 }
-toolTipGui("just started (-:",,80*(toolTipGui_yOffsetNr++),"v)|¯",A_LineNumber,"",,0)  ; x will be offset if y is symbolic
+;toolTipGui("just started (-:",,80*(toolTipGui_yOffsetNr++),"v)|¯",A_LineNumber,"",,0)  ; x will be offset if y is symbolic
 ; ^--- moving the boxes works only if a active x box (here only the vertical ones is active).
 ; ^--- so you need one vertical active for enable moving feater of the oter toolTipGuis
 ;\____ toolTipGui __ 190217113248 __ 17.02.2019 11:32:48 __/

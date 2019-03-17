@@ -2,11 +2,17 @@
 #Include *i DebugVarsGui.ahk
 #Include *i tools\DebugVars\DebugVarsGui.ahk
 
-
 ; g_config := { script: { ignoreRegEx: ".", allowRegEx: ".*" }, var: { ignoreRegEx: ".^", allowRegEx: "(Adress|Address)" } }
 ; g_config := { script: { ignoreRegEx: ".^", allowRegEx: "\bgi-every" }, var: { ignoreRegEx: ".^", allowRegEx: ".", logFileAddress: "var.log.txt" } , alwaysontop: "true" , closeGui_soonAsPossible: "true"  }
 ; "(\bprefs_|\bicon|\bhelpinfo_|\bDBA|\bgDBA|\bdft\|A_|Collection|config|clipboard)"
-#include ignVarNames.conf.inc.ahk
+; run,tools\DebugVars\DebugVars.ahk
+#Include %A_ScriptDir% ; Setzt das Arbeitsverzeichnis für folgende Includes
+; SetWorkingDir %A_ScriptDir% ; see: https://www.autohotkey.com/boards/viewtopic.php?f=76&t=62795&p=267949#p267949
+; if(!FileExist("ignVarNames.conf.inc.ahk"))
+;    msgbox,% "ups !FileExist(ignVarNames.conf.inc.ahk)`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+#include, ignVarNames.conf.inc.ahk
+; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\tools\DebugVars\DebugVars.ahk
+; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\tools\DebugVars\ignVarNames.conf.inc.ahk
 ignVarNames := RegExReplace( trim(ignVarNames) , "m)[\n\r\t]+", "|" )
 global g_config
 g_config := { script: { ignoreRegEx: ".^", allowRegEx: "\bgi-every" }, var: { ignoreRegEx: "(" ((ignVarNames) ? ignVarNames : ".^" ) ")" , allowRegEx: "." }, logFileAddress: "var.log.txt" , alwaysontop: 1 , closeGui_soonAsPossible: 1  }
@@ -16,7 +22,7 @@ ign  := g_config["var"]["ignoreRegEx"]
 
 FileDelete, % A_ScriptDir "\" g_config.logFileAddress
 FileDelete, % A_ScriptDir "\" "varnames-" g_config.logFileAddress
-fileappend, % "alw##ign:" alw "##" ign "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")", % A_ScriptDir "\" g_config.logFileAddress, UTF-8
+fileappend, % "alw##ign:" alw "##" ((strlen(ign)>100) ? substr(ign,1,90) "..." : ign ) "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")", % A_ScriptDir "\" g_config.logFileAddress, UTF-8
 fileappend, % "ignVarNames = `n(`n", % A_ScriptDir "\" "varnames-" g_config.logFileAddress, UTF-8
 
 #SingleInstance,Off

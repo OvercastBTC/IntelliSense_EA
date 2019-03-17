@@ -712,7 +712,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
             ;/¯¯¯¯ is_codeRunner_exist ¯¯ 190123202446 ¯¯ 23.01.2019 20:24:46 ¯¯\
             ; example:
-            e := g_config.codeRunner_fileExist["code_AutoHotkey_Community"]
+            ; e := g_config.codeRunner_fileExist["code_AutoHotkey_Community"]
             msg =
             (
                 %lang%

@@ -60,8 +60,6 @@ c: %activeClass%
 a: %actionListNEW%
 d: %actionListDir%
 )
-; toolTipGui( msg "`n" msg2 "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Yellow")  ; x
-
 
 
 if(!instr(actionListNEW,"\"))
@@ -86,16 +84,18 @@ if(0 && InStr(A_ComputerName,"SL5"))
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, ln%A_LineNumber%, % actionListNEW ;  , ValueName, Value
 
 ; feedbackMsgBox(actionListNEW "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), actionListNEW, 1, 1, 6 )
-
 ; #Include,.\..\actionLists\activeClassManipulation.inc.ahk
 
 #Include .\..\actionLists\al-route-functions.inc.ahk
+if(0){ ; take a look inside
+    toolTipGui( msg "`n" msg2 "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Yellow")  ; x
+    clipboard := actionListNEW
+; _globalActionListsGenerated\_ahk_global.ahk._Generated
+    sleep,6000
+}
 
 if(0 && InStr(A_ComputerName,"SL5"))
     RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, ln%A_LineNumber%, % actionListNEW ;  , ValueName, Value
-
-
-; ToToltip
 
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ; this days i have to many files into here... i want first to activate the superglobal 10.08.2017 09:29
@@ -206,7 +206,7 @@ feedback .= "`n*/"
 toolTip9sec(feedback)
 ; clipboard := feedback
 
-toolTipGui(feedback  ,,-250,"|_",A_LineNumber,"Red")  ; x will be offset if y is symbolic
+; toolTipGui(feedback  ,,-250,"|_",A_LineNumber,"Red")  ; x will be offset if y is symbolic
 
 sleep,3000
 }
@@ -219,9 +219,9 @@ ActionListNEW_time_between := actionListNEW
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ; # Include ..\Source\inc_ahk\openInEditor_actionList.inc.ahk
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include,.\..\Source\inc_ahk\copy2clipBoard.functions.inc.ahk
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 
 #Include %A_ScriptDir%\inc_ahk\toolTipGui.inc.ahk ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62078&p=263824#p263824
 
@@ -229,17 +229,17 @@ toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") 
 
 
 
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include .\..\Source\inc_ahk\functions_global_dateiende.inc.ahk
 
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include .\..\Source\inc_ahk\ToolTipSec.inc.ahk
 
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include .\..\Source\inc_ahk\functions_global.inc.ahk
 
 ; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\inc_ahk\copy2clipBoard.functions.inc.ahk
 
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include .\..\Source\inc_ahk\ToolTipSec_RemoveToolTip.inc.ahk
-toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic

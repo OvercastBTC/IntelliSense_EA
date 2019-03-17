@@ -162,19 +162,22 @@ getActionListNEW_relativePath(activeTitle, activeClass, actionListNEW, actionLis
 	if ( RegExMatch( activeTitle , "(Export|Ordner ausw|Double Commander|FreeCommander|Q-Dir \d|Datei öffnen|Bild öffnen|Anhang speichern|Datei speichern|Speichern|Speichern unter|ffnen|Dateien/Ordner suchen|Exportieren|Dokument speichern|Select Path|Open File|Open File or Project|Select File)" ) ) 
 		return "_globalActionLists\pfade"
 ;Speichern is used with ToDoList_c_AbstractSpoon
-	
+
+	; To Tool
+
 	AutoHotkey_Community: ; AHK_Community
 	if (1 && RegExMatch( activeTitle , "(AutoHotkey Community)" ) )
 		return "_globalActionLists\AutoHotkey_Community"
 ;Speichern is used with ToDoList_c_AbstractSpoon
 	
-
+    ahk_global:
 	if (RegExMatch( activeTitle , "(\.ahk)" ) ){
-		return "_globalActionListsGenerated\_ahk_global.ahk._Generated" ; seems works not 18-04-26_12-44
+	    ; MsgBox, , activeTitle , % ">" activeTitle  "<`n = activeTitle `n`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+	    ; clipboard := activeTitle
+	    ; clipboard := A_ThisFunc
+		return "_globalActionListsGenerated\_ahk_global.ahk._Generated"
 	}
 
-
-	
 ; g_IntelliSense-everywhere - AutoHotkey Community - Google Chrome ahk_class Chrome_WidgetWin_1
 	ahk_globalAhk_Generated:
 	if (1 && RegExMatch( activeClass , "\b(Notepad)\b" ) && RegExMatch( activeTitle , "(\.ahk)" ) ){

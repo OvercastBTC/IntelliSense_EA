@@ -37,7 +37,7 @@ if(rX["lang"] == "everything"){
 }
 ; clipboard := runString
 run,% runString
-; msgbox,% runString "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+msgbox,% runString "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 ; }
 ;\____ commandLine4runnerFilter __ 190124172737 __ 24.01.2019 17:27:37 __/

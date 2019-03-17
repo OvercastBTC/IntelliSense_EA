@@ -1,90 +1,28 @@
 ﻿#Include *i _global.ahk
-; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
-open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
-msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-Msgbox,`n(%A_LineFile%~%A_LineNumber%)
-Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
+; ___ ___ ___ ___
 
-Speak(,"PROD")
-Speak( A_ThisFunc,"PROD")
-Speak(" found","PROD")
-
-
-
-rTrim(clipboard," `t`r`n")
-
-RegExReplace(A_LineFile,".*\\")
-
-RegExMatch(fileName, "\.ahk$")
-RegExMatch(activeTitle , "i)\b(Gmail|Google Contacts|Google Kalender)\b"  )  
-
-InStr(A_fi, "D") )
-InStr(A_LoopFileName, "" )
-
-; Speak(A_LineNumber ":" A_thisFunc A_ThisLabel)
-ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
-ComputerName A_ComputerName|r|if(1 && InStr(A_ComputerName,"SL5"))
-
-SoundbeepString2Sound()
-
-msg multi|r|
-msg =
-(
-)
-
-; comp Computer Comp
-; __
-
-
-ReplacedStr := StrReplace(Haystack, SearchText , ReplaceText, OutputVarCount, Limit := -1)
-
-RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, toDo, A_ScriptName " " A_LineNumber ": "  ; RegWrite , RegSave , Registry
-
- 
 chat:|r|https://autohotkey.com/boards/viewtopic.php?f=5&t=59
 Server IRQ: chat.freenode.net
 Port IRQ: 6667 (6697 for SSL)
 Channel IRQ: #ahk
 
-actionLists
+ActionLists
 Source
 
-Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-Msgbox,`n(%A_LineFile%~%A_LineNumber%)
-Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
+Msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
+MsgBox info on top|r|MsgBox,262208,% ":)" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":)`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" 
+MsgBox error on top|r|MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":(`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")" 
+Msgbox,(%A_LineFile%~%A_LineNumber%)
 
+ToolTip2sec lineFileName|rr|ToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip2sec lineFileName|rr|ToolTip2sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip4sec lineFileName|rr|ToolTip4sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip5sec lineFileName|rr|ToolTip5sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 
-ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip2sec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip4sec lineFileName|rr|ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left %sendingStrLen%}{CtrlUp}
-Alert len ToolTip5sec lineFileName|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|MsgBox, % sendingStrLen
-; Alert alert
-; sendingStrLen := " StrLen(Sending) " `n "
-; lineStrLen := " StrLen(g_Word) " `n "
-; AHKcodeLen := " StrLen(AHKcode) " `n "
-; ActionList := """ ActionList """ `n "
-; Sending := """ escaped_Sending """ `n "
+Msgbox|rr|Msgbox,(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
 
-; gi-everywhere-master\Source\gi-everywhere.ahk
-; hello76 commment |rr|HelloWorld2.ahk ; HelloComment|ahk|Msgbox,substr(Sending,Instr(Sending,"`;"))
-; hello hello he he HelloWorld2.ahk ; HelloComment
-
-
-; test please reload it h
-
-
-Sleep, 000|rr|Sleep, 000|ahk|Send,{left 3}
-
-FileMove
-FileMove,% A_LoopFileFullPath, % A_LoopFileDir "\" fileNameNew
 
 InputBox, UserInput|rr||ahk
 m =
@@ -99,10 +37,10 @@ send, ^ v
 Suspend,off
 
 
-ToolTip2sec|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip2sec|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip4sec|rr|ToolTip4sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
-ToolTip5sec|rr|ToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip2sec|rr|ToolTip2sec(A_LineNumber " " A_LineFile " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip2sec|rr|ToolTip2sec(A_LineNumber " " A_LineFile " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip4sec|rr|ToolTip4sec(A_LineNumber " " A_LineFile " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
+ToolTip5sec|rr|ToolTip5sec(A_LineNumber " " A_LineFile " " Last_A_This)|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
 ToolTipSec(t,x=123,y=321,sec=1000)
 Tooltip, `n (from: %A_LineFile%~%A_LineNumber%)
 
@@ -121,10 +59,11 @@ regEx find AHK functios definitions|r|^[ ]*?\w[\w\d_]{5,}\s*\([^()+<>]+\)[\s\S]{
 	RTrim(String)
 	
 	
-	RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 	FileAppend, Text, Filename, Encoding|rr|FileAppend, |ahk|m=Text, Filename, Encoding`n ll:=strlen(m)+1 `n lr:=4 `n send, %m% {left %ll%}{shift down}{right %lr%}{shift up}
 	
-AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n run,%f%
+; gi-everywhere-master\Source\gi-everywhere.ahk
+	FileAppend dynAhk|rr|; FileAppend .. HelloWorld2.ahk|ahk|FileAppend, msgbox`, HelloWorld (from: %A_LineFile%~%A_LineNumber%)``n , incDynAhk\HelloWorld2.ahk
+	AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n run,%f%
 	
 	
 	timestamp yy:MM:dd HH:mm:ss|r|FormatTime, timestampyyMMddHHmmss, %A_now%,yy:MM:dd HH:mm:ss
@@ -505,7 +444,7 @@ AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n ru
 				Comobjvalue
 				ComSpec
 				contains(var, matchlist) { 
-					continue  ; Start a new iteration to move on to the next component type. |r|continue
+					continue  ; Start a new iteration to move on to the next component type. 
 					Control, Choose, 1, SysListView321, %MainWnd% 
 					ControlClick , ,  ahk_class Notepad 
 					ControlFocus, Edit1 
@@ -578,7 +517,7 @@ AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n ru
 						FileGetSize,fSize, % A_LoopFileFullPath ; in bytes 
 						FileGetTime, sourceModifiedTime, %f%  ; Retrieves the modification time by default. 
 						FileReadLine, line, %f%, %A_Index% 
-						SoundBeep, 200 
+						SoundBeep,n ,200 ; high beep 
 						while(!clipboard && loopCounter < 100) 
 							copyLineOrWord2clipBoard(doSelectLine) 
 						isInteger(var) 
@@ -597,8 +536,8 @@ AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n ru
 						StringDifference(string1, string2, maxOffset=1) 
 						stringLower(s) 
 						isUrlAvailable(URL) 
-						lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,text="")|rr|lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")|ahk|Send,{left 2}
-; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,msg)
+						lll(A_LineNumber, A_LineFile, text="")|rr|lll(A_LineNumber, A_LineFile, "")|ahk|Send,{left 2}
+; lll(A_LineNumber, A_LineFile, msg)
 						lll(ln, sn, text="") 
 						file_put_contents(f, c, overwrite=true) 
 						SendStrgC(trycount) 
@@ -634,18 +573,4 @@ AHKdyn Example run|rr||ahk|f=incDynAhk\HelloWorld3.ahk `n if(Fileexist(f)) `n ru
 						move2ImgORImg(i, i2 , textInfo, mm) 
 						move2Img(i , textInfo, mm) 
 						clickImg(i, textInfo, mm, offset = 20) 
-
 						
-						
-
-Schlaf, Schlafen, Meditation , Schöne Natur, Ber
-
-|r|
-Ein neuer
-Test
-
-|r|
-Ein neuer
-Test2
-
-testMe

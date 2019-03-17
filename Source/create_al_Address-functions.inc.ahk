@@ -57,7 +57,7 @@ if(FALSEstring){
     t,c,l = %activeTitle%,%activeClass%,%controlName%
     %lineNumberFrom%
     )
-    toolTipGui("lineNumberFrom: " lineNumberFrom " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Red",,1)  ; x will be offset if y is symbolic
+    ;toolTipGui("lineNumberFrom: " lineNumberFrom " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Red",,1)  ; x will be offset if y is symbolic
 	; MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	return FALSEstring ; reload
 }
@@ -94,7 +94,7 @@ if(FALSEstring){
     t,c,l = %activeTitle%,%activeClass%,%controlName%
     %lineNumberFrom%
     )
-    toolTipGui("lineNumberFrom: " lineNumberFrom " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Red",,1)  ; x will be offset if y is symbolic
+    ;toolTipGui("lineNumberFrom: " lineNumberFrom " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Red",,1)  ; x will be offset if y is symbolic
 	; MsgBox,% msg "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	return FALSEstring ; reload
 }
@@ -379,23 +379,36 @@ actionListDir = '%actionListDir%'
            ; Beispiel:
 ; #Include .\..\actionLists\Notepad\_global.ahk
 ; #Include ..\_globalActionLists\Bewerbung\Firmware_Entwicklung.txt
+; #Include *i _global.ahk
 
 ;           regEx := "i)^\s*#include\s*( |,)\s*([^|!]+)\s*(?:((\||\!))\s*(.+))?\s*"
 ; include[ ]*(?:,|\s)[ ]*([^|!\n]+)[ ]*(?:((\||\!))[ ]*([^\n]+))?[ ]*
             ; ?: is used to denote non capturing group.
-				regEx := "i)^[ ]*#include[ ]*(?:,| )[ ]*([^|!\n]+)[ ]*(?:((\||\!))[ ]*([^\n]+))?[ ]*"
-				regEx := "i)^[ ]*#include[ ]*(?:,|[ ]+)[ ]*([^|!\n]+)(?:((\||\!))[ ]*([^\n]+))?[ ]+"
-				foundPos := RegexMatch( A_LoopReadLine, regEx, matchs) ; later matchs1 is used 04.10.2018 09:04 18-10-04_09-04
-
+				; regEx := "i)^[ ]*#include[ ]*(?:,| )[ ]*([^|!\n]+)[ ]*(?:((\||\!))[ ]*([^\n]+))?[ ]*"
+				; regEx := "i)^[ ]*#include[ ]*( \*i )?(?:,|[ ]+)[ ]*([^|!\n]+)(?:((\||\!))[ ]*([^\n]+))?[ ]+"
+				;foundPos := RegexMatch( A_LoopReadLine, regEx, matchs) ; later matchs1 is used 04.10.2018 09:04 18-10-04_09-04
+                ; #include .._globalWordLists\pfade.txt | i)^[ab]+
 				; https://regexr.com/47kom
+
+                		matchsIgnore := "", matchsPfad := "", matchsPipeType := "", matchsPipeVal := ""
+						regEx := "i)^[ ]*#include[ ]*(?P<Ignore> \*i\b)?(?:,|[ ]+)[ ]*(?P<Pfad>[^|!\n]+)(?:(?P<PipeType>(\||\!))[ ]*(?P<PipeVal>[^\n]+))?"
+                		foundPos := RegexMatch( A_LoopReadLine, regEx, matchs) ; later matchs1 is used 04.10.2018 09:04 18-10-04_09-04
+                		matchsIgnore := trim(matchsIgnore," ")
+                		tooltip,% "matchsIgnore = >" matchsIgnore "< Pfad= >" matchsPfad "< PipeType= >" matchsPipeType "< matchsPipeVal= >", 80, 1
+                		; tooltip,% "A_LoopReadLine =" A_LoopReadLine ; " Pfad=" matchsPfad " PipeType=" matchsPipeType  " matchsPipeVal=" matchsPipeVal, 80, 1
+                		; msgbox,% "matchsIgnore = >" matchsIgnore "< Pfad= >" matchsPfad "< PipeType= >" matchsPipeType "< matchsPipeVal= >" matchsPipeVal "<"
 
 				examples =
 (
 #include dir\something.ahk
+#Include *i _global.ahk
 )
 
 				msg := "#include foundPos = >" foundPos "< in `n" actionListNEWarchivePath "`n"
-				msg .= ">" matchs1 "< =  matchs1 `n"
+				msg .= ">" matchsIgnore "< =  matchsIgnore `n"
+				msg .= ">" matchsPfad "< =  matchsPfad `n"
+				msg .= ">" matchsPipeType "< =  matchsPipeType `n"
+				msg .= ">" matchsPipeVal "< =  matchsPipeVal `n"
 				msg .= ">" A_LoopReadLine "< =  A_LoopReadLine `n"
 				msg .= A_WorkingDir " = A_WorkingDir `n"
 				msg .= A_ScriptDir " = A_ScriptDir `n"
@@ -409,18 +422,18 @@ actionListDir = '%actionListDir%'
 
 
 					regExAbsolutePath := "i)^\w\:" ; addet 01.11.2018 11:36
-					foundPosAbsolutePath := RegexMatch( matchs1, regExAbsolutePath, matchsPath)
+					foundPosAbsolutePath := RegexMatch( matchsPfad, regExAbsolutePath, matchsPath)
 					if(foundPosAbsolutePath)
-						includeFilePath     := trim(matchs1)
+						includeFilePath     := trim(matchsPfad)
 					else
-						includeFilePath     := actionListDir "\" trim(matchs1)
+						includeFilePath     := actionListDir "\" trim(matchsPfad)
 
                     msg =
                     (
                     actionListDir = %actionListDir%
                     includeFilePath = %includeFilePath%
                     )
-                    toolTipGui(msg " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
+                    ;toolTipGui(msg " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
 
 
 					includeFilePath := RegExReplace(includeFilePath ,";[^\n\r]+$") ; removes comments
@@ -430,7 +443,7 @@ actionListDir = '%actionListDir%'
 
                 ; Msgbox,%includeFilePath%`n (%A_LineFile%~%A_LineNumber%)
 
-
+; Toolt too
 
 					exist_includeFilePath := (FileExist(includeFilePath)) ? 1 : 0
 					if(!exist_includeFilePath){ ; 11.03.201:23 new style/format of adress writing, but try stay compativle to old scripts. TODO deletie it.
@@ -438,7 +451,8 @@ actionListDir = '%actionListDir%'
 						exist_includeFilePathAbs := (FileExist(includeFilePathAbs)) ? 1 : 0
 						msg .= ":( includeFile NOT exist here: `n"  includeFilePath "`n`n"
 						msg .= ">" includeFilePathAbs "<`n exist =" exist_includeFilePathAbs "`n`n"
-						msg .= ">" matchs1 "< =  matchs1 `n"
+						msg .= ">" matchsIgnore "< =  matchsIgnore `n"
+						msg .= ">" matchsPfad "< =  matchsPfad `n"
 						msg .= ">" A_LoopReadLine "< =  A_LoopReadLine `n"
 						msg .= actionListDir " =  actionListDir `n"
 						msg .= A_WorkingDir " = A_WorkingDir `n"
@@ -461,9 +475,10 @@ actionListDir = '%actionListDir%'
 							msg .= "A_ScriptDir=" A_ScriptDir
 							msg .= "`n====>pause"
 							lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,msg )
-							if(1 || !RegExMatch(includeFilePath , "i)private"  )){
+							; matchsPipeVal
+							if(matchsIgnore <> "*i" && ( 1 || !RegExMatch(includeFilePath , "i)private"  ) ) ) {
 							    feedbackMsgBox(RegExReplace(A_LineFile,".*\\(.*?)\.ahk","$1") ">" A_LineNumber, msg, 1,1 ) ; temp.ahk is often ignored by config 05.10.2018 08:46
-							    MsgBox,% "ups !exist_includeFilePath  (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+							    MsgBox,% "ups !exist_includeFilePath`n`n" msg "`n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 							    pause
 							}
 						}
@@ -513,9 +528,10 @@ actionListDir = '%actionListDir%'
 						msgbox,% msg
 					}
 
-					lineInRegEx         := (matchs4) ? matchs3 . matchs4 : "|.*"
+					; lineInRegEx         := (matchs4) ? matchs3 . matchs4 : "|.*"
+					lineInRegEx         := (matchs5) ? matchs4 matchs3 : "|.*"
 					; ^--- | ist a positvie rule. alle matching lines goes inside the new file.
-					lll(A_LineNumber, A_LineFile,A_ThisFunc ": "  matchs1 "," matchs2 "," matchs3 "," matchs4 )
+					lll(A_LineNumber, A_LineFile,A_ThisFunc ": "  matchsIgnore "," matchsPfad "," matchs3 "," matchs4 "," matchs5 )
 					lll(A_LineNumber, A_LineFile,A_ThisFunc ": "   "lineInRegEx=>" . lineInRegEx . "<" )
 
 
@@ -1290,18 +1306,20 @@ Clipboard = selfPerformanceTest2
 		global g_lineNumberFeedback
 		g_lineNumberFeedback=%A_LineNumber%~%A_LineFile%~%A_ThisFunc%
 
+    activeTitle := RegExReplace(activeTitle,"""","""""")
+    activeTitle := RegExReplace(activeTitle,"[\n\r\s]+"," ")
 		varInjects =
    (
-   actionListDir = %actionListDir%
-   actionListNEW = %actionListNEW%
+   actionListDir := "%actionListDir%"
+   actionListNEW := "%actionListNEW%"
 
-   activeTitle = %activeTitle%
-   activeClass = %activeClass%
-   controlName = %controlName%
+   activeTitle := "%activeTitle%"
+   activeClass := "%activeClass%"
+   controlName := "%controlName%"
 
-   alTitle = %alTitle%
-   alClass = %alClass%
-   alControl = %alControl%
+   alTitle := "%alTitle%"
+   alClass := "%alClass%"
+   alControl := "%alControl%"
    `n
    )
 		return varInjects
@@ -1563,6 +1581,7 @@ ___open actionList|rr||ahk|openInEditor,%actionListFileName%
 
 	#Include %A_ScriptDir%\inc_ahk\soundBeep.inc.ahk
 
+; 	#Include *i inc_ahk\functions_global.inc.ahk
 
 	#Include *i %A_ScriptDir%\inc_ahk\functions_global.inc.ahk
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1617,16 +1636,22 @@ ___open actionList|rr||ahk|openInEditor,%actionListFileName%
 	}
 ;>>>>>>>>>>>>>> ExitAPP_if_NOT_actionListGeneratedPath >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-;<<<<<<<<<<<<<<<<< lll_if_g_doSaveLogFiles <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+;/¯¯¯¯ lll_if_g_doSaveLogFiles ¯¯ 190317163201 ¯¯ 17.03.2019 16:32:01 ¯¯\
 	lll_if_g_doSaveLogFiles(ALineNumber, AThisFunc,msg ){
 		lll(AThisFunc . "~" . ALineNumber, "create_al_Address.inc.ahk" , msg)
     ; llll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"")
 ; Msgbox,'%g_doSaveLogFiles%' = g_doSaveLogFiles   (%A_LineFile%~%A_LineNumber%) `
 		return
 	}
-;>>>>>>>>>>>>>>>>> lll_if_g_doSaveLogFiles >>>>>>>>>>>>>>>>>>>>>>>>>>><>
+;\____ lll_if_g_doSaveLogFiles __ 190317163206 __ 17.03.2019 16:32:06 __/
+
+
+
 
 ; actionListNEWarchivePath
+    ;/¯¯¯¯ save_actionListGeneratedPath ¯¯ 190317163148 ¯¯ 17.03.2019 16:31:48 ¯¯\
 	save_actionListGeneratedPath(actionListGeneratedPath,includeFileSContent,actionListNEWarchivePath) {
 
 		if(!actionListNEWarchivePath){
@@ -1665,8 +1690,11 @@ ___open actionList|rr||ahk|openInEditor,%actionListFileName%
 		if(false)lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"SAVED: " . actionListGeneratedPath)
 			Sleep,60
 		return
-	}
+	} ;\____ save_actionListGeneratedPath __ 190317163141 __ 17.03.2019 16:31:41 __/
 
+
+
+    ;/¯¯¯¯ lll_if_g_doSaveLogFiles_matches ¯¯ 190317163121 ¯¯ 17.03.2019 16:31:21 ¯¯\
 	lll_if_g_doSaveLogFiles_matches(ALineNumber, AThisFunc, matchs1,matchs2,matchs3,matchs4){
 		if(0){
 			lll:=";<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", "matchs1: " . matchs1
@@ -1679,6 +1707,7 @@ ___open actionList|rr||ahk|openInEditor,%actionListFileName%
 		}
 		return
 	}
+	;\____ lll_if_g_doSaveLogFiles_matches __ 190317163125 __ 17.03.2019 16:31:25 __/
 
 
 

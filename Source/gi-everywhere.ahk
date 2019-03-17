@@ -699,14 +699,16 @@ gosub, checkInRegistryChangedActionListAddress ; At the moment I have the proble
 ;\____ test open config
 
 
-
-
+; run,tools\DebugVars\DebugVars.ahk
 
 
 
 setTrayIcon()
 
-
+return_from_LineNumber := create_al_Address(actionList
+,activeTitle,activeClass,controlName
+,stop_list_change
+,actionListDirBase )
 
 MainLoop()
 

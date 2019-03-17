@@ -34,10 +34,10 @@ actionListNEW := "" , actionListNEW .= alTitle
 
 #Include keyWaitReleased.ahk
 
-toolTipGui("c: " alClass " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
+; toolTipGui("c: " alClass " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
 alClass := activeClassManipulation(activeClass, activeTitle)
 ;	activeClass := "_globalActionListsGenerated"
-toolTipGui("c: " alClass " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
+; toolTipGui("c: " alClass " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
 
 actionListFilterPathNEWdir := actionListDirBase "\" alClass "\"
 actionListFilterPathNEW := actionListFilterPathNEWdir "al-route.inc.ahk"
@@ -103,8 +103,9 @@ if(1){ ; absolute path
     ; will later used in dynahk: actionListFilterPath2Abs
 	actionListFilterPath2 := actionListDir "\" "al-route.inc.ahk"
 
- toolTipGui(fileExist(actionListFilterPath2) ":" actionListFilterPath2 ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Purple",,1)
+ ; toolTipGui(fileExist(actionListFilterPath2) ":" actionListFilterPath2 ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Purple",,1)
 
+; ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 	if(substr(actionListFilterPath2,1,1) == "."){
 	    actionListFilterPath2Abs := A_ScriptDir "\" actionListFilterPath2
@@ -121,7 +122,7 @@ if(1){ ; absolute path
 
 #Include load_al-route_as_dynahk.inc.ahk
 
-toolTipGui("reg: " actionListReg "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
+; toolTipGui("reg: " actionListReg "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
 
 
 #Include create_al_Address-result_plausibility_check.inc.ahk ; al_result_plausibility_check(actionListNEW)
