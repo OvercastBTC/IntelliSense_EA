@@ -43,8 +43,23 @@ getLineOfIndex(id) {
 	ORDER BY w.lineNr limit 1
 	)
 	try{
-		results := g_actionListDB.Query(select)
-		for each, row in results.Rows
+        if(doUseNewMethodStartOfImplementing22march2019){
+            DB.Exec(select)
+            If !DB.GetTable(select, Matches){
+                if(!DB.HasKey("SQL")){
+                    toolTip2sec( "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                    MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    ;MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+                }
+                clipboard := select
+               MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+            }
+        }else{
+    		results := g_actionListDB.Query(select)
+    		Matches := results.Rows
+		}
+
+		for each, row in Matches
 		{
 			msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			return row[1]
@@ -52,7 +67,15 @@ getLineOfIndex(id) {
            ; msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	} catch e{
 		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-		sqlLastError := SQLite_LastError()
+
+        if(!doUseNewMethodStartOfImplementing22march2019){
+            ; sqlLastError := SQLite_LastError()
+            if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                sqlLastError := %oFunc%()
+            else
+                toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+        }
+
 		tip .= "`n sqlLastError=" sqlLastError "`n sql=" select " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
 		tooltip, `% tip
@@ -102,15 +125,34 @@ order by t.lineNr
 limit 1
 )
 	try{
-		Matches := g_actionListDB.Query(select)
-		for each, row in Matches.Rows
+
+        if(!doUseNewMethodStartOfImplementing22march2019){
+    		result := g_actionListDB.Query(select)
+    		Matches := result.Rows
+        }else{
+            If !DB.GetTable(select, Matches){
+                if(!DB.HasKey("SQL")){
+                    MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                }
+                clipboard := select
+               MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+            }
+       }
+
+		for each, row in Matches
 		{
                 ; msgbox,% "TRUE: " select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			return row[1]
 		}
 	} catch e{
 		tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-		sqlLastError := SQLite_LastError()
+
+        ; sqlLastError := SQLite_LastError()
+        if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+            sqlLastError := %oFunc%()
+        else
+            toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
 		tip .= "`n sqlLastError=" sqlLastError "`n sql=" select " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
 		tooltip, `% tip
@@ -162,7 +204,18 @@ and t.actionListID = 3
 limit 1
 )
 		try{
-			g_actionListDB.Query(select)
+            if(!doUseNewMethodStartOfImplementing22march2019)
+                NormalizeTable := g_actionListDB.Query(select)
+            else{
+                If !DB.GetTable(select, NormalizeTable){
+                    if(!DB.HasKey("SQL")){
+                        MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    }
+                    clipboard := select
+                   MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+                }
+           }
+
 			for each, row in NormalizeTable.Rows
 			{
 				msgbox,% select "`n" row[1] "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -170,7 +223,13 @@ limit 1
 			}
 		} catch e{
 			tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-			sqlLastError := SQLite_LastError()
+
+			; sqlLastError := SQLite_LastError()
+			if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                sqlLastError := %oFunc%()
+            else
+                toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
 			tip .= "`n sqlLastError=" sqlLastError "`n sql=" select " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 			lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
 			tooltip, `% tip
@@ -997,7 +1056,9 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
         ;/¯¯¯¯ Environment ¯¯ 190107124606 ¯¯ 07.01.2019 12:46:06 ¯¯\
         ; Environment variables (de: umgebungsvariablen)
-		
+        ; rootAbs := RegExReplace(actionListDirAbs,"\\actionLists\\.*", "")
+        rootAbs := RegExReplace(A_ScriptDir,"\\Source", "")
+
 		AHKcode2 .= "key := """ rX["key"] """ `n "
 		AHKcode2 .= "Sending := """ escaped_Sending """ `n " ; or use Sending rX["send"]
 		AHKcode2 .= "sendingStrLen := " StrLen(Sending) " `n "
@@ -1005,9 +1066,12 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 		AHKcode2 .= "lineStrLen := " StrLen(g_Word) " `n "
 		AHKcode2 .= "AHKcodeLen := " StrLen(AHKcode) " `n "
 		AHKcode2 .= "actionList := """ actionList """ `n "
-		AHKcode2 .= "SetWorkingDir, " . aScriptDir2actionListFolder . "`n" ; doesent work has no effect ScriptDir|rr||ahk|send, % A_ScriptDir ; \\.\pipe 03.04.2017 11:17 17-04-03_11-17
+		AHKcode2 .= "aScriptDir := """ A_ScriptDir """ `n "
+		AHKcode2 .= "rootAbs := """ rootAbs """ `n "
+		; AHKcode2 .= "SetWorkingDir, " aScriptDir2actionListFolder "`n" ; doesent work has no effect ScriptDir|rr||ahk|send, % A_ScriptDir ; \\.\pipe 03.04.2017 11:17 17-04-03_11-17
 		; pause ; toCloseAll tToolTip5sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		;\____ Environment __ 190107124616 __ 07.01.2019 12:46:16 __/
+
 
 		; toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		; tooltip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
@@ -1508,8 +1572,8 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 					AHKcode := "Send,^v"
 
         
-		if(0 && InStr(A_ComputerName,"SL5") )
-            ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                    if(0 && InStr(A_ComputerName,"SL5") )
+                        ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 					DynaRun(AHKcode) ; <= uese old clipboard. or simple give it more time
 

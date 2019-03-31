@@ -306,7 +306,7 @@ OK
 ; How to test if file is_writable and not locked by another program ??
 ; FileGetAttrib, OutputVar, g_actionListDBfileAdress
 ; clipboard := g_actionListDB
-	if(g_actionListDB)
+	if(!doUseNewMethodStartOfImplementing22march2019 && g_actionListDB )
 		g_actionListDB.Query("PRAGMA journal_mode = TRUNCATE;")
 	else
 		msgbox,Oops i am triggered :D 17-04-02_13-47 !g_actionListDB

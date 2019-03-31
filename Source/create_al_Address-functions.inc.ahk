@@ -840,7 +840,7 @@ actionListActive = %actionListActive%
 			{
 				g_lineNumberFeedback=%A_LineNumber%~%A_LineFile%~%A_ThisFunc%
 
-        ;   MsgBox,,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n   lets try start it   automatically, 2
+        ;   MsgBox,16,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n   lets try start it   automatically, 2
         ; lets wait and try again. maybe its reload its self and needs only a second
 				Sleep, 2000 ; 1 Sekunde
 				IfWinNotExist,gi-everywhere
@@ -890,7 +890,7 @@ actionListActive = %actionListActive%
 			{
 				g_lineNumberFeedback=%A_LineNumber%~%A_LineFile%~%A_ThisFunc%
 
-;   MsgBox,,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n lets try start it automatically, 2
+;   MsgBox,16,gi-everywhere  is running, :( `n are you sure gi-everywhere  is running? `n  IfWinNotExist gi-everywhere  `n (line:%A_LineNumber%) `n lets try start it automatically, 2
 ; lets wait and try again. maybe its reload its self and needs only a second
 				Sleep, 2000 ; 1 Sekunde
 				IfWinNotExist,gi-everywhere
@@ -929,7 +929,7 @@ actionListActive = %actionListActive%
 			global g_lineNumberFeedback
 			g_lineNumberFeedback=%A_LineNumber%~%A_LineFile%~%A_ThisFunc%
 
-			MsgBox,,NotExist?, :( IfWinNotExist '%gi_everywhereAHK%' = gi_everywhereAHK  `n (line:%A_LineNumber%) `n , 2
+			MsgBox,16,NotExist?, :( IfWinNotExist '%gi_everywhereAHK%' = gi_everywhereAHK  `n (line:%A_LineNumber%) `n , 2
 		}
 
 		if(! FileExist(actionListDir) )
@@ -1225,6 +1225,8 @@ Clipboard = selfPerformanceTest2
 
 	;/¯¯¯¯ FileWriteAndRun ¯¯ 190209054130 ¯¯ 09.02.2019 05:41:30 ¯¯\
 	FileWriteAndRun(sayHelloCode, sayHelloFunctionInc){
+		return DynaRunFROMAhkSudio190322(sayHelloCode,Wait:=false,name:="Untitled")
+
 		global g_lineNumberFeedback
 		g_lineNumberFeedback=%A_LineNumber%~%A_LineFile%~%A_ThisFunc%
 		DetectHiddenWindows,On
@@ -1267,11 +1269,20 @@ Clipboard = selfPerformanceTest2
 		}
 
    ;gosub,couldIfindMyself
-		if(FileExist(sayHelloFunctionInc))
-			run, % sayHelloFunctionInc
-;   MsgBox, '%sayHelloFunctionInc%' = sayHelloFunctionInc  `n (line:%A_LineNumber%) `n
+		if(FileExist(sayHelloFunctionInc)){
+   try{
+        run, % sayHelloFunctionInc
+    ;   MsgBox, '%sayHelloFunctionInc%' = sayHelloFunctionInc  `n (line:%A_LineNumber%) `n
 		return isFileExist
-	}
+   }
+   catch e
+   {
+            tooltip,
+            ; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-142
+            sleep,1800 ; <== maybe a good idea 19-03-20_08-20
+   }
+   }
+   }
 	;\____ FileWriteAndRun __ 190209054144 __ 09.02.2019 05:41:44 __/
 
 
@@ -1308,9 +1319,15 @@ Clipboard = selfPerformanceTest2
 
     activeTitle := RegExReplace(activeTitle,"""","""""")
     activeTitle := RegExReplace(activeTitle,"[\n\r\s]+"," ")
+
+
+    rootAbs := RegExReplace(actionListDirAbs,"\\actionLists\\.*", "")
+    ; actionLists\
+
 		varInjects =
    (
    actionListDir := "%actionListDir%"
+   rootAbs := "%rootAbs%"
    actionListNEW := "%actionListNEW%"
 
    activeTitle := "%activeTitle%"

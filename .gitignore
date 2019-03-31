@@ -23,6 +23,7 @@ Source
 
 
 # Ignore some files (found in Source-Folder)
+
 Source/Welcome_to_IntelliJ_IDEA_Administrator.ahk
 Source/**/*.minify.inc.ahk*
 Source/**/*.log
@@ -66,8 +67,10 @@ Source/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].temp.FileWrite.txt
 
 !actionLists/activeClassManipulation.inc.ahk
 
-# Ignore some files (found in actionLists-Folder)
 actionLists
+actionLists/**/*._Generated.ahk._Generated.ahk
+
+# Ignore some files (found in actionLists-Folder)
 actionLists/**/Bank*
 actionLists/**/Bewe*
 actionLists/**/pfade.*

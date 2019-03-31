@@ -1,4 +1,4 @@
-ï»¿/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09
+/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09
 */
 ; recomandet for g_min_searchWord_length is: 1 or 2 maybe 0
 ; if u use 0 it maybe not work always at the moment (works if word match or if you have a fresh window change) (19-01-19_10-44)
@@ -21,8 +21,16 @@ g_config.listBoxGui := {
 	}
 }
 
+
 g_config.ScriptDir := A_ScriptDir
 g_config.actionListDirBase := "..\actionLists" ; down from source upt to actionLists
+; if g_config.actionList.showName false or "" no extra info about actionListFileAddress is will showed. 
+g_config.actionList := { 
+	tipps: { 
+		showName: "¯|",
+		durationMilliseconds: 3500
+	}
+}
 
 ; it takes the first existing editor, from the follwoing list.
 ; very first time it uses the smallest, most simpliest editor (notepad.exe not to be confused with notepad++.exe)
@@ -58,11 +66,21 @@ g_regExReplaceInVisibleLine := "^[_]*([^|\n]+)[^\.\n]*?([^|\n]{3,})$" ; https://
 g_regExReplaceInVisibleLine := "^[_]*([^|\n]+)[^\.\n]*?([^|\n]{3,})?$" ; 18-06-10_09-34 https://autohotkey.com/boards/viewtopic.php?p=215425#p215425 https://regex101.com/r/GQjPg0/1 ; the string only before the first "|"
 
 
+g_config.tray := {  
+	iconFileAddress: (
+		( InStr(A_ScriptDir,"-Nightly-") 
+		&& FileExist(A_ScriptDir "\icon\abc123\GI-nightly.gif") ) 
+			? A_ScriptDir "\icon\abc123\GI-nightly.gif" 
+			: "" 
+	) 
+} 
+
+
 actionList_isNotAProject_withoutExt  := removesSymbolicLinksFromFileAdress( A_ScriptDir "\..\actionLists\_globalActionListsGenerated\isNotAProject" )
 actionList_isNotAProject  := actionList_isNotAProject_withoutExt ".ahk"
 ;	tryThisEditorFirst: "AHKStudio",
 
-g_config.Send := { RealisticDelayDynamic: false } ; RealisticDelayDynamic: 2
+g_config.send := { RealisticDelayDynamic: false } ; RealisticDelayDynamic: 2
 g_config.list := { 
 	change: { stopRexExTitle: false } 
 }
@@ -83,12 +101,16 @@ g_config.FuzzySearch := {
 	minKeysLen: 4,
 	doValueCopy : false
 }
+; default for maxNnumberUsedTemplates is usually 7 (files select0 ... select6). no results if you use 0
 g_config.sql.template := {
-	dir: A_ScriptDir "\sql\template"
+	dir: A_ScriptDir "\sql\template",
+	maxNnumberUsedTemplates : 1
 }
 
 ; you do not need these runners. these are just examples:
 ; C:\php731NTS>php.exe helloWorld.php
+; usage example in your actionScrip: helloCommandLine keyword|rr||helloCommandLine|hello value
+; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-134
 g_config.codeRunner := {
 	code_AutoHotkey_Community: 
 	A_ScriptDir "\..\actionLists\_globalActionLists\incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk",

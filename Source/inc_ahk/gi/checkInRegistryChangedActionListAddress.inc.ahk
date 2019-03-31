@@ -17,13 +17,11 @@ checkInRegistryChangedActionListAddress:
         return
     }
     if(g_itsProbablyArecentUpdate){
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(0 && InStr(A_ComputerName,"SL5"))
             ToolTip9sec( "g_itsProbablyArecentUpdate`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1,20 )
         ; soundBeep,4000
         return
     }
-
-
 
     if( milliesTried_getNewListFromRegistry >= 5000){
         milliesTried_getNewListFromRegistry := 0
@@ -120,12 +118,13 @@ checkInRegistryChangedActionListAddress:
 
 
     RegRead, actionListNewTemp_RAW, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList
+
     actionListNewTemp_withoutExt := actionListNewTemp_RAW
     if( SubStr( actionListNewTemp_withoutExt , -3 ) == ".ahk" ){
         ; dirty bugFix
         actionListNewTemp_withoutExt := SubStr( actionListNewTemp_withoutExt,1 , -4 )
         setRegistry_actionList( actionListNewTemp_withoutExt )
-        if(1 && InStr(A_ComputerName,"SL5")){
+        if(0 && InStr(A_ComputerName,"SL5")){
             m := "dirty bugfix. It is more common to specify the list without extension "
             Speak(m " in " A_LineNumber , "PROD")
             ToolTip9sec(m "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
@@ -210,8 +209,7 @@ checkInRegistryChangedActionListAddress_inc
          exitApp
     }
     ; actionListNewTemp_withoutExt := actionListDirBase "\" actionListNewTemp_withoutExt
-    actionListNewTemp_withoutExt := actionListNewTemp_withoutExt
-    if(1 && InStr(A_ComputerName,"SL5")){
+    if(0 && InStr(A_ComputerName,"SL5")){
         ; clipboard := actionListNewTemp_withoutExt " (" RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
         ToolTip4sec( "clipboard := actionList`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     }
@@ -247,6 +245,14 @@ checkInRegistryChangedActionListAddress_inc
             ;Sleep,1000
         }else
             Speak(m "Return in " A_LineNumber " Registry is empty", "PROD")
+
+        if(substr(actionListNewTemp_withoutExt,-strlen("isNotAProject")) <> "\isNotAProject" ){
+            isNotYet_actionList := actionListNewTemp_withoutExt
+            setRegistry_actionList( isNotYet_actionList, "isNotYet_actionList250" )   ; RegWrite , RegSave , Registry
+            setRegistry_actionList( isNotYet_actionList, "isNotYet_actionList" )   ; RegWrite , RegSave , Registry
+        }
+
+
         actionListNewTemp_withoutExt := actionList_isNotAProject_withoutExt ; as long as nothing else would be found
         ; msgbox,%actionListNewTemp_withoutExt% `n(%A_LineFile%~%A_LineNumber%)
         if(0 && InStr(A_ComputerName,"SL5")){
@@ -376,7 +382,8 @@ Sleep,3000
             sleep,60
             send,^f actionListChangedInRegistry
         }
-        Speak("Return in " A_LineNumber)
+        if IsFunc("Speak")
+            Speak("Return in " A_LineNumber)
         return
         exitApp
         )
@@ -428,14 +435,15 @@ Sleep,3000
 
 
 ; returns the position of an occurrence of the string Needle in the string Haystack. Position 1 is the first character; this is because 0 is synonymous with "false",
-   if( FileExist(actionListNewTemp_withoutExt ".ahk._Generated.ahk") && !InStr(actionListNewTemp_withoutExt, "._Generated.ahk") )
+   if( FileExist(actionListNewTemp_withoutExt ".ahk._Generated.ahk") && !InStr(actionListNewTemp_withoutExt, "._Generated.ahk") ){
+
         actionList := actionListNewTemp_withoutExt ".ahk._Generated.ahk" ; that's probably did wrong place. But is a working bugfix. fallback. 25.10.2018 19:48
-    else
+    }else
         actionList := actionListNewTemp_withoutExt ".ahk"
 
 
-
-        if(1 && InStr(actionList,"._Generated.ahk._Generated.ahk")){
+if(0 && InStr(A_ComputerName,"SL5")
+&& InStr(actionList,"._Generated.ahk._Generated.ahk")){
              ToolTip5sec(";] Oopsfound ._Generated.ahk._Generated.ahk => ._Generated.ahk `n`n" actionList "`n" A_LineNumber RegExReplace(A_LineFile,".*\\"), 1,1 )
 
 
@@ -527,7 +535,7 @@ Sleep,3000
 
 ; tool toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
-
+        if IsFunc("Speak")
             Speak("ShowListBox", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
 
 
@@ -562,7 +570,24 @@ InactivateAll_Suspend_ListBox_WinHook() ; addet 24.10.2018 14:16
     ;\____ very_happy __ 181024144106 __ 24.10.2018 14:41:06 __/
 
 
-; tool
+; To Tooltip Tooltip
+
+; ..\actionLists\
+if(g_config.actionList.tipps.showName){
+
+    ; DetectHiddenWindows,On
+    ; settitlematchmode,1
+    title := A_LineNumber
+    needle := title " ahk_class AutoHotkeyGUI" ; mouseWindowTitle=0x7d1d2c  ;
+    IfWinExist,% needle
+    {
+    	winGetPos,x,y,,,% needle
+    	; winmove,% needle,% x, % y
+        toolTipGui(substr(actionList,16) "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x, y, ,title,"Purple")
+    } else
+        toolTipGui(substr(actionList,16) "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x:=-strlen(actionList)*5, y:=0, g_config.actionList.tipps.showName ,title,"Purple")
+}
+
 
 if(0 && InStr(A_ComputerName,"SL5")) ; prob no error. whey not
 	Speak("Now Read actionList: " actionList, "PROD" )  ;  (DEV, TEST, STAGING, PROD),

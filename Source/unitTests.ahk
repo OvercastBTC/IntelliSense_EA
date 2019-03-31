@@ -322,7 +322,7 @@ if(countErrors<1)
 if(countErrors>0){
 	Speak( countErrors " Error found. " ALineNumber, "PROD" )
 	tooltip,% errStr,1,1
-	Msgbox,,% errStr ,,2
+	MsgBox,16,% errStr ,,2
     feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), errStr )
     clipboard := errStr
 	sleep,2000
@@ -414,7 +414,7 @@ global g_actionListDBfileAdress
 global g_config
 
 
-if(!g_actionListDB)
+if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB)
     g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
 
 if(!g_actionListID := getActionListID(g_config["sql"]["template"]["dir"], actionList)){ ; 24.03.2018 23:02
@@ -448,7 +448,7 @@ g_actionListDB.Query(INSERT_INTO_words)
 fromLine := "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 if(sqlLastError := trim(SQLite_LastError()))
     msgbox,g_actionListID = %g_actionListID%,:(  sqlLastError = `n`n>%sqlLastError%< `n`n%fromLine%
-    ; msgbox,, :-) g_actionListID = %g_actionListID%,%sqlLastError% %fromLine%,2
+    ; MsgBox,16, :-) g_actionListID = %g_actionListID%,%sqlLastError% %fromLine%,2
 
 }
     ; ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
@@ -2030,6 +2030,9 @@ return
 RenoveToolTip:
 tooltip,
 return
+
+
+
 
 
 #Include %A_ScriptDir%\inc_ahk\gi\ReadActionList.inc.ahk

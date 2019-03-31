@@ -1,5 +1,22 @@
 ﻿#SingleInstance,Force
 
+#MaxHotkeysPerInterval 99000000
+#HotkeyInterval 99000000
+; Process, Priority,, Normal
+; SetBatchLines, 20ms ; addet 03.11.2018 18:51
+; SetBatchLines, 10
+SetKeyDelay, -1, -1
+SetWinDelay, -1 ; Sets the delay that will occur after each windowing command, such as WinActivate.
+; SetWinDelay, 10
+SetControlDelay, -1 ; A short delay (sleep) is done automatically after every Control command that changes a control, namely Control, ControlMove, ControlClick, ControlFocus, and ControlSetText (ControlSend uses SetKeyDelay).
+; SetControlDelay, 10
+; https://autohotkey.com/docs/commands/Process.htm#Priority
+; L (or Low), B (or BelowNormal), N (or Normal), A (or AboveNormal), H (or High), R (or Realtime)
+Process, Priority,, H ; <=== only use this if its not in a critical development 05.11.2018 13:20
+; Process, Priority,, R ; <=== it acts on me as if the script was working more UNstable
+; Thread, NoTimers ; https://autohotkey.com/docs/commands/Thread.htm
+
+
 example =
 (
 config.inc.ahk:
@@ -56,11 +73,17 @@ if(!code)
 		Sleep,5
 	}
 c := (code) ? code : clipboard
-c := RegExReplace(c,"im)\[code\]","[CODE]") 
-c := RegExReplace(c,"im)\[/code\]","[/C0DE]") 
-shortName := SubStr(c,1,20)
-shortName := RegExReplace(shortName,"m)\s+"," ")
-ahkCode = 
+if(!code){
+    MsgBox,262160,% ":(`n" ,% " Oops !code is empty. please try again `n`n`n:(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    exitApp
+}
+c := Trim(c," `t`r`n")
+if( RegExMatch(c, "\n" )){
+	c := RegExReplace(c,"im)\[code\]","[CODE]") 
+	c := RegExReplace(c,"im)\[/code\]","[/C0DE]") 
+	shortName := SubStr(c,1,20)
+	shortName := RegExReplace(shortName,"m)\s+"," ")
+	ahkCode = 
 (
 [spoiler2=%shortName%]
 [code]
@@ -70,9 +93,17 @@ ahkCode =
 ]%thisFileName%[/url][/size]
 [/spoiler2]
 )
+}else{
+	c := RegExReplace(c,"im)\[c\]","[C]") 
+	c := RegExReplace(c,"im)\[/c\]","[/C]")
+	ahkCode := "[c]" c "[/c]"
+}
 Clipboard := ahkCode
 send, ^v
-
+suspend,on
+send,+{tab} ; lets focus subject
+suspend,off
+; MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ahkCode "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 
 Sleep,6000

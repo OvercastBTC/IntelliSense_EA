@@ -12,7 +12,7 @@ errorMsg := ""
     else if(substr(rtrim(actionListNEW),-4) == "\.ahk")
         errorMsg :=  actionListNEW "`n`n ups actionListNEW `n `n is \.ahk?`n`n" thisLine "=thisLine`n`n " actionListNEW "`n=actionListNEW`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
-    else if(substr(actionListReg,-1) == "\"){
+    else if(substr(actionListReg,-0) == "\"){
         errorMsg :=  actionListReg "`n ups actionListReg `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     }
 

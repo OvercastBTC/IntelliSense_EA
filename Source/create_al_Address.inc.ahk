@@ -32,7 +32,12 @@ actionListNEW := "" , actionListNEW .= alTitle
 ; toolTipGui("alTitle := activeTitle, alClass := activeClass, alControl := controlName " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)  
 ; toolTipGui("a: " actionListNEW " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)  
 
-#Include keyWaitReleased.ahk
+; tooltip,% A_ScriptDir " token:asdfasdfasdfSTTTlolololo"
+; clipboard := A_ScriptDir " 19-03-18_00-15" ; yes its Source folder 19-03-18_00-21
+
+; # Include %A_ScriptDir% ; at the beginning of the script https://www.autohotkey.com/boards/viewtopic.php?f=76&t=62795
+#Include keyWaitReleased.ahk ; \Source\keyWaitReleased.ahk
+; # Include *i keyWaitReleased.ahk ; \Source\keyWaitReleased.ahk
 
 ; toolTipGui("c: " alClass " . . . . . . . . . . . . . " ,,80*(toolTipGui_yOffsetNr++),"|¯",A_LineNumber,"Green",,1)
 alClass := activeClassManipulation(activeClass, activeTitle)

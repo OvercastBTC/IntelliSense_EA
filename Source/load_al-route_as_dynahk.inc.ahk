@@ -102,7 +102,8 @@ ahkSource .= "`n actionListNEWactivate( actionListDir , actionListNEW, actionLis
 if(debugIt)
 	ahkSource .= "MsgBox, , debugIt , `% varInjects1 . "" ``n "" varInjects2 . "" ``n actionListNEW = '"" actionListNEW . ""'  ``n (lineCaller:" A_LineNumber . ") ``n "" ,9 `n"
 ahkSource .= "ExitApp"  " `n"
-ahkSource .= "#" "Include, inc_ahk\..\create_al_Address.inc.ahk  `; `n"
+; \Source\create_al_Address.inc.ahk
+ahkSource .= "#" "Include, " A_ScriptDir "\create_al_Address.inc.ahk  `; `n"
 ahkSource .= "`; ENDOF dynahk 19-02-19_10-52 `n"
 
 #Include keyWaitReleased.ahk ;  ; Source\

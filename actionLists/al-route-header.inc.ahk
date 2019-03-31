@@ -2,13 +2,26 @@
 ; GLOBAL FILTER / ROUTING ; this file was generated 20170308151813
 
 
+;
+
 ; actionListNEW := "Gmail_Google_Chrome.ahk" ; for testing only
 
 #SingleInstance, force
 
+toolTipGui_yOffsetNr := 0
+if(actionListNEW){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n `n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    ; toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    ; pause
+    /*
+    happend (not often):
+    19-03-18_11-21
+    */
+}
+
 actionListNEW_debigInfoScriptTop := actionListNEW
 
-toolTipGui_yOffsetNr := 0
 ; toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 
 
@@ -41,8 +54,34 @@ if(!scriptDir)
 
 #Include,.\..\actionLists\activeClassManipulation.inc.ahk
 
-actionListNEW := getActionListNEW173129simplify( actionListNEW )
+if(!actionListNEW){
+	if(!activeClass)
+	    WinGetClass, activeClass, A
+	if(!activeTitle)
+	    WinGetActiveTitle, activeTitle
+    ; actionListNEW := ((activeClass) ? activeClass : nowWinGetClass) "\" activeTitle ; fallback, easy fast 19-02-11_10-48
+    actionListNEW := activeTitle ; fallback, easy fast 19-02-11_10-48
+    ; toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Green")  ; x will be offset if y is symbolic
+    ; pause
+}
+if(!actionListNEW := getActionListNEW173129simplify( actionListNEW )){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; clipboard := temp
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+        pause
+
+    ;MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+}
+
 ToolTipSlowMotion(actionListNEW, A_LineNumber)
+
+if(0 && substr(actionListNEW,-0) == "\"){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    pause
+
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+}
 
 msg =
 (
@@ -61,15 +100,61 @@ a: %actionListNEW%
 d: %actionListDir%
 )
 
+temp := ""
+temp .= actionListNEW "`n"
+if(!actionListNEW){
+    actionListNEW := activeTitle ; fallback, easy fast 19-02-11_10-48
+    actionListNEW .= (alControl) ? "-" alControl : ""
+    ; actionListNEW := (alClass) ? alClass  "-" : "" , actionListNEW .= alTitle , actionListNEW .= (alControl) ? "-" alControl : ""
+
+
+    ;errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; clipboard := temp
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    ; toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    ;pause
+
+}
+
 
 if(!instr(actionListNEW,"\"))
     actionListNEW := ((activeClass) ? activeClass : nowWinGetClass) "\" actionListNEW ; fallback, easy fast 19-02-11_10-48
+if(substr(actionListNEW,-0) == "\"){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; clipboard := temp
+    ; run,tools\DebugVars\DebugVars.ahk
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    pause
+
+}
 if(!instr(actionListNEW,"\actionLists\"))
     actionListNEW := "..\actionLists\" actionListNEW
 
 thisLine := A_LineNumber
+if(substr(actionListNEW,-0) == "\"){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    pause
+
+}
 #Include *i %A_ScriptDir%\..\actionLists\create_al_Address-result_plausibility_check.inc.ahk ; al_result_plausibility_check(actionListNEW)
+if(substr(actionListNEW,-0) == "\"){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    pause
+}
 #Include *i %A_ScriptDir%\create_al_Address-result_plausibility_check.inc.ahk ; al_result_plausibility_check(actionListNEW)
+
+
+if(substr(actionListNEW,-0) == "\"){
+    errorMsg :=  actionListNEW "`n ups actionListNEW `n is folder?`n = `n`n" "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+    ; MsgBox,262160,% ":(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,% ":( " errorMsg "`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ")"
+    toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
+    pause
+}
 
 
 
@@ -208,7 +293,7 @@ toolTip9sec(feedback)
 
 ; toolTipGui(feedback  ,,-250,"|_",A_LineNumber,"Red")  ; x will be offset if y is symbolic
 
-sleep,3000
+;sleep,3000
 }
 ;\____ plausibility __ 190210175755 __ 10.02.2019 17:57:55 __/
 
@@ -218,12 +303,21 @@ sleep,3000
 ActionListNEW_time_between := actionListNEW
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+if(0 && InStr(A_ComputerName,"SL5")){
+toolTipGui("a: " actionListNEW " `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,80*(toolTipGui_yOffsetNr++),"|-",A_LineNumber,"Green")  ; x will be offset if y is symbolic
+pause
+}
+
 ; # Include ..\Source\inc_ahk\openInEditor_actionList.inc.ahk
 ; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 #Include,.\..\Source\inc_ahk\copy2clipBoard.functions.inc.ahk
 ; toolTipGui("(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"|_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 
-#Include %A_ScriptDir%\inc_ahk\toolTipGui.inc.ahk ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62078&p=263824#p263824
+
+
+#Include *i %A_ScriptDir%\inc_ahk\toolTipGui.inc.ahk ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62078&p=263824#p263824
+#Include *i inc_ahk\toolTipGui.inc.ahk ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62078&p=263824#p263824
+#Include *i ..\Source\inc_ahk\toolTipGui.inc.ahk ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62078&p=263824#p263824
 
 
 

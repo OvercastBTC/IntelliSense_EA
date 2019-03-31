@@ -63,6 +63,14 @@ ReadInTheActionList(sql_template_dir, calledFromStr){ ;Read in the actionList
 
 
 ;/Â¯Â¯Â¯Â¯ ReadActionList Â¯Â¯ 181028133202 Â¯Â¯ 28.10.2018 13:32:02 Â¯Â¯\
+/*
+reads from file or database
+into variables
+snipets to remember whats maybe happens later:
+    FileRead, ParseWords, %actionList%
+    its using vars for exampele:
+    if (isTblWordsEmpty || diffSize || isModified)
+*/
 ReadActionList( calledFromStr ){
 	global g_LegacyLearnedWords
 	global g_ScriptTitle
@@ -117,6 +125,23 @@ ReadActionList( calledFromStr ){
 	itsAGeneratedList := ( postFixGenerated == actionListPostFix )
 
 
+	if(itsAGeneratedList){ ; 19-03-22_05-10 ; ToDo: 19-03-22_05-10
+        ; tooltip,% "5555" actionList, 200, 100,5
+        postFixGenerated_DIRTY_BUGFIX := ".ahk._Generated.ahk._Generated.ahk"
+        thisPostFix_DIRTY_BUGFIX := SubStr(rtrim(actionList), - StrLen(postFixGenerated_DIRTY_BUGFIX) + 1 )
+        itsAGeneratedList_DIRTY_BUGFIX := ( postFixGenerated_DIRTY_BUGFIX == thisPostFix_DIRTY_BUGFIX )
+        if(itsAGeneratedList_DIRTY_BUGFIX){
+            actionList := substr( actionList, 1 , strlen(actionList) -StrLen(postFixGenerated_DIRTY_BUGFIX) )
+            actionList .= ".ahk._Generated.ahk"
+            if(1 && InStr(A_ComputerName,"SL5")){
+                ToolTip2sec( "Oops : " postFixGenerated_DIRTY_BUGFIX "`n`n" actionList "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                sleep,9000
+            }
+            ; msgbox, % actionList " 19-03-22_05-07"
+        }
+
+    }
+
 	if(!itsAGeneratedList){
         if(0 && InStr(A_ComputerName,"SL5"))
             Speak(A_LineNumber ": Not a Generated List" ,"PROD") ; bug entecekt actionList 12.11.2018 11:02 todo:
@@ -125,7 +150,7 @@ ReadActionList( calledFromStr ){
 		; already reported heere: https://autohotkey.com/board/topic/89401-ahk-syntax-for-function-call-drives-me-crazy/
 		if(fileEx){
 			actionList .= postFixGenerated ; quick fix 14.11.2018 11:14
-            if(1 && InStr(A_ComputerName,"SL5") && !InStr(actionList,"isNotAProject")){
+            if(0 && InStr(A_ComputerName,"SL5") && !InStr(actionList,"isNotAProject")){
                 Speak(A_LineNumber ": Not a Generated List but Generated List exist" ,"PROD") ; bug entecekt actionList 12.11.2018 11:02 todo:
 			    ; clipboard := actionList " `n fileEx= " fileEx "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			    msg =
@@ -151,7 +176,7 @@ ReadActionList( calledFromStr ){
 			)
 			Speak(A_LineNumber ":" RegExReplace(actionList,".*\\")  ": is without includes, becouse not generated found" ,"PROD") ; bug entecekt actionList 12.11.2018 11:02 todo:
 
-			ToolTip8sec( actionList "`n = actionList`n`n" calledFromStr "`n= calledFromStr`n`n Sleep 2000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 1,1 )
+			; ToolTip8sec( actionList "`n = actionList`n`n" calledFromStr "`n= calledFromStr`n`n Sleep 2000`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 1,1 )
 			Sleep, 5000
 			ToolTip,
 			; MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% actionList "=actionList `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -252,7 +277,8 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
             %SELECT%
             )
 			if(1 && InStr(A_ComputerName,"SL5")){
-				Msgbox,% ":-( Oops `n " m " !g_actionListID ==> return false `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+                toolTip2sec( "ups !g_actionListID `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+				; Msgbox,% ":-( Oops `n " m " !g_actionListID ==> return false `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
             }
 			Sleep, 1000
 			return false
@@ -281,16 +307,23 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
 ;msgbox,actionList = %actionList% `n (%A_LineFile%~%A_LineNumber%)
 
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 
-	if (!g_actionListDB )
+if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB ){
+
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
+
 		g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ; https://autohotkey.com/board/topic/86457-dba-16-easy-database-access-mysql-sqlite-ado-ms-sql-access/
-; END of: Section wait for unsolved error messages. to close them unsolved :D 02.04.2017 14:36 17-04-02_14-36 todo: dirty bugfix
 
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
+
+; END of: Section wait for unsolved error messages. to close them unsolved :D 02.04.2017 14:36 17-04-02_14-36 todo: dirty bugfix
+}
 ;>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	if (!g_actionListDB )
-	{
+if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB ){
 		tooltip, Problem opening database '%A_ScriptDir%\actionListLearned.db' - fatal error...
 		lll(A_LineNumber, A_LineFile,Last_A_This . " sleep,15000 ")
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 		sleep,15000
       ; exitapp
 		lll(A_LineNumber, A_LineFile,Last_A_This . " reload ")
@@ -313,11 +346,12 @@ OK
 ; How to test if file is_writable and not locked by another program ??
 ; FileGetAttrib, OutputVar, g_actionListDBfileAdress
 ; clipboard := g_actionListDB
-	if(g_actionListDB)
-		g_actionListDB.Query("PRAGMA journal_mode = TRUNCATE;")
-	else
-		msgbox,Oops i am triggered :D 17-04-02_13-47 !g_actionListDB
-
+	if(!doUseNewMethodStartOfImplementing22march2019)
+        if(g_actionListDB )
+            g_actionListDB.Query("PRAGMA journal_mode = TRUNCATE;")
+        else
+            msgbox,Oops i am triggered :D 17-04-02_13-47 !g_actionListDB
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	DatabaseRebuilt := MaybeConvertDatabase()
 
 
@@ -389,14 +423,34 @@ from: actionList.ahk~%A_LineNumber%
 
 ;
 
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 		SELECT := "SELECT actionListmodified, actionListsize FROM actionLists WHERE actionList = '" actionList "';"
 		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
 			ToolTip4sec(msg "`n`n" SELECT "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", ""),1,1  )
             ;ifwinactive,ahk_class SunAwtFrame
-		LearnedWordsTable := g_actionListDB.Query(SELECT)
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
+
+
+
+
+        if(doUseNewMethodStartOfImplementing22march2019){
+            If !DB.GetTable(SELECT, LearnedWordsTable ){
+                if(!DB.HasKey("SQL")){
+                    tip := "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    toolTip2sec( tip  )
+                    return false
+                    MsgBox, 16, % tip , % tip
+                }else
+                    MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+            }
+        }else{
+    		LearnedWordsTable := g_actionListDB.Query(SELECT)
+        }
+
 
 		LoadActionList := "Insert"
 
+INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 		For each, row in LearnedWordsTable.Rows
 		{ ; For each, row in LearnedWordsTable.Rows
 			actionListLastModified := row[1]
@@ -406,6 +460,18 @@ from: actionList.ahk~%A_LineNumber%
             ;diffModified := Abs(FileGet_actionListModified - actionListLastModified) ; <==== acnt diff timestams this way todo:
             ;diffModified := FileGet_actionListModified - actionListLastModified ; <==== acnt diff timestams this way todo:
 			isModified := (diffSize || FileGet_actionListModified && actionListLastModified && (FileGet_actionListModified <> actionListLastModified))
+
+tip =
+(
+FileGetTime, FileGet_actionListModified, %actionList%, M
+FileGetTime, %FileGet_actionListModified%, %actionList%, M
+
+
+%FileGet_actionListModified% ## %actionListLastModified%
+%FileGet_actionListModified% ## %actionListLastModified%
+)
+    ToolTip9sec( FileGet_actionListModified " ## " actionListLastModified "`n" actionList "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
 
 if(0 && InStr(actionList, "Turek") && InStr(A_ComputerName,"SL5"))
 	MsgBox,262160,% isModified "= isModified`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% actionList "=actionList `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -449,7 +515,7 @@ if(0 && InStr(actionList, "Turek") && InStr(A_ComputerName,"SL5"))
 
 			if(!FileGet_actionListModified && !actionListLastModified)
 				msgbox,18-10-28_13-43
-			if (isTblWordsEmpty || diffSize || isModified) {
+			if (isTblWordsEmpty || isModified) {
 				LoadActionList := "Update" ; updated?
             ;Msgbox,%actionList% = actionList `n LoadActionList = "%LoadActionList%"`n source TXT has changed. update database next. `n (%A_LineFile%~%A_LineNumber%)
 
@@ -494,6 +560,7 @@ if(0 && InStr(actionList, "Turek") && InStr(A_ComputerName,"SL5"))
         ; actionListLastModified := row[1]
         ; actionListLastSize := row[2]
 		if( !actionListLastModified || !actionListLastSize ){
+			if(!actionList)
 			tip =
             (
             Oops from ReadActionList( %calledFromStr% = calledFromStr )
@@ -503,10 +570,20 @@ if(0 && InStr(actionList, "Turek") && InStr(A_ComputerName,"SL5"))
 
             i found this message after restarting my laptop 08.01.2019 07:30, 19-01-08_07-30
             )
+			if(!actionList)
+			tip =
+            (
+            Oops from ReadActionList( %calledFromStr% = calledFromStr )
+actionList = >>>>>%actionList%<<<<
+g_ScriptTitle = %g_ScriptTitle%
+g_actionListID = %g_actionListID%
+            )
 			if(1 && InStr(A_ComputerName,"SL5") ){
 				; msgbox, %tip% `n(%A_LineFile%~%A_LineNumber%)
 				closeInSeconds := 5
 				ToolTip5sec( tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
+
 				feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip, 1,1, closeInSeconds )
 			}
 			if(!actionList)
@@ -608,7 +685,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
 		if(!g_isListBoxDisabled)
             DestroyListBox()
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(0 && InStr(A_ComputerName,"SL5"))
             ToolTip9sec( "DestroyListBox() `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
             ; ToolTip9sec( "CloseListBox `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		; ParseWords := addListOpenAction_ifNotAlreadyInTheList(ParseWords,actionList)
@@ -662,10 +739,30 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 			if(0 && InStr(A_ComputerName,"SL5") )
 				feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "Query(UPDATE): " UPDATE )
 			try{
-				g_actionListDB.Query(UPDATE)
+				;g_actionListDB.Query(UPDATE)
+
+            if(!doUseNewMethodStartOfImplementing22march2019)
+                g_actionListDB.Query(UPDATE)
+            else{
+                if(!DB.Exec(UPDATE)){
+                    if(!DB.HasKey("SQL")){
+                        MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    }
+                    clipboard := UPDATE
+                   MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+                }
+            }
+
+
 			} catch e{
 				tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-				sqlLastError := SQLite_LastError()
+
+									; sqlLastError := SQLite_LastError()
+                        			if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                                        sqlLastError := %oFunc%()
+                                    else
+                                        toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
 				tip .= "`n sqlLastError=" sqlLastError "`n sql=" UPDATE " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 				lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
 				tooltip, `% tip

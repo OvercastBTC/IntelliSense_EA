@@ -327,7 +327,8 @@ ProcessKey(InputChar,EndKey) {
 		CloseListBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
 		Return
 	}
-	SetTimer, RecomputeMatchesTimer, -1
+	; SetTimer, RecomputeMatchesTimer, -1
+	SetTimer, RecomputeMatchesTimer, 5000
 }
 ;\____ ProcessKey __ 181027194958 __ 27.10.2018 19:49:58 __/
 
@@ -2154,7 +2155,7 @@ doReloadIfScriptDontMoveThisLine(sec := 5){
 				run,log\%A_LineFile%.log.txt
 			}
         ;if(1 && InStr(A_ComputerName,"SL5") )
-            ;msgbox,,reload (%A_LineNumber%), % "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",,1
+            ;MsgBox,16,reload (%A_LineNumber%), % "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",,1
             ; ^--- goood for debugging maybe
 			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 			Reload  ; [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47

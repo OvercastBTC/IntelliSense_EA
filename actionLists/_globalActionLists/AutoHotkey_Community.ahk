@@ -10,6 +10,14 @@
 ; PRIVATE_AutoHotkey_Community.inc.ahk
 ; AHK-Studio|r|[url=https://github.com/maestrith/AHK-Studio]AHK-Studio[/url]
 
+sqlite scripts|r|
+discussions here:
+https://www.autohotkey.com/boards/viewtopic.php?f=76&t=58899
+Class_SQLiteDB is a AHK SQLite API Wrapper:
+https://www.autohotkey.com/boards/viewtopic.php?p=7639
+https://github.com/AHK-just-me/Class_SQLiteDB
+SQLite_L.ahk is a Wrapper functions for the SQLite.dll to work with SQLite DBs.
+
 
 ___your library open|rr||ahk|openInEditor,AutoHotkey_Community.ahk
 ; if this german au is readable your UTF8 is probalby correct: ä
@@ -36,7 +44,8 @@ AhkSpy from serzh82saratov|r|https://github.com/serzh82saratov/AhkSpy
 ; folowing works
 ;codeSpoilerIncDyn_externExe|rr||code_AutoHotkey_Community|#incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk
 
-; folowing works
+; code_AutoHotkey_Community default (see your confgi) is 19-03-26_01-36: 
+; "\actionLists\_globalActionLists\incDynAhk\AutoHotkey_Community\in_commandLine_send_modified_clipboard.ahk
 externExeCode clipboard2Community|rr||code_AutoHotkey_Community|
  
 ; folowing works
@@ -140,8 +149,11 @@ send, ^v
 
 stop|r|stop
 
-url|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
+url|rr|[url=]title[/url]|ahk|
+send,{left 12}{text}%clipboard% 
+send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
 
+link|rr|[url=]title[/url]|ahk|send,{left 12}{text}%clipboard% ``n send,{CtrlDown}{ShiftDown}{Left}{ShiftUp}{CtrlUp}
 gi-everywhere Command line arg to Start with specific wordList
 gi-everywhere keyboard hotkey to quickly switch word lists = ^!+t|r|[url=https://github.com/ManiacDC/gi-everywhere/issues/32]gi-everywhere keyboard hotkey to quickly switch word lists = ^!+t[/url]
 

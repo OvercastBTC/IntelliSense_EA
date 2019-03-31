@@ -8,12 +8,13 @@ getActionListNEW173129simplify( actionListNEW, doCutOffExtension := true ) { ; ,
 		actionListNEW := RegExReplace( actionListNEW, "(SciTE4AutoHotkey|PhpStorm).+" , "") ; cut away ...
 	if(doCutOffExtension)
 	    actionListNEW := RegExReplace( actionListNEW, "\.(ahk|txt|htm|pdf).+" , "")  ; cut away ...
+
 	actionListNEW := RegExReplace( actionListNEW, "i)[^\w\d_-]+" , "_")  ; underscore instead some special chars
 	actionListNEW := RegExReplace( actionListNEW, "[_-]{2,}" , "_") ; to many undersocre... use onle one
 
   ; are limited to 255 characters, and the total path length is limited to approximately 32,000 characters. However, you should generally try to limit path lengths to below 260 characters
   ; It's 257 characters. To be precise: NTFS itself does impose a maximum filename-length of several thousand characters (around 30'000 something). However, Windows imposes a 260 maximum length for the Path+Filename. The drive+folder takes up at least 3 characters, so you end up with 257.
-	actionListNEW := subStr( actionListNEW ,1, 99)
+	actionListNEW := subStr( actionListNEW ,1, 150)
   ; http://stackoverflow.com/questions/265769/maximum-filename-length-in-ntfs-windows-xp-and-windows-vista
 
 	return actionListNEW

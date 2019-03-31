@@ -26,9 +26,19 @@ thisLine := A_LineNumber
 #Include *i %A_ScriptDir%\..\actionLists\create_al_Address-result_plausibility_check.inc.ahk ; al_result_plausibility_check(actionListNEW)
 #Include *i %A_ScriptDir%\create_al_Address-result_plausibility_check.inc.ahk ; al_result_plausibility_check(actionListNEW)
 
+#Include *i %A_ScriptDir%\..\RegWrite181031.ahk
+#Include *i %A_ScriptDir%\RegWrite181031.ahk
 
-RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList, % actionListNEW ;  , ValueName, Value
-RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionListNEW, % actionListNEW ;  , ValueName, Value
+; RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList, % actionListNEW ;  , ValueName, Value
+; RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionListNEW, % actionListNEW ;  , ValueName, Value
+
+if(!setRegistry_actionList( actionListNEW, "actionList" )){   ; RegWrite , RegSave , Registry
+    ; problem: actionListNEW very wrong format
+}
+if(!setRegistry_actionList( actionListNEW, "actionListNEW" )){   ; RegWrite , RegSave , Registry
+    ; problem: actionListNEW very wrong format
+}
+
 
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, activeTitle_forDebugging, % activeTitle ;  , ValueName, Value <=== for de
 

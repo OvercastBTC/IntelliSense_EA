@@ -102,7 +102,7 @@ InitializeListBox(){
        ; msgbox,% vg_ListBox%A_Index% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" ; <== Oops . slwas empty ????? 18-12-31_12-53
        Gui, ListBoxGui: Add, ListBox, vg_ListBox%A_Index% R%A_Index% X0 Y0 T%g_ListBoxFontSize% T32 hwndg_ListBoxHwnd%A_Index%
     } catch e{
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(0 && InStr(A_ComputerName,"SL5")) ; happens few seconds from script start. only the very first time. 19-03-18_00-53
             toolTip9sec( "Error => ignore it 18-11-12_22-28 `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",50,50 )
     }
 
@@ -211,7 +211,8 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
       if(g_doListBoxFollowMouse){
             tip=STOP follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
-            ToolTip1sec(tip)
+            if(0 && InStr(A_ComputerName,"SL5"))
+                ToolTip1sec(tip)
             g_doListBoxFollowMouse := false ; toggle it. _
             SetTimer,doListBoxFollowMouse,off
             Hotkey, WheelUp, off
@@ -221,6 +222,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxY, %g_ListBoxY%
       }else{
             tip=START follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
+            ToolTip,,,,,2 ; 19-03-22_09-00: delets: ToolTipSec(tip,ListBoxPosX, tooltipPosY, g_config["listBoxGui"]["tipps"]["durationMilliseconds"] , 2 )
             ToolTip1sec(tip)
             g_doListBoxFollowMouse := true ; toggle it.
             ; SetTimer,doListBoxFollowMouse,200

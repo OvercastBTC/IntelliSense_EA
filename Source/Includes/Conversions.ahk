@@ -107,18 +107,45 @@ RebuildDatabase(sql_template_dir){
 	g_actionListDB.BeginTransaction()
 
     try{
-        g_actionListDB.Query("DROP INDEX WordIndex;")
-        g_actionListDB.Query("DROP TABLE IF EXISTS  actionLists;")
-        g_actionListDB.Query("DROP TABLE IF EXISTS  performance;")
-        g_actionListDB.Query("DROP TABLE IF EXISTS  Words;")
-        g_actionListDB.Query("DROP TABLE IF EXISTS  cache;")
-        g_actionListDB.Query("DROP TABLE IF EXISTS  LastState;")
-        g_actionListDB.EndTransaction()
+            if(doUseNewMethodStartOfImplementing22march2019){
+                if(!DB.HasKey("SQL"))
+                    MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
+            	DB.Exec("BEGIN TRANSACTION;")
+                allDone := false
+                if(DB.Exec("DROP INDEX WordIndex;"))
+                if(DB.Exec("DROP TABLE IF EXISTS  actionLists;"))
+                if(DB.Exec("DROP TABLE IF EXISTS  performance;"))
+                if(DB.Exec("DROP TABLE IF EXISTS  Words;"))
+                if(DB.Exec("DROP TABLE IF EXISTS  cache;"))
+                if(DB.Exec("DROP TABLE IF EXISTS  LastState;"))
+                    allDone := true
+                ; g_actionListDB.EndTransaction()
+            	if(allDone)
+            	    DB.Exec("COMMIT TRANSACTION;")
+                else{
+                    DB.Exec("ROLLBACK TRANSACTION;")
+                    return false
+                }
+            }else{
+                g_actionListDB.Query("DROP INDEX WordIndex;")
+                g_actionListDB.Query("DROP TABLE IF EXISTS  actionLists;")
+                g_actionListDB.Query("DROP TABLE IF EXISTS  performance;")
+                g_actionListDB.Query("DROP TABLE IF EXISTS  Words;")
+                g_actionListDB.Query("DROP TABLE IF EXISTS  cache;")
+                g_actionListDB.Query("DROP TABLE IF EXISTS  LastState;")
+                g_actionListDB.EndTransaction()
+            }
 
 	    } catch e{
             tip := "Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-            sqlLastError := SQLite_LastError()
+
+			; sqlLastError := SQLite_LastError()
+			if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                sqlLastError := %oFunc%()
+            else
+                toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
             tip .= "`n sqlLastError=" sqlLastError
             lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
             tooltip, `% tip
@@ -129,23 +156,36 @@ RebuildDatabase(sql_template_dir){
 
 	;sleep,1000
 	;pause ; tool tool __ tool to toltip olt
-	g_actionListDB.BeginTransaction()
+    if(doUseNewMethodStartOfImplementing22march2019){
+        if(!DB.HasKey("SQL"))
+            MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
-	g_actionListDB.Query("DROP INDEX WordIndex;")
-	g_actionListDB.Query("DROP TABLE LastState;")
-	g_actionListDB.Query("DROP TABLE actionLists;")
-	g_actionListDB.Query("DROP TABLE temp;")
+        allDone := false
+        if(DB.Exec("BEGIN TRANSACTION;"))
+        if(DB.Exec("DROP INDEX WordIndex;"))
+        if(DB.Exec("DROP TABLE LastState;"))
+        if(DB.Exec("DROP TABLE actionLists;"))
+        if(DB.Exec("DROP TABLE temp;"))
+            allDone := true
+        if(allDone)
+            DB.Exec("COMMIT TRANSACTION;")
+        else{
+            DB.Exec("ROLLBACK TRANSACTION;")
+            return false
+        }
+    }else{
+        g_actionListDB.BeginTransaction()
+        g_actionListDB.Query("DROP INDEX WordIndex;")
+        g_actionListDB.Query("DROP TABLE LastState;")
+        g_actionListDB.Query("DROP TABLE actionLists;")
+        g_actionListDB.Query("DROP TABLE temp;")
+    }
 
 	CreateWordsTable()
-
 	CreateWordIndex()
-
 	CreateLastStateTable()
-
 	CREATE_TABLE_actionLists()
-
     CreateCacheTable()
-
 	Create_PerformanceMeasurementOf_Functions_Table()
 	
 	SetDbVersion()
@@ -158,7 +198,15 @@ RebuildDatabase(sql_template_dir){
     if(!Sql_Temp.valueObj)
         msgbox,% " ERROR !Sql_Temp.valueObj `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
-	g_actionListDB.EndTransaction()
+    if(doUseNewMethodStartOfImplementing22march2019){
+        if(!DB.HasKey("SQL")){
+            DB.Exec("ROLLBACK TRANSACTION;")
+            MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+            return false
+        }
+        DB.Exec("COMMIT TRANSACTION;")
+    }else
+    	g_actionListDB.EndTransaction()
 }
 ;\____ RebuildDatabase __ 181123064751 __ 23.11.2018 06:47:51 __/
 
@@ -291,6 +339,8 @@ RunConversionSeven(){
 	g_actionListDB.EndTransaction()
 }
 
+
+;/¯¯¯¯ CreateLastStateTable ¯¯ 190322053009 ¯¯ 22.03.2019 05:30:09 ¯¯\
 CreateLastStateTable(){
 	global g_actionListDB
 
@@ -302,10 +352,20 @@ CreateLastStateTable(){
 		ExitApp
 	}
 }
+;\____ CreateLastStateTable __ 190322053013 __ 22.03.2019 05:30:13 __/
 
 
 
+
+;/¯¯¯¯ INSERT_function_call_time_millis_since_midnight ¯¯ 190322052959 ¯¯ 22.03.2019 05:29:59 ¯¯\
 INSERT_function_call_time_millis_since_midnight( aLineFile , aThisFunc , aLineNumber){
+
+if(doUseNewMethodStartOfImplementing22march2019 && InStr(A_ComputerName,"SL5")){
+    ; nix
+    ; msgbox,doUseNewMethodStartOfImplementing22march2019 19-03-24_04-43
+}else
+    return
+
 
     ; select ROWID,p.small_LineFile,p.A_ThisFunc,p.actionList,p.actionListsize,p.millisec_dif_to_next_function_call from performance p order by p.millisec_dif_to_next_function_call desc limit 3;
 	global g_actionListDB
@@ -325,6 +385,29 @@ sizeHere := (actionListsize)? actionListsize: 0
         sql := "select seq from sqlite_sequence where name=""performance"""
         sql := "select ROWID from performance order by ROWID desc limit 1"
         sql := "select ROWID, millis_since_midnight from performance order by ROWID desc limit 1"
+
+        if(doUseNewMethodStartOfImplementing22march2019){
+            IF !DB.Exec(sql){
+                 if(!DB.HasKey("SQL")){
+                    tip := "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    toolTip2sec( tip  )
+                    ;run,tools\DebugVars\DebugVars.ahk
+                    MsgBox, 16, % tip , % tip
+                    return false
+                    MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                }
+                MsgBox, 16, % "ups`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+               ; MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+                sqlLastError := DB.ErrorMsg
+                if( instr(sqlLastError, "no such table") ){
+                    Create_PerformanceMeasurementOf_Functions_Table()
+                    MsgBox,% ErrMsg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+                   return
+                }
+            }
+        }
+    else{
 		IF not g_actionListDB.Query(sql)
 		{
 			ErrMsg := g_actionListDB.ErrMsg() . "`n" . sql . "`n"
@@ -333,31 +416,61 @@ sizeHere := (actionListsize)? actionListsize: 0
             ;tool tip msgbox too too too mmgw() msg t MsgBox,% msg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
             ; tooltip
 
-            sqlLastError := SQLite_LastError()
+            ; sqlLastError := SQLite_LastError()
+            if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+              sqlLastError := %oFunc%()
+            else
+              toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
             if( instr(sqlLastError, "no such table") ){
     			Create_PerformanceMeasurementOf_Functions_Table()
     			MsgBox,% ErrMsg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
                return
             }
 
-
 			return
 			; clipboard := sql
 			; msgbox Cannot select performance Table - fatal error: %ErrCode% - %ErrMsg%
 			, ExitApp
 		}
-        res := g_actionListDB.Query(sql)
-        For each, id in res.Rows
+    }
+
+if(false){
+        if(doUseNewMethodStartOfImplementing22march2019){
+            IF !DB.Exec(sql){
+             if(!DB.HasKey("SQL")){
+                toolTip2sec( "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                ; return false
+                MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                ;MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+            }
+            MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+            }
+
+            If !DB.GetTable(sql, Matches)
+                if(!DB.HasKey("SQL")){
+                    tip := "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    toolTip2sec( tip  )
+                    return false
+                    MsgBox, 16, % tip , % tip
+                    ;MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+                }
+
+        }else{
+            res := g_actionListDB.Query(sql)
+            Matches := res.Rows
+        }
+        For each, id in Matches
         {
             last_insert_rowid := id[1]
             last_millis_since_midnight := id[2]
-            ; msgbox,% last_millis_since_midnight  " = last_millis_since_midnight(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            msgbox,% last_millis_since_midnight  " = last_millis_since_midnight(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
         }
         ; msgbox,% res  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+}
 
-                sql := "select ROWID, millis_since_midnight from performance order by ROWID desc limit 1"
+        sql := "select ROWID, millis_since_midnight from performance order by ROWID desc limit 1"
 
-;
 millis_since_midnight := JEE_millis_since_midnight(vOpt:="")
 if(false && last_millis_since_midnight && millis_since_midnight){
     if(millis_since_midnight < last_millis_since_midnight){
@@ -406,23 +519,39 @@ temp =
 , %millis_since_midnight%
 )
 sql .= temp ")"
-    IF not g_actionListDB.Query(sql)
-    {
-        ErrMsg := g_actionListDB.ErrMsg() . "`n" . sql . "`n"
-        ErrCode := g_actionListDB.ErrCode()
-        ; clipboard := sql
-        msg := "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-        ; msgbox, % "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-        ToolTip4sec(msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
-        return
-        ;ExitApp
+    if(doUseNewMethodStartOfImplementing22march2019){
+                IF !DB.Exec(sql){
+                    tip := "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                    toolTip2sec( tip  )
+                    return false
+                    MsgBox, 16, % tip , % tip
+                }
+                    ;MsgBox, 16, % "ups `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    }
+    else{
+        IF not g_actionListDB.Query(sql)
+        {
+            ErrMsg := g_actionListDB.ErrMsg() . "`n" . sql . "`n"
+            ErrCode := g_actionListDB.ErrCode()
+            ; clipboard := sql
+            msg := "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            ; msgbox, % "Cannot insert performance Table - fatal error: " ErrCode " - " ErrMsg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+            ToolTip4sec(msg " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
+            return
+            ;ExitApp
+        }
     }
     ;clipboard := sql
     ;msgbox, % sql  "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 }
+;\____ INSERT_function_call_time_millis_since_midnight __ 190322053039 __ 22.03.2019 05:30:39 __/
 
 
 
+
+
+
+;/¯¯¯¯ Create_PerformanceMeasurementOf_Functions_Table ¯¯ 190322053049 ¯¯ 22.03.2019 05:30:49 ¯¯\
 ; sqlite  auto-incrementing :
 ; You get one for free, called ROWID. This is in every SQLite table whether you ask for it or not.
 ; If you include a column of type INTEGER PRIMARY KEY, that column points at (is an alias for) the automatic ROWID column.
@@ -458,6 +587,8 @@ small_LineFile TEXT NOT NULL
 		ExitApp
 	}
 } ; endOfFunction
+;\____ Create_PerformanceMeasurementOf_Functions_Table __ 190322053059 __ 22.03.2019 05:30:59 __/
+
 
 
 
@@ -467,7 +598,7 @@ CreateWordsTable(WordsTableName:="Words"){
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"lin1 at CREATE_TABLE_wordS")
 		global g_actionListDB
 		global g_actionListDBfileAdress
-		if(!g_actionListDB)
+		if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB)
 			g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
 ;
 		sql =
@@ -522,7 +653,7 @@ actionListID INTEGER NOT NULL
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"lin1 at CREATE_TABLE_actionLists")
 		global g_actionListDB
 		global g_actionListDBfileAdress
-		if(!g_actionListDB)
+		if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB)
 			g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
 		
 		sql := "CREATE TABLE IF NOT EXISTS actionLists (id INTEGER PRIMARY KEY AUTOINCREMENT, actionList TEXT, actionListmodified DATETIME, actionListsize INTEGER, lastusedByUser_since_midnight INTEGER)"

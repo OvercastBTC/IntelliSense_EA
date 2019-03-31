@@ -187,7 +187,13 @@ class DvPropertyNode extends DvPropertyParentNode
         }
         if(doUseThisVar){
             ;fileContent := this.name " := """ this.GetValueString() """`n"
-            fileContent := this.name " := """ this._value """`n"
+            if(IsObject(this._value)){
+                ; it not working. never happens ; todo: 19-03-23_17-20 https://github.com/sl5net/rexEx_DebugVars/blob/master/DebugVarsGui.ahk#L192
+                ObjSToStrTrim(s:="",this) valStr
+                ; valStr := get_obj_ToString(valStr) s
+            } else
+                valStr := this._value
+            fileContent := this.name " := """ valStr """`n"
             ; logFileAddress: "var.log.txt", alwaysontop: "true"  } }
             ; g_config.logFileAddress.["var"]["ignoreRegEx"]
             fileappend, % fileContent, % A_ScriptDir "\" g_config.logFileAddress, UTF-8
@@ -475,3 +481,52 @@ DvLoadXml(ByRef data) {
     o.loadXml(data)
     return o
 }
+
+
+;/¯¯¯¯ ObjToStrTrim ¯¯ 181111193648 ¯¯ 11.11.2018 19:36:48 ¯¯\
+ObjToStrTrim(o, showEmpty := false){
+	ret := ((s:=Trim(ObjToStr(o, showEmpty)," `t`r`n")) ? ">" s "<`n" : "")
+    ; MsgBox,16,% ret,,1
+	return ret
+}
+;\____ ObjToStrTrim __ 181111193651 __ 11.11.2018 19:36:51 __/
+
+
+
+;/¯¯¯¯ ObjToStr ¯¯ 181111193656 ¯¯ 11.11.2018 19:36:56 ¯¯\
+; https://autohotkey.com/board/topic/66496-object-fromto-file-or-string-data-structures/
+ObjToStr(Obj,  showEmpty := false, Rows="`n", Equal=" = ", Indent="`t", Depth=7, CurIndent="") {	; converts object to string
+	For k,v in Obj
+	{
+		if(!showEmpty && !v)
+			continue
+		ToReturn .= CurIndent (IsObject(v) && depth>1 ? Rows ObjToStr(v
+		,  showEmpty ,Rows, Equal, Indent, Depth-1, CurIndent Indent) : Equal ? "   " k "= """ v """" : "") Rows
+	}
+	return RTrim(ToReturn, Rows)
+}	; http://www.autohotkey.com/forum/post-426623.html#426623
+;\____ ObjToStr __ 181111193702 __ 11.11.2018 19:37:02 __/
+
+;/¯¯¯¯ ObjSToStrTrim ¯¯ 181113093456 ¯¯ 13.11.2018 09:34:56 ¯¯\
+ObjSToStrTrim(ByRef str, o*) {
+	; This is interesting for debugging. control to see is actually happening. 18-11-12_18-16
+	; fileappend, % "#/¯ contDoObj(" A_LineNumber ")=`n" ObjToStrTrim(contDoObj) , % devTestTxtFile, UTF-8
+	; For each, param in o
+	For nr, param  in o
+	{
+		strNew := ObjToStrTrim(param)
+		if(strNew)
+			str .= nr ":" strNew
+	}
+	str .= "\_________________________________/`n"
+}
+;\____ ObjSToStrTrim __ 181113093505 __ 13.11.2018 09:35:05 __/
+get_obj_ToString(obj){
+   s= (line:%A_LineNumber%) `n `n
+   For key,value in obj
+      s .= key . " = '" . value . "' `n "
+   s = %s% `n `n
+   return s
+}
+
+

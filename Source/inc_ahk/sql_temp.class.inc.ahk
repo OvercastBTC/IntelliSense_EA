@@ -61,20 +61,56 @@ class Sql_Temp { ; search help: sqltemp tempsql
 
         global g_actionListDB
 
-        if(!g_actionListDB)
+        if(!doUseNewMethodStartOfImplementing22march2019 && !g_actionListDB)
             g_actionListDB := DBA.DataBaseFactory.OpenDataBase("SQLite", g_actionListDBfileAdress ) ;
          escaped_string := RegExReplace(jsonStr, "'", "''")
         sql := "REPLACE INTO temp (fileModiTime, key, value) VALUES ('" fileModiTime "', '" fileNamePrefix "','" escaped_string "');"
         ; clipboard := sql
 
+        ; msgbox,% doUseNewMethodStartOfImplementing22march2019
+        /*
+        SELECT id, lastUsedByUser_since_midnight FROM actionLists WHERE
+            actionList = '..\actionLists\Notepad\new_1_Notepad_Administrator.ahk._Generated.ahk' ;
+
+
+
+
+            SELECT id, lastUsedByUser_since_midnight FROM actionLists WHERE
+                actionList = '..\actionLists\Notepad\new_1_Notepad_Administrator.ahk._Generated.ahk' ;
+        */
         try{
-            g_actionListDB.Query(sql)
+            if(!doUseNewMethodStartOfImplementing22march2019)
+                g_actionListDB.Query(sql)
+            else{
+                If !DB.Exec(sql){
+                    if(!DB.HasKey("SQL")){
+                        toolTip2sec( "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                        return false
+                        MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                        ;MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+                    }
+                    tip := ObjSToStrTrim(s:="",DB) s
+                    ;if(DB.ErrorCode){
+                        tip .= sql "`n`nDB.HasKey(""SQL"")=" DB.HasKey("SQL") "`n" " SQLite Error: " "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+                        clipboard := tip
+                        MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+                    ;}
+                    clipboard := sql
+                   MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+               }
+            }
         } catch e{
             tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-            sqlLastError := SQLite_LastError()
+            if(!doUseNewMethodStartOfImplementing22march2019)
+                if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                    sqlLastError := %oFunc%()
+                else
+                    toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
             tip .= "`n sqlLastError=" sqlLastError "`n " sql " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
             lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
             tooltip, `% tip
+
             feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip )
             ; Clipboard := tip
             ; msgbox, % tip
@@ -82,8 +118,6 @@ class Sql_Temp { ; search help: sqltemp tempsql
    }
     ;\____ file2sqLite __ 181123030130 __ 23.11.2018 03:01:30 __/
 
-
-; toot
 
 
 
@@ -105,10 +139,28 @@ class Sql_Temp { ; search help: sqltemp tempsql
         sql := "select value from temp where key = '" key "';"
         ; clipboard := sql
         try{
-            Matches  := g_actionListDB.Query(sql)
+            if(!doUseNewMethodStartOfImplementing22march2019)
+                Matches  := g_actionListDB.Query(sql)
+            else{
+                    If !DB.GetTable(sql, Matches){
+                        if(!DB.HasKey("SQL")){
+                            toolTip2sec( "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+                            MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+                            ;MsgBox, 16, % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% tip "`n" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+                        }
+                        clipboard := sql
+                       MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
+                    }
+           }
+
         } catch e{
             tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-            sqlLastError := SQLite_LastError()
+            ; sqlLastError := SQLite_LastError()
+            if oFunc := Func("SQLite_LastError") ; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=63186&p=270178#p270178
+                sqlLastError := %oFunc%()
+            else
+                toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+
             tip .= "`n sqlLastError=" sqlLastError "`n " sql " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
             lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,tip)
             tooltip, `% tip

@@ -93,14 +93,12 @@ RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, lastImportant_LineFileS
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, CreatedDir, % d1 ; RegWrite , RegSave , Registry
 ;\____ try_faster_reload_if_created __ 181025152609 __ 25.10.2018 15:26:09 __/
 
-; msgbox,,% " Created  (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",1
+; MsgBox,16,% " Created  (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")",1
 
 Speak("CreatedDir with d1")
 
-run,Typing_Aid_everywhere_multi_clone.ahk
+; run,Typing_Aid_everywhere_multi_clone.ahk
 ; run,gi-everywhere.ahk
-
-
 
 FileAppend,"temporary empty file. if exist next view dont use the super _global.ahk", %d1%\_create_own_project.flag
 IfNotExist,%d1%\_global.ahk
