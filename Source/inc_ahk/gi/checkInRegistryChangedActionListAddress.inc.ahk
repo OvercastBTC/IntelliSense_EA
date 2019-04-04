@@ -586,6 +586,8 @@ if(g_config.infoBox[1]["showName"]){
     tip .= "SQLs:>" g_config.sql.template.maxNnumberUsedTemplates "<`n"
     tip .= "al:>" substr(actionList,16) "<`n"
     tip .= "t:>" g_Active_Title "<" ; some title use spaces inside ; no space to prevent lineBreaks
+    tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
+    ; tipLast := str_repeat(".", 5) " " A_DDD A_DD "." A_MM " " a_hour ":" a_min ":" a_sec str_repeat(".", 150)
     IfWinExist,% needle
     {
     	winGetPos,x,y,,,% needle
@@ -593,11 +595,11 @@ if(g_config.infoBox[1]["showName"]){
     	x += 80
     	y += 15
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
-        tip .= str_repeat(".", 150)
+        tip .= tipLast
         toolTipGui(tip, x, y, ,title2,"Purple")
     } else{
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
-        tip .= str_repeat(".", 150)
+        tip .= tipLast
         toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
     }
 }
