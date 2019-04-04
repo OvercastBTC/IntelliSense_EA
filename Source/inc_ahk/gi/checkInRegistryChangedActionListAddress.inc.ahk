@@ -584,7 +584,7 @@ if(g_config.infoBox[1]["showName"]){
     needle := title " ahk_class AutoHotkeyGUI" ; mouseWindowTitle=0x7d1d2c  ;
     tip := ""
     tip .= "SQLs:>" g_config.sql.template.maxNnumberUsedTemplates "<`n"
-    tip .= "al:>" substr(actionList,16) "<`n"
+    tip .= "al:>" substr(actionList,16) "< `n"
     tip .= "t:>" g_Active_Title "<" ; some title use spaces inside ; no space to prevent lineBreaks
     tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
     ; tipLast := str_repeat(".", 5) " " A_DDD A_DD "." A_MM " " a_hour ":" a_min ":" a_sec str_repeat(".", 150)
@@ -596,6 +596,7 @@ if(g_config.infoBox[1]["showName"]){
     	y += 15
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
         tip .= tipLast
+        tip := RegExReplace(tip, "[\n\r]+","`n")
         toolTipGui(tip, x, y, ,title2,"Purple")
     } else{
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
