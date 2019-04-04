@@ -14,23 +14,28 @@ g_actionListDBfileAdress := (InStr(A_ComputerName,"540P-SL5NET"))
 
 g_min_searchWord_length := 0
 
-g_config.listBoxGui := { 
-	tipps: { 
-		show: true,
-		durationMilliseconds: 3500
-	}
-}
+; g_config.listBoxGui := { 
+; 	tipps: { 
+; 		show: true,
+; 		durationMilliseconds: 3500
+; 	}
+; }
 
 
 g_config.ScriptDir := A_ScriptDir
 g_config.actionListDirBase := "..\actionLists" ; down from source upt to actionLists
-; if g_config.actionList.showName false or "" no extra info about actionListFileAddress is will showed. 
 g_config.actionList := { 
 	tipps: { 
-		showName: "¯|",
 		durationMilliseconds: 3500
 	}
 }
+g_config.infoBox := []
+; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed.
+g_config.infoBox[1] := { 
+	showName: "Â¯|"
+}
+
+
 
 ; it takes the first existing editor, from the follwoing list.
 ; very first time it uses the smallest, most simpliest editor (notepad.exe not to be confused with notepad++.exe)
@@ -104,7 +109,7 @@ g_config.FuzzySearch := {
 ; default for maxNnumberUsedTemplates is usually 7 (files select0 ... select6). no results if you use 0
 g_config.sql.template := {
 	dir: A_ScriptDir "\sql\template",
-	maxNnumberUsedTemplates : 1
+	maxNnumberUsedTemplates : 2
 }
 
 ; you do not need these runners. these are just examples:

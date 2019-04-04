@@ -573,7 +573,9 @@ InactivateAll_Suspend_ListBox_WinHook() ; addet 24.10.2018 14:16
 ; To Tooltip Tooltip
 
 ; ..\actionLists\
-if(g_config.actionList.tipps.showName){
+if(g_config.infoBox[1]["showName"]){
+
+; Tooo too
 
     ; DetectHiddenWindows,On
     ; settitlematchmode,1
@@ -583,11 +585,15 @@ if(g_config.actionList.tipps.showName){
     {
     	winGetPos,x,y,,,% needle
     	; winmove,% needle,% x, % y
-        toolTipGui(substr(actionList,16) "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x, y, ,title,"Purple")
-    } else
-        toolTipGui(substr(actionList,16) "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x:=-strlen(actionList)*5, y:=0, g_config.actionList.tipps.showName ,title,"Purple")
+        toolTipGui(substr(actionList,16) "`n" g_Active_Title "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x, y, ,title,"Yellow")
+    } else{
+        tip := substr(actionList,16) "`n" g_Active_Title
+        tip .= "`n" g_config.sql.template.maxNnumberUsedTemplates " =maxNnumberUsedTemplates "
+        toolTipGui(tip "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x:=-strlen(actionList)*5, y:=0, g_config.infoBox[1]["showName"] ,title,"Purple")
+    }
 }
 
+; Tooltip Tooltip
 
 if(0 && InStr(A_ComputerName,"SL5")) ; prob no error. whey not
 	Speak("Now Read actionList: " actionList, "PROD" )  ;  (DEV, TEST, STAGING, PROD),

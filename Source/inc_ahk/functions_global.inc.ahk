@@ -67,9 +67,9 @@ if(... := update_configMinify_incAhkFile()){
         toOldMilliSec := modifiedTime - modifiedTime_configMinify
         if(modifiedTime
         && modifiedTime_configMinify
-        && toOldMilliSec > 0  ) ; + 900 becouse humans are not so fast 19-01-14_13-56
+        && toOldMilliSec > 0  ){ ; + 900 becouse humans are not so fast 19-01-14_13-56
             doUpdate := true
-         else{
+         }else{
             FileGetTime, creationTime_configMinify, %modifiedTime_configMinify%, C  ; Retrieves the creation time.
             if( true
                 && toOldMilliSec < -2000
@@ -96,6 +96,27 @@ if(... := update_configMinify_incAhkFile()){
     ToolTip9sec( msg, 1, 200, 9 )
 
 	FileRead, configContent , % configIncAhkAddress
+
+    s := "ï¿½"
+    s2 := "�|"
+    r := "¯"
+    if(s == r){ ; that hopfully not happens
+    	msg = ERROR fileFormat is corrupted ! You need a programmer or install it new (%scriptName%~%ln%) >`n (%A_LineFile%~%A_LineNumber%)
+    	msgbox,%msg% (%scriptName%~%ln%) >`n (%A_LineFile%~%A_LineNumber%)
+        feedbackMsgBox( msg, msg )
+    	exitApp
+    }
+    if( instr( configContent, s ) || instr( configContent, s2 )	){
+        configContent := StrReplace(configContent, s , r) ; todo: dirty bugFix . of some reasons the fileFormat of config is wrong 19-04-04_10-01
+        configContent := StrReplace(configContent, s2 , r) ; todo: dirty bugFix . of some reasons the fileFormat of config is wrong 19-04-04_10-01
+        ; thats not realy a prerfomance problem
+        tempFileAddress := A_ScriptDir "\" A_TickCount ".temp." A_ThisFunc "_" A_LineNumber ".txt"
+        FileAppend, % configContent, % tempFileAddress
+        FileCopy,% tempFileAddress, % configIncAhkAddress, 1
+        Sleep,200
+        FileDelete,% tempFileAddress
+    }
+
 	; configContentminify := ""
 	; configContentminify := "configContent =`n(`n" ; configContentminify .= "`n)`n"
 	; ((?!\bg_config\b).)*$

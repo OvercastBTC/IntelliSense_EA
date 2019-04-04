@@ -151,7 +151,7 @@ global g_actionList_UsedByUser_since_midnight := {} ; [g_actionListID]
 g_config := {}
 #Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahk ; update_configMinify_incAhkFile()
 
-if(g_config.actionList.tipps.showName){
+if(g_config.infoBox[1]["showName"]){
     ; use a virtal line and then all your toolTipGui are moveble by mousedrag and drop
     toolTipGui("^_^", x:=0, y:=10, "v)_" ,A_LineNumber,"Purple")
 }
@@ -262,7 +262,8 @@ msgbox,% fileName ": `n" sumStr
     global DB
     if(doUseNewMethodStartOfImplementing22march2019){
         global DB := new SQLiteDB
-        ;run,tools\DebugVars\DebugVars.ahk
+
+        ;msgbox,% ObjToStrTrim(DB) "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
 ; clipboard  := "DB.HasKey(""SQL"")=" DB.HasKey("SQL") "`n" get_obj_ToString(DB)
 ; MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% clipboard
@@ -549,8 +550,16 @@ if(1 && InStr(A_ComputerName,"SL5"))
 ; tool t tool  too too
 
 
+if(0){
+feedbackMsgBox(RegExReplace(A_LineFile,".*\\") ">" A_LineNumber, " oldKeywords=" oldKeywords "`n`n" ObjSToStrTrim(DBstr:="", DB) DBstr )
+run,tools\DebugVars\DebugVars.ahk
+        pause
+}
+
+
 
 #IfWinActive,
+
 
 
 

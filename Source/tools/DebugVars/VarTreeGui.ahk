@@ -10,6 +10,7 @@ if( instr(A_LineFile, A_ScriptName ))
 SetTimer(Func("WinMoveThis"),400)
 ; SetTimer(Func("WinMoveThis"),800)
 
+;/¯¯¯¯ WinMoveThis ¯¯ 190404105411 ¯¯ 04.04.2019 10:54:11 ¯¯\
 WinMoveThis(){
 	RegRead, x, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi\%A_ScriptName%, x
 	RegRead, y, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi\%A_ScriptName%, y
@@ -60,6 +61,7 @@ WinMoveThis(){
 	}
 
 }
+;\____ WinMoveThis __ 190404105400 __ 04.04.2019 10:54:00 __/
 
 SetTimer(timer,period){
 	if(!IsFunc(timer)&&!IsLabel(timer))

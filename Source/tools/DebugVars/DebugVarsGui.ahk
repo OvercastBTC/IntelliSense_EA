@@ -189,10 +189,24 @@ class DvPropertyNode extends DvPropertyParentNode
             ;fileContent := this.name " := """ this.GetValueString() """`n"
             if(IsObject(this._value)){
                 ; it not working. never happens ; todo: 19-03-23_17-20 https://github.com/sl5net/rexEx_DebugVars/blob/master/DebugVarsGui.ahk#L192
-                ObjSToStrTrim(s:="",this) valStr
+                ObjSToStrTrim(valStr:="",this._value) valStr
+
+if(0){
+for each, Row in this._value {
+        valStr := ""
+        if IsObject(Row)
+            loop % Options.Length() - 1
+                valStr .= (Row[Col[A_Index + 1]])
+        else
+            valStr .= Row
+}
+}
                 ; valStr := get_obj_ToString(valStr) s
-            } else
+            } else{
+                ; ObjSToStrTrim(valStr:="",this._value ) valStr
+                ; ObjSToStrTrim(valStr:="",this) valStr
                 valStr := this._value
+            }
             fileContent := this.name " := """ valStr """`n"
             ; logFileAddress: "var.log.txt", alwaysontop: "true"  } }
             ; g_config.logFileAddress.["var"]["ignoreRegEx"]

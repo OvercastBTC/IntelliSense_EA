@@ -15,7 +15,8 @@
 ; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\tools\DebugVars\ignVarNames.conf.inc.ahk
 ignVarNames := RegExReplace( trim(ignVarNames) , "m)[\n\r\t]+", "|" )
 global g_config
-g_config := { script: { ignoreRegEx: ".^", allowRegEx: "\bgi-every" }, var: { ignoreRegEx: "(" ((ignVarNames) ? ignVarNames : ".^" ) ")" , allowRegEx: "." }, logFileAddress: "var.log.txt" , alwaysontop: 1 , closeGui_soonAsPossible: 1  }
+
+g_config := { script: { ignoreRegEx: ".^", allowRegEx: "\bgi-every" }, var: { ignoreRegEx: "(" ((ignVarNames) ? ignVarNames : ".^" ) ")" , allowRegEx: "." }, logFileAddress: "var.log.txt" , alwaysontop: 1 , closeGui_soonAsPossible: false }
 alw := g_config["var"]["allowRegEx"]
 ign  := g_config["var"]["ignoreRegEx"]
 ; tooltip,% alw ign "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"

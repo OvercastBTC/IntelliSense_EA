@@ -166,7 +166,7 @@ MainLoop(){
 
 ;/¯¯¯¯ ProcessKey ¯¯ 181027194941 ¯¯ 27.10.2018 19:49:41 ¯¯\
 ProcessKey(InputChar,EndKey) {
-	global g_Active_Id
+	global g_active_Id
 	global g_Helper_Id
 	global g_IgnoreSend
 	global g_LastInput_Id
@@ -200,7 +200,7 @@ ProcessKey(InputChar,EndKey) {
 		Return
 	
    ;If we have no window activated for typing, we don't want to do anything with the typed character
-	IfEqual, g_Active_Id,
+	IfEqual, g_active_Id,
 	{
 		if (!GetIncludedActiveWindow())
 		{
@@ -219,7 +219,7 @@ ProcessKey(InputChar,EndKey) {
 	
    ;If we haven't typed anywhere, set this as the last window typed in
 	IfEqual, g_LastInput_Id,
-	g_LastInput_Id = %g_Active_Id%
+	g_LastInput_Id = %g_active_Id%
 	
 	IfNotEqual, prefs_DetectMouseClickMove, On
 	{
@@ -228,7 +228,7 @@ ProcessKey(InputChar,EndKey) {
 		
 		if ( g_OldCaretY != CaretYorMouseYfallback() ){
          ;Don't do anything if we aren't in the original window and aren't starting a new word
-			IfNotEqual, g_LastInput_Id, %g_Active_Id%
+			IfNotEqual, g_LastInput_Id, %g_active_Id%
 			Return
 			
          ; add the word if switching lines
@@ -249,7 +249,7 @@ ProcessKey(InputChar,EndKey) {
 	;if(EndKey == "Endkey:BackSpace" ) { ; || EndKey == "BackSpace"){
 	if(instr(EndKey,"Endkey:BackSpace")){
       ;Don't do anything if we aren't in the original window and aren't starting a new word
-		; IfNotEqual, g_LastInput_Id, %g_Active_Id%
+		; IfNotEqual, g_LastInput_Id, %g_active_Id%
 		; Return
 		; msgbox,% g_Word "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 		
@@ -264,7 +264,7 @@ ProcessKey(InputChar,EndKey) {
 	} else if ( ( EndKey == "Max" ) && !(InStr(g_TerminatingCharactersParsed, InputChar)) ){
       ; If active window has different window ID from the last input,
       ;learn and blank word, then assign number pressed to the word
-		IfNotEqual, g_LastInput_Id, %g_Active_Id%
+		IfNotEqual, g_LastInput_Id, %g_active_Id%
 		{
          ;AddWordToList(ByRef rootCmdTypeObj,g_Word,0)
 			ClearAllVars(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),true)
@@ -272,7 +272,7 @@ ProcessKey(InputChar,EndKey) {
 				tooltip,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber " 19-01-16_20-12)",1
 			
 			g_Word := InputChar
-			g_LastInput_Id := g_Active_Id
+			g_LastInput_Id := g_active_Id
 			Return
 		}
 		if(0 && InStr(A_ComputerName,"SL5"))
@@ -296,7 +296,7 @@ ProcessKey(InputChar,EndKey) {
 			g_Word .= InputChar
 		}
 		
-	} else IfNotEqual, g_LastInput_Id, %g_Active_Id%
+	} else IfNotEqual, g_LastInput_Id, %g_active_Id%
 	{
 		if(0 && InStr(A_ComputerName,"SL5"))
 			tooltip,% "str=" NewInput " , chr=" InputChar "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")

@@ -1357,7 +1357,7 @@ unpressAllPressedKeys(){
 ;/¯¯¯¯ SendFull ¯¯ 181212222215 ¯¯ 12.12.2018 22:22:15 ¯¯\
 SendFull(SendValue,ForceBackspace:= false){
 	
-	global g_Active_Id
+	global g_active_Id
 	global g_Word ; <= started typing content
 	global prefs_AutoSpace
 	global prefs_NoBackSpace
@@ -1783,9 +1783,9 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 		
 	} else {
         
-		ControlGetFocus, ActiveControl, ahk_id %g_Active_Id%
+		ControlGetFocus, ActiveControl, ahk_id %g_active_Id%
 		IfNotEqual, ActiveControl,
-		ControlSend, %ActiveControl%, %sending%, ahk_id %g_Active_Id%
+		ControlSend, %ActiveControl%, %sending%, ahk_id %g_active_Id%
 	}
 	
 	Clipboard := ClipboardSave
