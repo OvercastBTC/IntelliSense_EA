@@ -1,9 +1,13 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/EinrÃ¼ckungsstil#SL5small-Stil
 #NoTrayIcon
-
-Critical , On
-
+; Critical , On
 SetWorkingDir %A_ScriptDir%\Source
+run,gi-everywhere.ahk,%A_ScriptDir%\Source
+exitApp
+
+
+
+
 
 SetTitleMatchMode,2
 name=temp.ahk ahk_class #32770

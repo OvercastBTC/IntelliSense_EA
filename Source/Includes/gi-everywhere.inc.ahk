@@ -376,7 +376,11 @@ RecomputeMatches( calledFromStr, is_Recursion := false ){
 		toolTip2sec( "ups !g_actionListID `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		return false
 	}
-	
+	if(!actionList){
+		toolTip2sec( "ups !actionList `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
+		return false
+	}
+
 	sql_template_dir := g_config.sql.template.dir
 	
     ;if( g_listSELECT_FROM_WinTitle && WinActive(g_listSELECT_FROM_WinTitle))
@@ -455,9 +459,46 @@ RecomputeMatches( calledFromStr, is_Recursion := false ){
 			}
  		}
 	}
-	valueObj := Sql_Temp.valueObj ; Sql_Temp
+	valueObj := Sql_Temp.valueObj ; Sq          l_Temp
+
+;/¯¯¯¯ bugStudy ¯¯ 190404174823 ¯¯ 04.04.2019 17:48:23 ¯¯\
+    if(1 && InStr(A_ComputerName,"SL5") ){
+    ; bugStudy
+	; tooltip tooltip
+	; next we study a bug. whey this word is not into the database: tooltip
 	
-    ; t
+    if(1 && InStr(A_ComputerName,"SL5")&& RegExMatch( g_Word, "\btooltip\b") ){
+settitlematchmode,1
+needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
+ifwinnotexist, % needle
+{
+            ; https://github.com/sqlitebrowser/sqlitebrowser/wiki/Command-Line-Interface
+	para := " -t Words " g_actionListDBfileAdress " --t Words "
+	commandline = "C:\Program Files\DB Browser for SQLite\DB Browser for SQLite.exe" %para%
+	; clipboard := commandline
+	run,% commandline ,"C:\Program Files\DB Browser for SQLite\"
+	ToolTip2sec(commandline "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",100,100 )
+	winwait, % needle,,9
+	WinActivate, % needle
+	WinWaitActive, % needle,,9
+	send,!tw ; w like words ; send,{tab 4}w ; w like words
+	CoordMode , Mouse, Relative
+	MouseClick,left,341,230,1,1
+	CoordMode , Mouse , Screen
+	clipboard:= g_Word
+	Send,^v
+	sleep,50
+	edit,% actionList
+}
+    }
+    ; toolt tooltip tooltip
+    ; tooltip  tppö tooltip  tooltip tooltip tooltip
+    ; tooltip t tooltip tooltip tooltip
+    ; tooltip tooltip tooltip "C:\Program Files\DB Browser for SQLite\DB Browser for SQLite.exe" -t Words G:\fre\private\sql\sqlite\actionList.db --t Words
+}
+;\____ bugStudy __ 190404174830 __ 04.04.2019 17:48:30 __/
+
+
 	
 	sql := Array()
 	g_SingleMatch := Object()
@@ -1104,8 +1145,23 @@ LIMIT 9
 			tip .= g_Word "(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")`n" ; planed to set this behind the box
 			tip .= "`n"
 			tip .= "CTRL+Nr., single click: move, "
-			if( actionList && !instr(actionList, "isNotAProject" ))
+ 			if( actionList && !instr(actionList, "isNotAProject" ))
 				tip .= "rightClick opens: " substr(actionList,1,19) "...\" RegExReplace(   actionList,".*\\") "(" g_actionListID ")`n"
+			else{
+                tip2 := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`"
+     			if(instr(actionList, "isNotAProject" )){
+                        tip2 .= actionList
+                        toolTipGui(tip2, x:=0, y:=0, "¯" ,A_LineNumber,"Yellow")
+                        ; toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
+                }else
+                    if(!actionList){
+                        tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
+                        toolTipGui("Oops!! !actionList => this should never happens." tip2 tipLast, x:=0, y:=0, "¯" ,A_LineNumber,"Red")
+                        pause
+                   }
+			}
+			; Tool Tooltip too Tool
+			; Tool Tooltip
 			
 			nr := ( Mod(round(A_Sec/20), 2) == 0) ; toggles every 20 seconds beetween 0 1
 			if(nr && actionList && !instr(actionList, "isNotAProject" ))

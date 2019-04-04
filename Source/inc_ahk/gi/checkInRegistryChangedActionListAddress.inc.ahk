@@ -591,7 +591,7 @@ if(g_config.infoBox[1]["showName"]){
     IfWinNotExist,% needle
     {
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
-        tip .= tipLast " drag & drop "
+        tip .= tipLast " drag+drop "
         toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
     } else{
     	winGetPos,x,y,,,% needle

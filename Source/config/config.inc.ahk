@@ -14,12 +14,13 @@ g_actionListDBfileAdress := (InStr(A_ComputerName,"540P-SL5NET"))
 
 g_min_searchWord_length := 0
 
-; g_config.listBoxGui := { 
-; 	tipps: { 
-; 		show: true,
-; 		durationMilliseconds: 3500
-; 	}
-; }
+; false or "" no extra info will showed below the listBoxGui (may you first need typing something to see it. 19-04-04_15-23)
+g_config.listBoxGui := { 
+ 	tipps: { 
+ 		show: true,
+ 		durationMilliseconds: 3500
+ 	}
+}
 
 
 g_config.ScriptDir := A_ScriptDir
@@ -109,7 +110,7 @@ g_config.FuzzySearch := {
 ; default for maxNnumberUsedTemplates is usually 7 (files select0 ... select6). no results if you use 0
 g_config.sql.template := {
 	dir: A_ScriptDir "\sql\template",
-	maxNnumberUsedTemplates : 2
+	maxNnumberUsedTemplates : 7
 }
 
 ; you do not need these runners. these are just examples:
