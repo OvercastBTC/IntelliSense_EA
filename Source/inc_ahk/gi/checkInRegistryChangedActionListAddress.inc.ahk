@@ -580,16 +580,25 @@ if(g_config.infoBox[1]["showName"]){
     ; DetectHiddenWindows,On
     ; settitlematchmode,1
     title := A_LineNumber
+    title2 := A_LineNumber
     needle := title " ahk_class AutoHotkeyGUI" ; mouseWindowTitle=0x7d1d2c  ;
+    tip := ""
+    tip .= "SQLs:>" g_config.sql.template.maxNnumberUsedTemplates "<`n"
+    tip .= "al:>" substr(actionList,16) "<`n"
+    tip .= "t:>" g_Active_Title "<" ; some title use spaces inside ; no space to prevent lineBreaks
     IfWinExist,% needle
     {
     	winGetPos,x,y,,,% needle
     	; winmove,% needle,% x, % y
-        toolTipGui(substr(actionList,16) "`n" g_Active_Title "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x, y, ,title,"Yellow")
+    	x += 80
+    	y += 15
+        tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
+        tip .= str_repeat(".", 150)
+        toolTipGui(tip, x, y, ,title2,"Purple")
     } else{
-        tip := substr(actionList,16) "`n" g_Active_Title
-        tip .= "`n" g_config.sql.template.maxNnumberUsedTemplates " =maxNnumberUsedTemplates "
-        toolTipGui(tip "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")", x:=-strlen(actionList)*5, y:=0, g_config.infoBox[1]["showName"] ,title,"Purple")
+        tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
+        tip .= str_repeat(".", 150)
+        toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
     }
 }
 
