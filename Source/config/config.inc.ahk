@@ -29,8 +29,8 @@ g_config.actionList := {
 		durationMilliseconds: 3500
 	}
 }
-g_config.infoBox := []
-; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed.
+
+; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed. Thats may mor useful for gi-developer not user of it.
 g_config.infoBox[1] := { 
 	showName: "¯|"
 }

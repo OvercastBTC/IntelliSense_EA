@@ -588,8 +588,12 @@ if(g_config.infoBox[1]["showName"]){
     tip .= "t:>" g_Active_Title "<" ; some title use spaces inside ; no space to prevent lineBreaks
     tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
     ; tipLast := str_repeat(".", 5) " " A_DDD A_DD "." A_MM " " a_hour ":" a_min ":" a_sec str_repeat(".", 150)
-    IfWinExist,% needle
+    IfWinNotExist,% needle
     {
+        tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
+        tip .= tipLast " drag & drop "
+        toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
+    } else{
     	winGetPos,x,y,,,% needle
     	; winmove,% needle,% x, % y
     	x += 80
@@ -598,10 +602,6 @@ if(g_config.infoBox[1]["showName"]){
         tip .= tipLast
         tip := RegExReplace(tip, "[\n\r]+","`n")
         toolTipGui(tip, x, y, ,title2,"Purple")
-    } else{
-        tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
-        tip .= tipLast
-        toolTipGui(tip, x:=-strlen(actionList)*7, y:=0, g_config.infoBox[1]["showName"] ,title,"Green")
     }
 }
 
