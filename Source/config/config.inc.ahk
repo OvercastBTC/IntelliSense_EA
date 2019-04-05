@@ -1,4 +1,4 @@
-/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09
+/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09  
 */
 ; recomandet for g_min_searchWord_length is: 1 or 2 maybe 0
 ; if u use 0 it maybe not work always at the moment (works if word match or if you have a fresh window change) (19-01-19_10-44)
@@ -11,7 +11,6 @@ g_actionListDBfileAdress := (InStr(A_ComputerName,"540P-SL5NET"))
 	? "G:\fre\private\sql\sqlite\actionList.db" 
 	: A_ScriptDir "\actionListLearned.db" 
 
-
 g_min_searchWord_length := 0
 
 ; false or "" no extra info will showed below the listBoxGui (may you first need typing something to see it. 19-04-04_15-23)
@@ -22,20 +21,21 @@ g_config.listBoxGui := {
  	}
 }
 
-
 g_config.ScriptDir := A_ScriptDir
 g_config.actionListDirBase := "..\actionLists" ; down from source upt to actionLists
+; Hack: if onlyThisList is set and not false it will only this list used for everything. not recomandet! 19-04-04_22-59
 g_config.actionList := { 
 	tipps: { 
 		durationMilliseconds: 3500
 	}
+	/* , onlyThisList: "onlyThisList" <= works not at the moment 19-04-05_08-11 */
 }
+
 
 ; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed. Thats may mor useful for gi-developer not user of it.
 g_config.infoBox[1] := { 
 	showName: "¯|"
 }
-
 
 
 ; it takes the first existing editor, from the follwoing list.

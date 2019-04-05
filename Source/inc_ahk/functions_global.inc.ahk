@@ -54,7 +54,6 @@ if(... := update_configMinify_incAhkFile()){
 ; Changes always become active on the next next call. becouse include is a preparser command. 19-01-11_18-33
 ; discussion here: https://stackoverflow.com/questions/54149980/remove-all-unnecessary-whitespaces-from-json-string-with-regex-in-autohotkey
 
-
     doUpdate := false
     FileGetTime, modifiedTime_configMinify, % configMinifyIncAhkAddress
     if(!modifiedTime_configMinify){
@@ -123,7 +122,7 @@ if(... := update_configMinify_incAhkFile()){
 	; configContentminify .= RegExReplace( configContent , "i)[\s\t ]*[\n\r]+([^\n\r]+)(?!\[a-z][_\d]\b)[\s\t ]*", "`n$1" )
 
 	; dont work 19-01-13_11-00: configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(/\*|\*/|[a-z]+[_\d]*))", " " )
-	configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(\*|/|`;|[a-z]+[_\d]*))", " " )
+	configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!(\*|/|`;|[a-z]+[_\d]*))", " " ) ; negative lookahead: the part within (?!...) must not match.
 	; configContentminify := RegExReplace( configContent , "m)[\n\r]+(?!([a-z]+[_\d]*))", " " )
 	tempFileAddress := A_ScriptDir "\" A_TickCount ".temp." A_ThisFunc ".txt"
 	FileAppend, % configContentminify, % tempFileAddress
@@ -197,7 +196,7 @@ varExist(ByRef v) {
 
 
 
-;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+;/¯¯¯¯ lll ¯¯ 190405082709 ¯¯ 05.04.2019 08:27:09 ¯¯\
 lll(ByRef ln, scriptName, text := "") {
     global g_ignReg
 

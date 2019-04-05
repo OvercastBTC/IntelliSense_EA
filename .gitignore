@@ -24,11 +24,14 @@ Source
 
 # Ignore some files (found in Source-Folder)
 
+**/*.bak
+**/*.bak.ahk
+/**/*.bak.ahk
+**/*.log
+
 Source/Welcome_to_IntelliJ_IDEA_Administrator.ahk
 Source/**/*.minify.inc.ahk*
-Source/**/*.log
 Source/**/*.txt
-Source/**/*.bak
 Source/**/* Backup
 Source/**/temp
 Source/**/*.temp
@@ -64,13 +67,11 @@ Source/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].temp.FileWrite.txt
 
 !actionLists/_globalActionListsGenerated/**
 
-
 !actionLists/activeClassManipulation.inc.ahk
 
-actionLists
-actionLists/**/*._Generated.ahk._Generated.ahk
 
 # Ignore some files (found in actionLists-Folder)
+actionLists
 actionLists/**/Bank*
 actionLists/**/Bewe*
 actionLists/**/pfade.*
@@ -95,16 +96,7 @@ actionLists/**/OFF_*
 # ignore files with spaces beetween
 actionLists/**/* *
 actionLists/**/.idea
-
-
-
-
-
-
-
-
-
-
+actionLists/**/*._Generated.ahk._Generated.ahk
 
 
 

@@ -37,9 +37,6 @@ msg =
 (
 )
 
-; comp Computer Comp
-; __
-
 
 ReplacedStr := StrReplace(Haystack, SearchText , ReplaceText, OutputVarCount, Limit := -1)
 

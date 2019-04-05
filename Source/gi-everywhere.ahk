@@ -1285,12 +1285,55 @@ return
 ;/¯¯¯¯ Ctrl+Shift+F5 ¯¯ 181201095247 ¯¯ 01.12.2018 09:52:47 ¯¯\
 ; Ctrl+Shift+F5
 ^+f5:: ; exit-all-scripts and restart
-    ;if(1 && InStr(A_ComputerName,"SL5")){
-    if(1){
-        setRegistry_toDefault()
-        ; exit_all_scripts()
-        run,..\start.ahk
+;if(1 && InStr(A_ComputerName,"SL5")){
+if(1){
+setRegistry_toDefault()
+msg := "" "`n"
+msg .= "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+MsgBox, 4,^+f5 > reload in seconds, % msg,2
+doReload := false
+IfMsgBox Yes
+    doReload := true
+IfMsgBox Timeout
+    doReload := true
+if(doReload){
+    ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+
+/* its not working:
+    DetectHiddenWindows,On
+    settitlematchmode,2
+    ToolTip,`% "winwaitclose %A_LineNumber% %A_ScriptName%"
+    winwaitclose,%A_ScriptName%
+    winwaitclose,%A_ScriptName%
+*/
+
+settitlematchmode,2
+needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
+ifwinExist, % needle
+    winclose, % needle
+AHKcode =
+    (
+    soundbeep,4532,500
+    ToolTip,`% "FileDelete, %g_actionListDBfileAdress% " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
+    while(A_Index < 100 && FileExist( "%g_actionListDBfileAdress%" )){
+    sleep,180
+    FileDelete,%g_actionListDBfileAdress%
     }
+    ToolTip,
+    run,%A_ScriptFullPath%
+    soundbeep,4532,500
+    )
+    clipboard := AHKcode
+    DynaRun(AHKcode)
+    exitApp
+
+    ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " A_ScriptName
+    if(FileExist( g_actionListDBfileAdress ))
+        pause
+    exitApp
+    ; reload
+}
+}
 return
 ;\____ Ctrl+Shift+F5 __ 181201095253 __ 01.12.2018 09:52:53 __/
 
