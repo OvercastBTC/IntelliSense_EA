@@ -1020,7 +1020,7 @@ SoundBeepString(s4){
    Loop,4
    {
       l:= SubStr(s4 , A_Index , 1 ) 
-	   StringLower,l,l
+	   StringLower,l, l
       l:= Asc( l ) - asc_a + 1
       n .= l
       if(StrLen(n)>4){

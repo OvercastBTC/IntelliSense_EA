@@ -491,7 +491,7 @@ ifwinnotexist, % needle
 	edit,% actionList
 }
     }
-    ; toolt tooltip tooltip
+    ; toolt tooltip tooltip tppö tooltip
     ; tooltip  tppö tooltip  tooltip tooltip tooltip
     ; tooltip t tooltip tooltip tooltip
     ; tooltip tooltip tooltip "C:\Program Files\DB Browser for SQLite\DB Browser for SQLite.exe" -t Words G:\fre\private\sql\sqlite\actionList.db --t Words
@@ -513,6 +513,7 @@ SELECT actionList FROM actionLists WHERE actionList Like 'g_Word' AND actionList
      WinMove,SELECT actionList FROM actionLists WHERE actionList Like 'g_Word' AND actionList NOT Like 'isNotAProject.ahk' order by actionList.ahk ahk_class AutoHotkeyGUI ,, 879,421, 412,152
 
     )
+     ; Tooltip Tooltip T Tooltip
 	
     ; ToolTip2sec(g_min_searchWord_length_2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 	StrLen_g_Word := StrLen(g_Word)
@@ -1175,7 +1176,7 @@ LIMIT 9
 			}
             ; ToolTip9sec(tip,ListBoxPosX, tooltipPosY, 2 ) ; 13px pe line
             ; ToolTipSec(t,x,y,9000, layer1to20)
-			ToolTipSec(tip,ListBoxPosX, tooltipPosY, g_config["listBoxGui"]["tipps"]["durationMilliseconds"] , 2 )
+			ToolTipSec(tip,ListBoxPosX, tooltipPosY,  g_config.listBoxGui.tipps.durationMilliseconds , 2 )
 			winmove,% tip, ,% ListBoxPosX, % tooltipPosY ; needet if tootop is beetween monitio or out of moinitor bouds 04.01.2019 13:07
 		}
 		

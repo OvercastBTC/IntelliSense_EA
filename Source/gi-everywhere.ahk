@@ -161,7 +161,23 @@ SetTimer,check_configFile_Changed,2500
 
 ;/¯¯¯¯ check_configFile_values ¯¯ 190124152939 ¯¯ 24.01.2019 15:29:39 ¯¯\
 if(!g_config["FuzzySearch"]["MAXlines"] || !g_config["FuzzySearch"]["keysMAXperEntry"]){
-    Msgbox,, reload. please wait, % "Oops. reload. please wait.  `n`n FuzzySearch= " g_config["FuzzySearch"]["enable"] "`n`n" "MAXlines=" g_config["FuzzySearch"]["MAXlines"] "`n`n" configContentminify "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1
+msg =
+(
+fast No/Cancel-Button or ===>
+auto >>reload<< in seconds for selfconfig
+
+reasons maybe:
+your first install
+or Problem with g_config["FuzzySearch"]["enable"]
+or g_config["FuzzySearch"]["MAXlines"]
+)
+msg .= "or " configIncAhkAddress "`n"
+msg .= "or " configMinifyIncAhkAddress "`n"
+msg .= "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+MsgBox, 4,reload in seconds, % msg,2
+IfMsgBox Yes
+    reload
+IfMsgBox Timeout
     reload
 }
 
@@ -892,7 +908,8 @@ reload
 
 
 
-
+; msgbox, % g_config.listBoxGui.tipps.durationMilliseconds
+; msgbox, % g_config.listBoxGui.tipps.onlyThisList
 
 
 MainLoop()

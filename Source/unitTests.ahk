@@ -136,12 +136,12 @@ g_do_only_this_testCase  := "err_indexFollowingLines4search"
 g_do_only_this_testCase  := "err_problemNow"
 g_do_only_this_testCase  := "err_multi_rr_stop_by_is_r"
 g_do_only_this_testCase  := "err_string_ahk_line"
-g_do_only_this_testCase  := "err_is_r_without_keywords"
-g_do_only_this_testCase  := "test_getAutoKeywords"
 g_do_only_this_testCase  := "err_is_without_keywords"
 g_do_only_this_testCase  := "test_synonym"
 g_do_only_this_testCase  := "err_without_includes_update"
+g_do_only_this_testCase  := "err_is_r_without_keywords"
 g_do_only_this_testCase  := "" ; then all test will be run 24.11.2018 20:33
+g_do_only_this_testCase  := "test_getAutoKeywords"
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
 ;\____ g_do_only_this_testCase __ 181118111650 __ 18.11.2018 11:16:50 __/
@@ -192,6 +192,11 @@ filedelete, % actionList "_temp"
 
 ;/¯¯¯¯ err_string_ahk_line ¯¯ 181204152914 ¯¯ 04.12.2018 15:29:14 ¯¯\
 err_string_ahk_line(){
+
+	if(g_do_only_this_testCase && !InStr(" " A_ThisFunc,g_do_only_this_testCase))
+		return false
+
+
     f=log\actionList.ahk.log.txt
     fileDelete,% f
     while(0 && fileExist(f))
@@ -481,6 +486,12 @@ err_CheckValid(){
 ; IMPORTEND becouse used by other functions !!!
 test_getAutoKeywords(){
 
+in := "ToolTip2sec"
+expected := "ToolTip2sec Tip2sec ToolTip Tool"
+
+expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
+if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
+    Return errStr " °" A_LineNumber ":" A_ThisFunc "°"
 
 	in =
 (
@@ -491,7 +502,6 @@ no colors
 	expectedInFutureRelaise := "nothingSpecial nothing Special textlang"
 	if(errStr := getAssertEqual_ErrorStr(      in,      expected,A_ThisFunc ":" A_LineNumber,"getAutoKeywords"))
 		Return errStr " °" A_LineNumber ":" A_ThisFunc "°" 
-
 
 	in =
 (
@@ -602,6 +612,10 @@ if(1){ ; playground
 
 ;/¯¯¯¯ test_synonym
 test_synonym(){
+
+	if(g_do_only_this_testCase && !InStr(" " A_ThisFunc,g_do_only_this_testCase))
+		return false
+
     f=log\actionList.ahk.log.txt
     fileDelete,% f
     while(a_index < 5 && fileExist(f))
@@ -2034,6 +2048,7 @@ return
 
 
 
+#Include %A_ScriptDir%\Lib\SQLite_DLLPath.inc.ahk
 
 #Include %A_ScriptDir%\inc_ahk\gi\ReadActionList.inc.ahk
 #Include %A_ScriptDir%\Includes\gi-everywhere.inc.ahk

@@ -31,15 +31,15 @@ setTrayIcon(status := "loaded" ){
 		
 		return
 	}
-
+	
 	; G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build\Source\icon\abc123\GI-nightly.gif
 	; if(inst
-
-    if(g_config.tray.iconFileAddress){
-        iconAdress := g_config.tray.iconFileAddress
-    }else{
-        ScriptNameLetter2 := SubStr(A_ScriptName, 1 , 2)
-        iconAdress=%A_ScriptDir%\icon\abc123\%ScriptNameLetter2%.ico
+	
+	if(g_config.tray.iconFileAddress){
+		iconAdress := g_config.tray.iconFileAddress
+	}else{
+		ScriptNameLetter2 := SubStr(A_ScriptName, 1 , 2)
+		iconAdress=%A_ScriptDir%\icon\abc123\%ScriptNameLetter2%.ico
 	}
 	Menu, Tray, Icon, %iconAdress%
 }
@@ -610,6 +610,14 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 	{
 		Aindex := A_Index
 		ALoopField := A_LoopField
+		
+		;  Msgbox tool test 
+		
+		if(RegExMatch(ALoopField, "i)ToolTip")){
+			toolTipGui("super " ,x:=1,y:=1,"-",A_LineNumber,"yellow")  ; x will be offset if y is symbolic
+			; MsgBox,,% ":) ^_^ `n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+		}
+		
 		ParseWordsSubCount++
 		; ALoopField := trim(A_LoopField,"`r`n")
 		;ALoopField := trim(A_LoopField,"`r`n")
@@ -1199,7 +1207,7 @@ while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPositio
 		if(!HasVal(Array,word)){
 			if(minLength <= strlen(word)){
 				Array.Push(word) ; Append this line to the array.
-    				resultStr .= " " word
+				resultStr .= " " word
 				ArrayCount++
 			}
 		}
@@ -1213,7 +1221,7 @@ while(foundPos := RegexMatch( newKeyWords, "(" regEx ")", Match, StartingPositio
 			temp := minLength "<=" strlen(rest)
 			if(minLength <= strlen(rest)){
 				Array.Push(rest) ; Append this line to the array.
-                    resultStr .=  " " rest
+				resultStr .=  " " rest
                     ;resultStr .= ">" strlenWord "~" rest "-" temp "<"
 				ArrayCount++
 			}
@@ -1453,10 +1461,10 @@ if(rootCmdTypeObj.is_str || rootCmdTypeObj.is_rr || rootCmdTypeObj.is_multiline_
 			NormalizeTable := g_actionListDB.Query(select)
 		else{
 			If !DB.GetTable(select, NormalizeTable){
-                    if(!DB.HasKey("SQL")){
+				if(!DB.HasKey("SQL")){
 					MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-                    }
-                    clipboard := select
+				}
+				clipboard := select
 				MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 			}
 		}
@@ -1528,10 +1536,10 @@ if(rootCmdTypeObj.is_multiline_r || rootCmdTypeObj.is_r){
 			    ; NormalizeTable := g_actionListDB.Query(select)
 		else{
 			if(!DB.Exec(INSERT_INTO_words)){
-                    if(!DB.HasKey("SQL")){
+				if(!DB.HasKey("SQL")){
 					MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-                    }
-                    clipboard := INSERT_INTO_words
+				}
+				clipboard := INSERT_INTO_words
 				MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 			}
 		}
@@ -1881,16 +1889,16 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 		try{
 			
 			if(!doUseNewMethodStartOfImplementing22march2019)
-                    g_actionListDB.Query(INSERT_INTO_words)
+				g_actionListDB.Query(INSERT_INTO_words)
                     ; NormalizeTable := g_actionListDB.Query(select)
 			else{
-                    if(!DB.Exec(INSERT_INTO_words)){
+				if(!DB.Exec(INSERT_INTO_words)){
 					if(!DB.HasKey("SQL")){
 						MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 					}
 					clipboard := INSERT_INTO_words
 					MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
-                    }
+				}
 			}
 			strDebug4insert .= Trim(AddWord," `t`r`n") "`n"  ; interesting for debugging
 			if(0 && InStr(A_ComputerName,"SL5")){
@@ -2518,12 +2526,12 @@ actionList = '%actionList%' ;
 ; Too Tool  sett titlema
 	
 	msg .= "`n sqlLastError=" sqlLastError "`n `n (" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ")"
-
 	
 	
 	
-
-
+	
+	
+	
 	if(!g_actionListID && sqlLastError){
           ; lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,msg)
           ; clipboard := msg

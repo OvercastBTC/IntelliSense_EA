@@ -161,6 +161,8 @@ if(0 && InStr(A_ComputerName,"SL5")){
 check_permanentSELECT_changedInRegistry(ByRef g_permanentSELECT
                                       , ByRef g_permanentSELECT_OLD
                                       , ByRef ParseWordsCount){
+
+
     RegRead, g_permanentSELECT, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_permanentSELECT
     if(g_permanentSELECT_OLD == g_permanentSELECT)
         return false

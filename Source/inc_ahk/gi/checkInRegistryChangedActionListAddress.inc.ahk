@@ -9,6 +9,16 @@ checkInRegistryChangedActionListAddress:
         Speak(A_ThisLabel, "PROD" )  ;  (DEV, TEST, STAGING, PROD),
     ; return ; it seems we need this function ????? 18-12-27_20-50
 
+if(g_config.actionList.onlyThisList){
+    actionList := g_config.actionList.onlyThisList
+    toolTipGui(actionList " (" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" , x:=0, y:=0, "_" ,A_LineNumber,"Yellow")
+
+
+    gosub actionListOLD_actionList
+    return
+}
+
+
     ;toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     if(g_doListBoxFollowMouse){
         if(0 && InStr(A_ComputerName,"SL5"))
@@ -546,6 +556,9 @@ if(0 && InStr(A_ComputerName,"SL5")
 
 
     }
+
+actionListOLD_actionList:
+
     actionListOLD := actionList
     ; g_actionListID := getActionListID(sql_template_dir, actionList) ; 24.03.2018 23:02
 
@@ -585,6 +598,7 @@ if(g_config.infoBox[1]["showName"]){
     tip := ""
     tip .= "SQLs:>" g_config.sql.template.maxNnumberUsedTemplates "<`n"
     tip .= "al:>" substr(actionList,16) "< `n"
+    tip .= "db:>" g_actionListDBfileAdress "< `n"
     tip .= "t:>" g_Active_Title "<" ; some title use spaces inside ; no space to prevent lineBreaks
     tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
     ; tipLast := str_repeat(".", 5) " " A_DDD A_DD "." A_MM " " a_hour ":" a_min ":" a_sec str_repeat(".", 150)
