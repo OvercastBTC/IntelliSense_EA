@@ -276,7 +276,7 @@ if(!Instr(logFileName,scriptName)){ ; plausibillity check . hopefully never happ
 		if(!logFileKbytes){
 			; msgbox,Oops  %A_LineNumber%
 			if(!fileexist(logFileName))
-    			msgbox,Oops  %A_LineNumber%
+    			msgbox,Oops ( %A_LineNumber% 1904051225 %A_ThisFunc% )
         }
 		if(logFileKbytes > 100){
 			FileDelete,%logFileName%

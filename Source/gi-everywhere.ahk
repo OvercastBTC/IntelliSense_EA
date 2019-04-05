@@ -1311,9 +1311,13 @@ settitlematchmode,2
 needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
 ifwinExist, % needle
     winclose, % needle
+
+; FileRemoveDir, % A_ScriptDir "\log" , 1
+FileDelete, % A_ScriptDir "\log\*.*"
+
 AHKcode =
     (
-    soundbeep,4532,500
+    soundbeep,3532,400
     ToolTip,`% "FileDelete, %g_actionListDBfileAdress% " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
     while(A_Index < 100 && FileExist( "%g_actionListDBfileAdress%" )){
     sleep,180
@@ -1321,7 +1325,14 @@ AHKcode =
     }
     ToolTip,
     run,%A_ScriptFullPath%
-    soundbeep,4532,500
+    soundbeep,4532,700
+settitlematchmode,2
+    loop,20
+    {
+    winactivate,ahk_class SunAwtFrame ; mouseWindowTitle=0x180c64  ;
+    sleep,100
+    }
+    soundbeep,5532,1000
     )
     clipboard := AHKcode
     DynaRun(AHKcode)
