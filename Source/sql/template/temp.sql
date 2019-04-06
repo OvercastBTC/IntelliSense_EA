@@ -1,47 +1,5 @@
-REPLACE INTO temp (fileModiTime, key, value) VALUES ('20181128134837', 'select0','[{"listID":{"len":3,"pos":156},"sql":"SELECT distinct ltrim(word), ltrim(worddescription), ltrim(wordreplacement)
-     FROM Words
-     WHERE word LIKE ''s%''  ESCAPE ''~''
-     and ActionListID > 0
-      order by ActionListID, word
-     LIMIT 2;
--- seLECT * FROM ActionLists l where l.ActionList like "%isNotAProject%";
--- An underscore ("_") in the LIKE pattern matches any single character in the string.
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
--- prp probab ür probab pro proba qahk s changin pro probab pro probab p proba","word":{"len":1,"pos":117}},{"listID":{"len":3,"pos":166},"sql":"SELECT distinct ltrim(word), ltrim(worddescription), ltrim(wordreplacement)
-     FROM Words
-     WHERE wordindexed GLOB upper(''c'') || ''*''
-     and   ActionListID > 0
- order by ActionListID, ltrim(word)
-     LIMIT 8
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
--- prp probab ür probab pro proba qahk s changin pro probab pro probab p proba","word":{"len":1,"pos":130}},{"listID":{"len":3,"pos":132},"sql":"SELECT distinct word, worddescription, wordreplacement
-     FROM Words
-     WHERE wordindexed LIKE ''s%''
-     and   ActionListID > 0
-     order by ActionListID, ROWID asc
-     LIMIT 10
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
-","word":{"len":1,"pos":103}},{"listID":{"len":3,"pos":133},"sql":"SELECT distinct word, worddescription, wordreplacement
-     FROM Words
-     WHERE wordindexed GLOB ''%s%''
-     and   ActionListID > 0
-     order by ActionListID, ROWID desc
-     LIMIT 10
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
-","word":{"len":1,"pos":104}},{"listID":{"len":3,"pos":118},"sql":"SELECT distinct word, worddescription, wordreplacement
-FROM Words
-WHERE wordindexed like ''%s%''
-and   ActionListID > 0
-LIMIT 10
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
-","word":{"len":1,"pos":94}},{"listID":,"sql":"SELECT distinct word, worddescription, wordreplacement
-FROM Words
-WHERE wordindexed like ''s%''
-LIMIT 10
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
-","word":{"len":1,"pos":93}},{"listID":,"sql":"SELECT distinct word, worddescription, wordreplacement
-FROM Words
-WHERE wordindexed like ''%s%''
-LIMIT 10
--- you need to reload the script after each change. be careful by changing the ware statment. its will later parsed by script.
-","word":{"len":1,"pos":94}}]');
+REPLACE INTO words(wordindexed, word , count , wordreplacement , actionListID, lineNr)
+VALUES ('TOOLTIPSEC LINEFILENAME|RR|TOOLTIP2SEC( "`N(" A_THISFUNC " " REGEXREPLACE(A_LINEFILE,".*\\") ":"  A_LINENUMBER ")" )|AHK|SEND,{CTRLDOWN}{LEFT 8}{CTRLUP}', 'ToolTipsec lineFileName|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}', '', '' , 1, 6); 
+
+REPLACE INTO words(wordindexed, word , count , wordreplacement , actionListID, lineNr)
+VALUES ('TIPSEC|RR|TOOLTIP2SEC( "`N(" A_THISFUNC " " REGEXREPLACE(A_LINEFILE,".*\\") ":"  A_LINENUMBER ")" )|AHK|SEND,{CTRLDOWN}{LEFT 8}{CTRLUP}', 'Tipsec|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}', '', '' , 1, 6);

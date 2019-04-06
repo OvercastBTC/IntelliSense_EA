@@ -1157,7 +1157,7 @@ LIMIT 9
                 }else
                     if(!actionList){
                         tipLast := a_hour ":" a_min ":" a_sec str_repeat(".", 150)
-                        toolTipGui("Oops!! !actionList => this should never happens." tip2 tipLast, x:=0, y:=0, "¯" ,A_LineNumber,"Red")
+                        toolTipGui("Oops!! !actionList => this should never happens." tip2 tipLast, x:=0, y:=0, "¯" ,A_LineNumber,"Black")
                         pause
                    }
 			}

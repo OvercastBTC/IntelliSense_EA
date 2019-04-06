@@ -615,7 +615,7 @@ if(g_config.infoBox[1]["showName"]){
         tip := "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")`n`" tip "`n"
         tip .= tipLast
         tip := RegExReplace(tip, "[\n\r]+","`n")
-        toolTipGui(tip, x, y, ,title2,"Purple")
+        toolTipGui(tip, x, y, ,title2,"Black")
     }
 }
 

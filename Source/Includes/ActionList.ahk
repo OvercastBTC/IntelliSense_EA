@@ -220,6 +220,12 @@ if( rootLineObj.Aindex == contLineObj.Aindex ){ ; maybe cont is empty thats ok t
 
 ; isCommandType := setCommandTypeS(rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj ) ; <= this has destoid  is_multiline_r
 if(!rootDoObj.collectBlock){ ; dont need it it was may done into the content loop. probalby only first time.
+	
+	if( RegExMatch( ALoopField, "^[ ]*([#;]|[ ]*$)" )) ; if not in block cut out includes, comments and empty lines from the beginnern
+		Return "continue"
+	
+	ALoopField := RegExReplace(ALoopField, "^[ ]+","") ; if not in block cut out leading spaces
+	
 	rootLineObj := { value:ALoopField, Aindex: Aindex }
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
 	isCommandType := setCommandTypeS(rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj )
@@ -270,6 +276,7 @@ if( rootDoObj.collectBlock && Aindex == rootLineObj.Aindex ) ; first contact
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
 	Return "continue"
 }
+
 
 
 
@@ -578,6 +585,7 @@ contDoObj.createKeys := false
 
 
 ;/¯¯¯¯ Loop_Parse_ParseWords ¯¯ 181114082712 ¯¯ 14.11.2018 08:27:12 ¯¯\
+; ParseWords is a list entries seperated by newLine
 Loop_Parse_ParseWords(ByRef ParseWords){
 	global g_config
 	global actionList
@@ -586,10 +594,10 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 	global strDebugByRef
 	
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc , "i am started. actionList=`n" actionList )
-
+	
 	;lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
-
-
+	
+	
 	
 	devTestTxtFile := doReadThisActionListEverySeconds "_temp.txt"
 	
@@ -612,17 +620,28 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 	Aindex := 0
 	ALoopField := ""
 	IsAtEOF := false
+	isNo_RegularSource_foundTillYet := true
 	Loop, Parse, ParseWords , `n, `r
 	{
 		Aindex := A_Index
+		
+        ;/¯¯¯¯ excludeLine ¯¯ 190406211230 ¯¯ 06.04.2019 21:12:30 ¯¯\
+        ; may ; is part of your sourcecode. so we may not could exlude this here
+        ; is it all from the beginning not useful source? test it:
+        ; || !trim(A_LoopField,"`n`r`t ") ) ){
+		if(isNo_RegularSource_foundTillYet)
+			if( !RegExMatch( A_LoopField, "^[ ]*([#;]|[ ]*$)" )) ; cut of includes, comments and empty lines from the beginnern
+				isNo_RegularSource_foundTillYet := false
+		else
+			continue
+        ;MsgBox,,% "found: " A_LoopField ,% A_LoopField "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+        ;\____ excludeLine __ 190406211232 __ 06.04.2019 21:12:32 __/
+		
 		ALoopField := A_LoopField
 		
-		;  Msgbox tool test 
-		
 		if(RegExMatch(ALoopField, "i)(?P<A>ToolTip)",found)){
-toolTipGui("super >" foundA "< found(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,x:=1,y:=1,"_",A_LineNumber,"yellow")  ; x will be offset if y is symbolic be offset if y is symbolic
-
-
+			toolTipGui("super >" foundA "< found(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,x:=1,y:=1,"_",A_LineNumber,"yellow")  ; x will be offset if y is symbolic be offset if y is symbolic
+			
 			; MsgBox,,% ":) ^_^ `n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		}
 		
@@ -1489,9 +1508,11 @@ if(rootCmdTypeObj.is_str || rootCmdTypeObj.is_rr || rootCmdTypeObj.is_multiline_
 		else
 			toolTip2sec( SQLite_LastError " :( not found`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		
+		; Toolip
 		
 		tip .= "`n sqlLastError=" sqlLastError "`n sql=" INSERT_INTO_words " `n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc ,tip)
+		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc "_SQL-ERROR" ,tip)
 		tooltip, `% tip
 		feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip )
 		Clipboard := tip
@@ -1892,8 +1913,8 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 		INSERT_INTO_words .= "VALUES ('" AddWordIndex_Transformed "','"  AddWord_Transformed  "','"  CountValue  "','" AddWordReplacement "', " g_actionListID ", " lineNr ");"
 		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": INSERT_INTO_words :" INSERT_INTO_words)
 		; lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": INSERT_INTO_words :" INSERT_INTO_words)
-
-
+		
+		
 			; msgbox,% INSERT_INTO_words "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		
 		try{
@@ -1976,20 +1997,23 @@ CheckValid(Word,ForceLearn:= false, is_IndexedAhkBlock := false){
 	
 	Ifequal, Word,  ;If we have no word to add, skip out.
 	{
-		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+		msg = If we have no word to add, skip out.
+		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid. " msg " Word=>" Word "<" )
 		Return
 	}
 	
 	if Word is space ;If Word is only whitespace, skip out.
 	{
-		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+		msg = If Word is only whitespace, skip out.
+		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid. " msg  )
 		Return
 	}
 	
 	if(is_IndexedAhkBlock){
-		if(!RegExMatch( Word , "\S" )) ; search a nonspace in it
+		if(!RegExMatch( Word , "\S" ))
 		{
-			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+			msg = search a nonspace in it
+			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid" msg )
 			return
 		}
 	}else{
@@ -2003,9 +2027,9 @@ CheckValid(Word,ForceLearn:= false, is_IndexedAhkBlock := false){
     ;		Return
         ; ALoopField  := RegExReplace(ALoopField, "^\s+" , "" ) ; anfangs leerzeichen raus 06.11.2017 18:28
 		
-		
-		IF ( StrLen(Word) <= g_min_searchWord_length ){ ; don't add the word if it's not longer than the minimum length
-			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+		IF ( StrLen(Word) <= g_min_searchWord_length ){
+			msg = don't add the word if it's not longer than the minimum length
+			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid. " msg )
 			Return
 		}
 	}
@@ -2014,19 +2038,18 @@ CheckValid(Word,ForceLearn:= false, is_IndexedAhkBlock := false){
 	If ForceLearn
 		Return, 1
 	
-   ;if Word does not contain at least one alpha character, skip out.
 	IfEqual, A_IsUnicode, 1
 	{
 		if ( RegExMatch(Word, "S)\pL") = 0 )
 		{
-			
-			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+			msg = if Word does not contain at least one alpha character, skip out.
+			lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid." msg )
 			return
 		}
 	} else if ( RegExMatch(Word, "S)[a-zA-ZÃ -Ã¶Ã¸-Ã¿Ã€-Ã–Ã˜-ÃŸ]") = 0 )
 	{
 		
-		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid"  )
+		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": is NOT CheckValid 19-04-05_14-01"  )
 		Return
 	}
 	
@@ -2235,6 +2258,8 @@ MaybeUpdateActionList(){
 			IfEqual, g_LegacyLearnedWords, 1
 			{
 				TempActionList =
+				toolTipGui("FileRead, ParseWords (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,-50,"_/",A_LineNumber,"green")
+				
 				FileRead, ParseWords, %A_ScriptDir%\%actionList%
 				LearnedWordsPos := InStr(ParseWords, "`;LEARNEDWORDS`;",true,1) ;Check for Learned Words
 				TempActionList := SubStr(ParseWords, 1, LearnedwordsPos - 1) ;Grab all non-learned words out of list
@@ -2616,6 +2641,10 @@ INSERT_INTO_actionLists_ifNotExist(sql_template_dir,actionList, actionListModifi
 	}
 	INSERT_INTO_actionLists(actionList, FileGet_actionListModified, FileGet_actionListSize )
 }
+;\____ INSERT_INTO_actionLists_ifNotExist __ 190405135324 __ 05.04.2019 13:53:24 __/
+
+
+;/¯¯¯¯ INSERT_INTO_actionLists ¯¯ 190405135358 ¯¯ 05.04.2019 13:53:58 ¯¯\
 INSERT_INTO_actionLists(actionList, actionListModified, actionListSize ){
 	
 	global g_actionListDB
@@ -2660,6 +2689,6 @@ INSERT_INTO_actionLists(actionList, actionListModified, actionListSize ){
 		msgbox, % tip
 	}
 }
-;\____ INSERT_INTO_actionLists_ifNotExist __ 181106194157 __ 06.11.2018 19:41:57 __/
+;\____ INSERT_INTO_actionLists __ 190405135406 __ 05.04.2019 13:54:06 __/
 
 #Include %A_ScriptDir%\inc_ahk\functions_global.inc.ahk

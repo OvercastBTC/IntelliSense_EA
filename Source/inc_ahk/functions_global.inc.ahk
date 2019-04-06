@@ -819,7 +819,7 @@ runCopyQ_Ctrl_Shift_v(){
     Last_A_This:=A_ThisFunc . A_ThisLabel . " p"
     lll(A_LineNumber, A_LineFile,Last_A_This)
 	
-    ToolTip1sec(A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This)
+    ToolTip1sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\") " " Last_A_This)
 ; 
 SetKeyDelay,80,80
 		

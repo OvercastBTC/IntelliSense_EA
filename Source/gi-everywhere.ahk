@@ -1323,21 +1323,34 @@ AHKcode =
     sleep,180
     FileDelete,%g_actionListDBfileAdress%
     }
+    if(FileExist( "%g_actionListDBfileAdress%" )){
+        ToolTip,`% "FAILED !!! FileDelete, %g_actionListDBfileAdress% " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
+        soundbeep,4000,100
+        soundbeep,1500,100
+        soundbeep,4000,100
+        soundbeep,1500,100
+    }
     ToolTip,
+    ToolTip,`% "run " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
     run,%A_ScriptFullPath%
-    soundbeep,4532,700
 settitlematchmode,2
+    ToolTip,`% "activate " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
     loop,20
     {
     winactivate,ahk_class SunAwtFrame ; mouseWindowTitle=0x180c64  ;
+    soundbeep,`% (4555+A_Index*20),700
     sleep,100
     }
-    soundbeep,5532,1000
+    ToolTip,`% "goodbye sound " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
+    while(A_Index < 100){
+        soundbeep,`% (3555-A_Index),50
+        sleep,50
+    }
     )
     clipboard := AHKcode
     DynaRun(AHKcode)
     exitApp
-
+ ; test 
     ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " A_ScriptName
     if(FileExist( g_actionListDBfileAdress ))
         pause
@@ -2734,3 +2747,6 @@ return
 ; #Include *i tools\DebugVars\VarTreeGui.ahk
 ; #Include *i tools\DebugVars\dbgp.ahk
 ; #Include *i tools\DebugVars\TreeListView_test.ahk
+
+
+; Mo To Mo
