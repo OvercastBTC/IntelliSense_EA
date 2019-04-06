@@ -1287,36 +1287,34 @@ return
 ^+f5:: ; exit-all-scripts and restart
 ;if(1 && InStr(A_ComputerName,"SL5")){
 if(1){
-setRegistry_toDefault()
-msg := "" "`n"
-msg .= "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox, 4,^+f5 > reload in seconds, % msg,2
-doReload := false
-IfMsgBox Yes
-    doReload := true
-IfMsgBox Timeout
-    doReload := true
-if(doReload){
-    ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
-
-/* its not working:
-    DetectHiddenWindows,On
+    setRegistry_toDefault()
+    msg := "" "`n"
+    msg .= "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+    MsgBox, 4,^+f5 > reload in seconds, % msg,2
+    doReload := false
+    IfMsgBox Yes
+        doReload := true
+    IfMsgBox Timeout
+        doReload := true
+    if(doReload){
+        ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
+    /* its not working:
+        DetectHiddenWindows,On
+        settitlematchmode,2
+        ToolTip,`% "winwaitclose %A_LineNumber% %A_ScriptName%"
+        winwaitclose,%A_ScriptName%
+        winwaitclose,%A_ScriptName%
+    */
     settitlematchmode,2
-    ToolTip,`% "winwaitclose %A_LineNumber% %A_ScriptName%"
-    winwaitclose,%A_ScriptName%
-    winwaitclose,%A_ScriptName%
-*/
+    needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
+    ifwinExist, % needle
+        winclose, % needle
 
-settitlematchmode,2
-needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
-ifwinExist, % needle
-    winclose, % needle
+    ; FileRemoveDir, % A_ScriptDir "\log" , 1
+    FileDelete, % A_ScriptDir "\log\*.*"
 
-; FileRemoveDir, % A_ScriptDir "\log" , 1
-FileDelete, % A_ScriptDir "\log\*.*"
-
-AHKcode =
-    (
+    AHKcode =
+(
     soundbeep,3532,400
     ToolTip,`% "FileDelete, %g_actionListDBfileAdress% " (%A_LineNumber%+A_LineNumber+1) " %A_ScriptName%"
     while(A_Index < 100 && FileExist( "%g_actionListDBfileAdress%" )){
@@ -1346,11 +1344,10 @@ settitlematchmode,2
         soundbeep,`% (3555-A_Index),50
         sleep,50
     }
-    )
+)
     clipboard := AHKcode
     DynaRun(AHKcode)
     exitApp
- ; test 
     ToolTip,% "FileDelete, " g_actionListDBfileAdress "`n`n" A_ThisFunc ":" A_LineNumber " " A_ScriptName
     if(FileExist( g_actionListDBfileAdress ))
         pause

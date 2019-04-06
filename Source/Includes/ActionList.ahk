@@ -243,7 +243,7 @@ if(doAsimpleCopy){
 		
 	}
 	
-	if(CheckValid( rootLineObj.value )){
+	if(isValid:=CheckValid( rootLineObj.value )){
 		AddWordToList(rootCmdTypeObj,strDebug4insert
 		,strDebugByRef
 		,A_LineNumber
@@ -255,7 +255,7 @@ if(doAsimpleCopy){
 		,rootCmdTypeObj.is_IndexedAhkBlock
 		,doAsimpleCopy)
 	}
-	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
+	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , isValid "=isValid`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
 	deepCopy_contObj_2_rootObj(rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj ; Now we can reuse the END as the BEGINNING (copy that):
 	, contLineObj, contCmdTypeObj, contCollectObj, contDoObj)
 	Return "break" ; free for everything happens next	
@@ -1485,13 +1485,13 @@ if(rootCmdTypeObj.is_str || rootCmdTypeObj.is_rr || rootCmdTypeObj.is_multiline_
 		
             ; NormalizeTable := g_actionListDB.Query(select)
 		if(!doUseNewMethodStartOfImplementing22march2019)
-			NormalizeTable := g_actionListDB.Query(select)
+			NormalizeTable := g_actionListDB.Query(INSERT_INTO_words)
 		else{
-			If !DB.GetTable(select, NormalizeTable){
+			If !DB.GetTable(INSERT_INTO_words, NormalizeTable){
 				if(!DB.HasKey("SQL")){
 					MsgBox, 16, % "ups !DB.HasKey(""SQL"") `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 				}
-				clipboard := select
+				clipboard := INSERT_INTO_words
 				MsgBox, 16, SQLite Error: GetTable, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode "`n`n( " RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 			}
 		}
@@ -1562,7 +1562,7 @@ if(rootCmdTypeObj.is_multiline_r || rootCmdTypeObj.is_r){
 	try{
 		if(!doUseNewMethodStartOfImplementing22march2019)
 			g_actionListDB.Query(INSERT_INTO_words)
-			    ; NormalizeTable := g_actionListDB.Query(select)
+			    ; NormalizeTable := g_actionListDB.Query(INSERT_INTO_words)
 		else{
 			if(!DB.Exec(INSERT_INTO_words)){
 				if(!DB.HasKey("SQL")){
@@ -1824,7 +1824,7 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 		try{
 			if(!doUseNewMethodStartOfImplementing22march2019)
 				g_actionListDB.Query(INSERT_INTO_words)
-                ; NormalizeTable := g_actionListDB.Query(select)
+                ; NormalizeTable := g_actionListDB.Query(INSERT_INTO_words)
 			else{
 				if(!DB.Exec(INSERT_INTO_words)){
 					if(!DB.HasKey("SQL")){
@@ -1916,12 +1916,13 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 		
 		
 			; msgbox,% INSERT_INTO_words "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+
 		
 		try{
 			
 			if(!doUseNewMethodStartOfImplementing22march2019)
 				g_actionListDB.Query(INSERT_INTO_words)
-                    ; NormalizeTable := g_actionListDB.Query(select)
+                    ; NormalizeTable := g_actionListDB.Query(INSERT_INTO_words)
 			else{
 				if(!DB.Exec(INSERT_INTO_words)){
 					if(!DB.HasKey("SQL")){

@@ -168,13 +168,36 @@ err_Loop_Parse_ParseWords(){
 	ParseWords := "hust a string" ; dont work becouse of no newline, thats an error !
 	ParseWords = 
 	( 
+    huhu|rr||hihi
 	old1|r|new1
 	old2|r|new2
-	hust a string
+	just a string
 	)
 	; ParseWords := "someNew2secTooltip|rr|tata|workMaybe"
 	r := Loop_Parse_ParseWords(ByRef ParseWords)
-	; msgbox, % r " n19-04-06_10-2" ; 
+	; msgbox, % r " n19-04-06_10-2" ;
+
+	if(0){
+    SELECT := "SELECT word FROM Words Where word like 'huhu|rr||hihi' "
+    SELECT .= " LIMIT 1 " ";"
+    Matches := g_actionListDB.Query(SELECT)
+    isFound  := false
+    for each, row in Matches.Rows
+        if( row[1] )
+            isFound  := true
+    if(!isFound)
+        Return in " NOT in DB °" A_LineNumber ":" A_ThisFunc "°"
+    }
+
+	needle=DB Browser for SQLite ahk_class Qt5QWindowIcon
+	If(winexist(needle)) {
+		ToolTip1sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\"))
+		WinClose,% needle
+	}
+    openDB_Browser_for_SQLite(ByRef d:="",t:="Words",doClickIntoSearch:=true,search:="huhu|rr||hihi")
+	;WinActivate
+    WinWaitActive
+    sleep,2000
 	msg =
 	(
 	open G:\downloads\DebugVar19-03-30\DebugVars.ahk-master\DebugVars.ahk
@@ -2124,6 +2147,38 @@ RenoveToolTip:
 tooltip,
 return
 
+;/¯¯¯¯ openDB_Browser_for_SQLite ¯¯ 190406221659 ¯¯ 06.04.2019 22:16:59 ¯¯\
+; openDB_Browser_for_SQLite()
+openDB_Browser_for_SQLite(ByRef d:="",t:="Words",doClickIntoSearch:=true,search:="someNew2secTooltip"){
+	ToolTip1sec(A_LineNumber " " RegExReplace(A_LineFile,".*\\"))
+	if(!d)
+		d := (InStr(A_ComputerName,"540P-SL5NET"))
+	? "G:\fre\private\sql\sqlite\actionList.db"
+	: A_ScriptDir "\actionListLearned.db"
+
+	settitlematchmode,1
+	needle=DB Browser for SQLite ; ahk_class Qt5QWindowIcon
+	ifwinnotexist, % needle
+	{
+            ; https://github.com/sqlitebrowser/sqlitebrowser/wiki/Command-Line-Interface
+		para := " -t " t " " d " --t " t
+		commandline = "C:\Program Files\DB Browser for SQLite\DB Browser for SQLite.exe" %para%
+		;clipboard := commandline
+		clipboard := search
+		run,% commandline ,"C:\Program Files\DB Browser for SQLite\"
+		ToolTip2sec(commandline "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",100,100 )
+		winwait, % needle,,9
+		WinActivate, % needle
+		WinWaitActive, % needle,,9
+		send,!tw ; w like words ; send,{tab 4}w ; w like words
+		CoordMode , Mouse, Relative
+		MouseClick,left,331,230,1,1
+		CoordMode , Mouse , Screen
+		Send,^v
+	}
+	RETURN
+}
+;\____ openDB_Browser_for_SQLite __ 190406221702 __ 06.04.2019 22:17:02 __/
 
 
 
