@@ -2726,7 +2726,7 @@ return
 
 
 lblCheckTrayIconStatus:
-showTempTrayIf_isNearTrayMenue(iconAdress)
+showTempTrayIf_isNearTrayMenue(iconAdress) ; Source\inc_ahk\ScriptNameLetterIcon.inc.ahk
 DetectHiddenWindows,Off
 IfWinExist,%A_ScriptName%_icon,ExitApp %A_ScriptName% ; message from child DynaRun() script
 {

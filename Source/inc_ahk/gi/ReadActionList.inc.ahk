@@ -628,6 +628,8 @@ g_actionListID = %g_actionListID%
       ;reads list of words from file
 		
         ; was visited 19-04-06_20-37
+
+      if(g_config.listBoxGui["FileRead, ParseWords"]["show"])
       	toolTipGui("FileRead, ParseWords (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,-50,"\_",A_LineNumber,"yellow")
 		FileRead, ParseWords, %actionList% ; Reads a file's contents into a variable. ok great
       ; ParseWords := JEE_StrUtf8BytesToText( ParseWords ) ; 26.09.2018 18:40 this function was the reason while Ã¤ Ã¼ Ã¶ was not woring
@@ -636,7 +638,7 @@ g_actionListID = %g_actionListID%
 		if(0 && InStr(A_ComputerName,"SL5"))
 			msgbox, % A_ThisFunc ":" A_LineNumber  "does this happens`?? 18-11-17_09-41 ==> yes it does: 18-11-17"
 		if(addListOpenAction_ifNotAlreadyInTheList(ParseWords,actionList)){
-			;/Â¯Â¯Â¯Â¯ beginnings Â¯Â¯ 181117101035 Â¯Â¯ 17.11.2018 10:10:35 Â¯Â¯\
+			;/¯¯¯¯ beginnings ¯¯ 181117101035 Â¯Â¯ 17.11.2018 10:10:35 Â¯Â¯\
 ; only in first lines is searched !!!
 ; so please put open dialog at beginnings
 			contentActionList_first432lines := SubSTr( contentActionList , 1 , 123 ) ; we dont wann search the complete file.

@@ -19,7 +19,8 @@ g_config.listBoxGui := {
  	tipps: { 
  		/* show: true, */
  		durationMilliseconds: 3500
- 	}
+ 	},
+	"FileRead, ParseWords": { "show": false }
 }
 g_config.ScriptDir := A_ScriptDir
 g_config.actionListDirBase := "..\actionLists" ; down from source upt to actionLists
