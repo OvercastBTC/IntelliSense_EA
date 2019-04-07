@@ -1,4 +1,4 @@
-ï»¿#Include *i _global.ahk
+#Include *i _global.ahk
 ; #Include _globalActionListsGenerated\_global.ahk
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
@@ -59,6 +59,7 @@ MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegE
 MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 Msgbox,`n(%A_LineFile%~%A_LineNumber%)
 Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
+
 
 
 ToolTip2sec|rr|ToolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )|ahk|Send,{CtrlDown}{left 8}{CtrlUp}
@@ -636,7 +637,7 @@ clickImg(i, textInfo, mm, offset = 20)
 
 
 
-Schlaf, Schlafen, Meditation , SchÃ¶ne Natur, Ber
+Schlaf, Schlafen, Meditation , Schöne Natur, Ber
 
 |r|
 Ein neuer
@@ -650,16 +651,16 @@ testMe
 title
 
 |r|
-Moinsen ðŸ™‚ congratulations on your new job.
+Moinsen ?? congratulations on your new job.
 I'll apply for your 20 hours administrator job.
-Aber ich glaube das passt nicht nur so zum SpaÃŸ. GrÃ¼ÃŸle aus Wannweil
+Aber ich glaube das passt nicht nur so zum Spaß. Grüßle aus Wannweil
 
 deprecated
 
 Speak(A_lineNumber " " A_lineFile,"PROD")
 test
 
-RegRead, ActionList, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, ActionList
+RegRead, ActionList, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList
 
 feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip, closeInSeconds )
 

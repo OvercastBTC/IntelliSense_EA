@@ -1,4 +1,4 @@
-/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09  
+﻿/* this file will be automatic precompiled before it is used by autohotkey 14.01.2019 12:09  
 */
 ; recomandet for g_min_searchWord_length is: 1 or 2 maybe 0
 ; if u use 0 it maybe not work always at the moment (works if word match or if you have a fresh window change) (19-01-19_10-44)
@@ -14,13 +14,13 @@ g_actionListDBfileAdress := (InStr(A_ComputerName,"540P-SL5NET"))
 g_min_searchWord_length := 0
 
 ; false or "" no extra info will showed below the listBoxGui (may you first need typing something to see it. 19-04-04_15-23)
+; you could use this kind of commends: /* show: true, */
 g_config.listBoxGui := { 
  	tipps: { 
- 		show: true,
+ 		/* show: true, */
  		durationMilliseconds: 3500
  	}
 }
-
 g_config.ScriptDir := A_ScriptDir
 g_config.actionListDirBase := "..\actionLists" ; down from source upt to actionLists
 ; Hack: if onlyThisList is set and not false it will only this list used for everything. not recomandet! 19-04-04_22-59
@@ -33,9 +33,39 @@ g_config.actionList := {
 
 
 ; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed. Thats may mor useful for gi-developer not user of it.
-g_config.infoBox[1] := { 
-	showName: "¯|"
+g_config.infoBox := { 
+	1: { 
+		showName: "",
+		backup: "¯|"
+	}, 
+	2: { 
+		crosshair: "",
+		backup: "¯|"
+	}
 }
+g_config.ToolTip := { 
+	1: false
+}
+
+
+; please use it like this:     if( 1<RegExMatch(0 . A_ScriptName, g_ignReg["saveLogFiles"]["scriptName"])	|| ......
+; OR: the regEx .^ never match anything. if you use .^ i recomand using: if( RegExMatch(ln, g_ignReg["saveLogFiles"]["ln"])	|| ......
+; ignore all ==> means for e.g. no log then
+g_ignReg := (InStr(A_ComputerName,"xxxxxxxxx SL5")) 
+? { 
+	feedbackMsgBox: {tit:".^", text:".^"} 
+	, saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"(WordIndex|CloseListBox|HotKeys|g_ListBox_Id)\b"}
+	, sqlQuery: {ln:".^", scriptName:".^", text:".^"}
+	, hotKeyStuff: {ln:".^", scriptName:".^", text:".^"}
+	, runLogFile: {ln:".^", scriptName:".^", text:".^"} 
+}
+: { 
+	feedbackMsgBox:{tit:".^", text:".^"} 
+	, saveLogFiles: {ln:".", scriptName:".^", text:".^"}
+	, sqlQuery: {ln:".^", scriptName:".^", text:".^"}
+	, hotKeyStuff: {ln:".^", scriptName:".^", text:".^"}
+	, runLogFile: {ln:".", scriptName:".^", text:".^"}
+	 }
 
 
 ; it takes the first existing editor, from the follwoing list.
@@ -96,8 +126,13 @@ g_config.sql := {
 		ignIfWhereIsWithoutListID : false,
 		showFilePrefix : false 
 	},
+	template : {
+		dir: A_ScriptDir "\sql\template",
+		maxNnumberUsedTemplates : 7
+	},
 	DB_Browser: A_ProgramFiles " (x86)\DB Browser for SQLite\DB Browser for SQLite.exe"
 } 
+; default for maxNnumberUsedTemplates is usually 7 (files select0 ... select6). no results if you use 0
 ; showFilePrefix useful if you want find out which select data supplies
 
 g_config.FuzzySearch := {
@@ -106,11 +141,6 @@ g_config.FuzzySearch := {
 	keysMAXperEntry : 6,
 	minKeysLen: 4,
 	doValueCopy : false
-}
-; default for maxNnumberUsedTemplates is usually 7 (files select0 ... select6). no results if you use 0
-g_config.sql.template := {
-	dir: A_ScriptDir "\sql\template",
-	maxNnumberUsedTemplates : 7
 }
 
 ; you do not need these runners. these are just examples:
