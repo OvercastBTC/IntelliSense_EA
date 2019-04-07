@@ -908,8 +908,7 @@ reload
 
 
 
-; msgbox, % g_config.listBoxGui.tipps.durationMilliseconds
-; msgbox, % g_config.listBoxGui.tipps.onlyThisList
+
 
 
 MainLoop()
@@ -2744,6 +2743,3 @@ return
 ; #Include *i tools\DebugVars\VarTreeGui.ahk
 ; #Include *i tools\DebugVars\dbgp.ahk
 ; #Include *i tools\DebugVars\TreeListView_test.ahk
-
-
-; Mo To Mo

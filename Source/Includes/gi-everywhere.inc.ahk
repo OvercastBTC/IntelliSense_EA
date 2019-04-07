@@ -818,7 +818,7 @@ SELECT actionList FROM actionLists WHERE actionList Like 'g_Word' AND actionList
 			if(0 && InStr(A_ComputerName,"SL5"))
 				tooltip,% ":-) row[1]=" row[1] ", row[2]=" row[2] " , g_Word=" g_Word  " , g_MatchTotal=" g_MatchTotal " , Normalize=" Normalize "`n" SELECT  "`nRecomputeMatches(calledFromStr):(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"),1,1
 			
-            ;/¯¯¯¯ topPseudoDistinct ¯¯ 181209155652 ¯¯ 09.12.2018 15:56:52 ¯¯\
+            ;/¯¯¯¯ topPseudoDistinct cut out duplicates ¯¯ 181209155652 ¯¯ 09.12.2018 15:56:52 ¯¯\
             ; pseudoDistinct experimental ? todo: without any effect ??? yes it works: 18-12-09_16-22: recomandet for testing: usa list with two entries (more then one)
 			; if( A_index == 1 ){ ; first result from this new select. for performance reasons. in most casese the new first is the double
                 ; do distinct proof
@@ -839,7 +839,7 @@ SELECT actionList FROM actionLists WHERE actionList Like 'g_Word' AND actionList
 ; to seba test msgbox box tt
             ;\____ pseudoDistinct __ 181209155658 __ 09.12.2018 15:56:58 __/
 			
-; tes
+; T
 			
 			
 			global g_min_searchWord_length
@@ -1162,7 +1162,7 @@ LIMIT 9
                    }
 			}
 			; Tool Tooltip too Tool
-			; Tool Tooltip
+			; Tool TooltipTool
 			
 			nr := ( Mod(round(A_Sec/20), 2) == 0) ; toggles every 20 seconds beetween 0 1
 			if(nr && actionList && !instr(actionList, "isNotAProject" ))

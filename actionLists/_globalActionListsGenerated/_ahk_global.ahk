@@ -659,7 +659,7 @@ deprecated
 Speak(A_lineNumber " " A_lineFile,"PROD")
 test
 
-RegRead, ActionList, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList
+RegRead, ActionList, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, ActionList
 
 feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), tip, closeInSeconds )
 
