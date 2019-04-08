@@ -14,7 +14,7 @@ Menu, Tray, Tip , % Chr(8203) ; i dont want text there. The tray icon's tooltip 
 ;/¯¯¯¯ g_ignReg ¯¯ 181124115548 ¯¯ 24.11.2018 11:55:48 ¯¯\
 global g_ignReg
 /*
-depracated. its alss in  config file
+depracated. its all in  config file
 
 if(InStr(A_ComputerName,"xxxxxxxxx SL5")) ; do ignore nothing. development computer
 global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:"\b(Window|ListBox)\.ahk", text:"(WordIndex|CloseListBox|HotKeys|g_ListBox_Id)\b"},                    sqlQuery: {ln:".^", scriptName:".^", text:".^"},                    hotKeyStuff: {ln:".^", scriptName:".^", text:".^"},                    runLogFile: {ln:".^", scriptName:".^", text:".^"} } ;;;; regEx ignoreConfigList ;;;;
@@ -22,7 +22,6 @@ global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFile
 		; OR: the regEx .^ never match anything. if you use .^ i recomand using: if( RegExMatch(ln, g_ignReg["saveLogFiles"]["ln"])	|| ......
 else ; ignore all ==> means for e.g. no log then
 global g_ignReg := { feedbackMsgBox:{tit:".^", text:".^"} ,          saveLogFiles: {ln:".^", scriptName:".^", text:".^"},                    sqlQuery: {ln:".^", scriptName:".^", text:".^"},                    hotKeyStuff: {ln:".^", scriptName:".^", text:".^"},                    runLogFile: {ln:".^", scriptName:".^", text:".^"} } ;;;; regEx ignoreConfigList ;;;;
-
 
 
 

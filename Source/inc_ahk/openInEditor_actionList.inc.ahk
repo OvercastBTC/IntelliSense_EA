@@ -87,7 +87,7 @@ lll( A_ThisFunc ":" A_LineNumber , A_LineFile)
 	if( SubStr( m1CorrectedAhkFileAddress , -3 ) <> ".ahk" ) ; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-66
 		m1CorrectedAhkFileAddress .= ".ahk"
     else{
-        if(SubStr( m1CorrectedAhkFileAddress , -7 ) == ".ahk.ahk") ; was happend 19-04-04_15-01
+        if(SubStr( m1CorrectedAhkFileAddress , -7 ) == ".ahk.ahk")  ; was happend 19-04-04_15-01
            Msgbox,plausibilty damage `n %m1CorrectedAhkFileAddress% `n `n (%A_LineFile%~%A_LineNumber%)
     }
 

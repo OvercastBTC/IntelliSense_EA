@@ -1,6 +1,7 @@
 ﻿; Indentation_style: https://de.wikipedia.org/wiki/Einrueckungsstil#SL5small-Stil
 ; # ErrorStdOut
 
+SetWorkingDir %A_ScriptDir%
 
 
 if(0){
