@@ -1199,8 +1199,26 @@ LIMIT 9
 	setTrayIcon()
 }
 ;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
+;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
+;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
+;\____ RecomputeMatches __ 181025110000 __ 25.10.2018 11:00:00 __/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;
+
+
 
 ; SELECT word, worddescription, wordreplacement FROM Words WHERE wordindexed GLOB 'TOO*'  AND actionListID = '2' ORDER BY CASE WHEN count IS NULL then ROWID else 'z' end, CASE WHEN count IS NOT NULL then ( (count - 0) * ( 1 - ( '0.75' / (LENGTH(word) - 3)))) end DESC, Word LIMIT 10;
 

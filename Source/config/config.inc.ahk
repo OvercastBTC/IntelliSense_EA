@@ -17,8 +17,8 @@ g_min_searchWord_length := 0
 ; you could use this kind of commends: /* show: true, */
 g_config.listBoxGui := { 
  	tipps: { 
- 		/* show: true, */
- 		durationMilliseconds: 3500
+ 		show: true, 
+ 		durationMilliseconds: 5500
  	},
 	"FileRead, ParseWords": { "show": false }
 }
@@ -29,8 +29,10 @@ g_config.actionList := {
 	tipps: { 
 		durationMilliseconds: 3500
 	}
-	/* , onlyThisList: "onlyThisList" <= works not at the moment 19-04-05_08-11 */
 }
+
+; debug
+g_config.debug.actionList.update := { trackChanges: true }
 
 
 ; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed. Thats may mor useful for gi-developer not user of it.

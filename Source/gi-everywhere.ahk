@@ -175,7 +175,7 @@ or g_config["FuzzySearch"]["MAXlines"]
 msg .= "or " configIncAhkAddress "`n"
 msg .= "or " configMinifyIncAhkAddress "`n"
 msg .= "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox, 4,reload in seconds, % msg,2
+MsgBox, 4,reload in seconds, % msg,3
 IfMsgBox Yes
     reload
 IfMsgBox Timeout
@@ -910,6 +910,8 @@ reload
 ;\____ playGround __ 190322063417 __ 22.03.2019 06:34:17 __/
 
 
+SoundbeepString2Sound( "test" A_LineFile, "DEBUG" ) ;   ;  (DEV, TEST, STAGING, PROD)
+;   Msgbox,% g_config.debug.actionList.update.trackChanges " 19-04-09_17-16"
 
 
 
@@ -1048,6 +1050,7 @@ return
 
 ; 54625 toool        too___hallo Welt von global too msgbox lkjl451212
 ;
+
 
 
 
@@ -1287,6 +1290,9 @@ return
 ;/¯¯¯¯ Ctrl+Shift+F5 ¯¯ 181201095247 ¯¯ 01.12.2018 09:52:47 ¯¯\
 ; Ctrl+Shift+F5
 ^+f5:: ; exit-all-scripts and restart
+reload
+return
+; test
 ;if(1 && InStr(A_ComputerName,"SL5")){
 if(1){
     setRegistry_toDefault()
