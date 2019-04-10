@@ -3,12 +3,9 @@ reloadActionList:
 ; Speak("reload actionList","PROD")
 ; SoundbeepString2Sound(A_ThisFunc)
 
-SoundbeepString2Sound( "test" A_LineFile, "DEBUG" ) ;   ;  (DEV, TEST, STAGING, PROD),
-;   Msgbox,% g_config.debug.actionList.update.trackChanges " 19-04-09_17-16"
-if(g_config.debug.actionList.update.trackChanges){
-    SoundbeepString2Sound( A_LineFile, "DEBUG" ) ;   ;  (DEV, TEST, STAGING, PROD),
-   Msgbox,trackChanges is active `n(%A_LineFile%~%A_LineNumber%)
-}
+
+debug(g_config.debug, actionList)
+
 
 Critical, On
 ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
@@ -16,12 +13,7 @@ Critical, Off
 g_min_searchWord_length := getMinLength_Needetthat_ListBecomesVisible(ParseWordsCount, maxLinesOfCode4length1)
  ;feedbackMsgBox("reloadActionList:",A_LineNumber . " " .  A_LineFile,1,1)
 
-; khlkj b tretr
-
-
 ; ToolTipSec(t,x=123,y=321,sec=1000); 75+ lines in Live Edit Live_Edit Pseudo Live Edit for Chrome Firefox PhpStorm.ahk
-
-
 
 activeTitleOLD := activeTitle
 WinGetActiveTitle, activeTitle

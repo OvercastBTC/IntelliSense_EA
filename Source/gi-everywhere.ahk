@@ -3,7 +3,6 @@
 
 SetWorkingDir %A_ScriptDir%
 
-
 if(0){
 ; global actionListDirBase
 ; actionListDirBase := A_ScriptDir "\..\actionLists"
@@ -152,6 +151,13 @@ global g_actionList_UsedByUser_since_midnight := {} ; [g_actionListID]
 g_config := {}
 #Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahk ; update_configMinify_incAhkFile()
 
+
+
+
+
+
+
+
 if(g_config.infoBox[1]["showName"]){
     ; use a virtal line and then all your toolTipGui are moveble by mousedrag and drop
     toolTipGui("^_^", x:=0, y:=10, "v)_" ,A_LineNumber,"Purple")
@@ -267,6 +273,13 @@ RecordSet.Free()
 ; DB.CloseDB()
 tooltip,% sumStr
 msgbox,% fileName ": `n" sumStr
+}else{
+
+
+
+
+
+
 }
 
 ; Tooltip
@@ -274,8 +287,9 @@ msgbox,% fileName ": `n" sumStr
 
 
 ;/¯¯¯¯ doUseNewMethodStartOfImplementing22march2019 ¯¯ 190324044131 ¯¯ 24.03.2019 04:41:31 ¯¯\
-    global doUseNewMethodStartOfImplementing22march2019 := true
-    global doUseNewMethodStartOfImplementing22march2019 := false
+    global doUseNewMethodStartOfImplementing22march2019
+    ; global doUseNewMethodStartOfImplementing22march2019 := true
+    ; global doUseNewMethodStartOfImplementing22march2019 := false
     global DB
     if(doUseNewMethodStartOfImplementing22march2019){
         global DB := new SQLiteDB
@@ -336,6 +350,11 @@ If !DB.Exec(SQL)
 }
 ;\____ doUseNewMethodStartOfImplementing22march2019 __ 190324044151 __ 24.03.2019 04:41:51 __/
 
+
+if(g_config.debug.DB.table.performance.onLoad == "drop")
+    Rebuild_performance_table()
+
+
 ;\____ global __ 190113082444 __ 13.01.2019 08:24:44 __/
 ;\____ global __ 190113082444 __ 13.01.2019 08:24:44 __/
 ;\____ global __ 190113082444 __ 13.01.2019 08:24:44 __/
@@ -343,6 +362,10 @@ If !DB.Exec(SQL)
 
 if(1 && InStr(A_ComputerName,"SL5"))
 	Speak("sound check sucessful. you could config it with: g_doSound ","PROD")
+
+
+
+
 
 
 
@@ -734,6 +757,8 @@ AutoTrim, Off
 
 
 ; RebuildDatabase(g_config["sql"]["template"]["dir"])
+if(g_config.debug.DB.table.performance.onLoad == "drop")
+    Rebuild_performance_table()
 
 
 
@@ -911,9 +936,24 @@ reload
 
 
 SoundbeepString2Sound( "test" A_LineFile, "DEBUG" ) ;   ;  (DEV, TEST, STAGING, PROD)
-;   Msgbox,% g_config.debug.actionList.update.trackChanges " 19-04-09_17-16"
+;   Msgbox,% g_config.debug.actionList.onChange.infoBox " 19-04-09_17-16"
+
+; color := g_config.debug.actionList.onChange.color
+; Msgbox,%color% `n(%A_LineFile%~%A_LineNumber%)
 
 
+    if(g_config.debug.DB.onLoad.delete){
+        FileDelete,%g_actionListDBfileAdress%
+        sleep,500
+    }
+
+
+
+
+debug(g_config.debug, actionList)
+
+if(g_config.debug.DB.table.performance.onLoad == "drop")
+    Rebuild_performance_table()
 
 
 MainLoop()

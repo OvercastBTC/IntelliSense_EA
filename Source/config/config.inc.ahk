@@ -30,9 +30,41 @@ g_config.actionList := {
 		durationMilliseconds: 3500
 	}
 }
-
-; debug
-g_config.debug.actionList.update := { trackChanges: true }
+ 
+;/¯¯¯¯ debug ¯¯ 190410200413 ¯¯ 10.04.2019 20:04:13 ¯¯\
+;/¯¯¯¯ debug ¯¯ 190410200413 ¯¯ 10.04.2019 20:04:13 ¯¯\
+;/¯¯¯¯ debug ¯¯ 190410200413 ¯¯ 10.04.2019 20:04:13 ¯¯\
+;/¯¯¯¯ debug ¯¯ 190410200413 ¯¯ 10.04.2019 20:04:13 ¯¯\
+doUseNewMethodStartOfImplementing22march2019 := false
+g_config.debug := {
+	actionList: {
+		onChange: {
+			tooltip: true,
+			feedbackMsgBox: true,
+			infoBox: true,
+			color: "Aqua"
+		}
+	},
+	"DB": {
+		"onLoad": { 
+			delete:"false" 
+		},
+		table: {
+			performance: {
+				onLoad: "drop",
+				INSERT_function_call_time2db: true
+			}
+		}
+	}
+}
+; debug 
+; g_config["debug"]["actionList"]["onChange"] := { infoBox: true, color: "Aqua" }
+;g_config.debug.actionList.onChange := { infoBox: true, color: "Aqua" }
+; g_config.debug.actionList.onChange["infoBox"] := true
+; g_config.debug.actionList.onChange["color"] := "Aqua"
+;\____ debug __ 190410200432 __ 10.04.2019 20:04:32 __/ 
+;\____ debug __ 190410200432 __ 10.04.2019 20:04:32 __/ 
+;\____ debug __ 190410200432 __ 10.04.2019 20:04:32 __/ 
 
 
 ; if g_config.infoBox[1] false or "" no extra info about actionListFileAddress is will showed. Thats may mor useful for gi-developer not user of it.
@@ -74,12 +106,11 @@ g_ignReg := (InStr(A_ComputerName,"xxxxxxxxx SL5"))
 ; it takes the first existing editor, from the follwoing list.
 ; very first time it uses the smallest, most simpliest editor (notepad.exe not to be confused with notepad++.exe)
 g_config.editor := [ 
+	A_ProgramFiles "\Notepad++\notepad++.exe",
 	A_ProgramFiles "\Microsoft VS Code\Code.exe",
-	 "C:\Program Files\Microsoft VS Code\Code.exe",
-	 "C:\Program Files\Microsoft VS Code\bin\code.cmd",
+	A_ProgramFiles "\Microsoft VS Code\bin\code.cmd",
 	 "C:\Users\lauffer\AppData\Local\Programs\Microsoft VS Code\Code.exe",
 	 A_ScriptDir "\..\AHK-Studio\AHK-Studio.ahk",
-	 "C:\Program Files\Notepad++\notepad++.exe",
 	 A_ScriptDir "\..\AutoGUI\AutoGUI.ahk"
 ]  ; above the list of the editors, which is gone through alphabetically up to the first find (fileAdress exists).
 

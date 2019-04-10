@@ -4,18 +4,14 @@
 ____open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 open ahk_global|rr||ahk|openInEditor,_ahk_global.ahk
 
-msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-Msgbox,`n(%A_LineFile%~%A_LineNumber%)
-Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
+msgbox,% msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+Msgbox,% msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+MsgBox error|r|MsgBox,262160,% ":(" msg f := "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n" f
 
 Speak(,"PROD")
 Speak( A_ThisFunc,"PROD")
 Speak(" found","PROD")
-
-
 
 rTrim(clipboard," `t`r`n")
 
@@ -55,9 +51,11 @@ Channel IRQ: #ahk
 ActionLists
 Source
 
-Msgbox,% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-MsgBox info on top|r|MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-MsgBox error on top|r|MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
+Msgbox,% msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
+
+MsgBox info|r|MsgBox,262208,% ":)" msg f := "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n" f
+MsgBox error|r|MsgBox,262160,% ":(" msg f := "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n" f
+
 Msgbox,`n(%A_LineFile%~%A_LineNumber%)
 Msgbox|rr|Msgbox,`n(%A_LineFile%~%A_LineNumber%)|ahk|Send,{shift down}{left 33}{shift up}
 
