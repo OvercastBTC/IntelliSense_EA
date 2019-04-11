@@ -40,14 +40,14 @@ stopIfWinTitleExist_giListSELECT(activeTitle,detectHidden := "", excludetTitle :
 		activeTitle := RegExReplace(activeTitle, "i)(\bLike\b[^']+')([^']+)'" , "`n$1%$2%'") ; add wildcardd
 		WinSetTitle,% activeTitleOLD,,% activeTitle
 	    ; msgbox,% activeTitle "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-		if(0 && InStr(A_ComputerName,"SL5"))
+		if(0 && g_config.debug.active)
 			ToolTip, % "WinWait:`n`nWinSetTitle:`n" activeTitleOLD "`n=>`n" activeTitle " `n`n(" A_LineNumber " " RegExReplace(A_LineFile,".*\\") ,1 , 200, 20
 		WinWait, %activeTitle%, , 9000,2
 
         ; inside: stopIfWinTitleExist_giListSELECT
 		while(1){ ; while loop becouse we have casese of false with WinWaitClose 19-01-17_17-25
 			; or? dont need it ?? 19-01-17_17-49
-			if(1 && InStr(A_ComputerName,"SL5"))
+			if(1 && g_config.debug.active)
 				ToolTip, % "WinWaitClose, " substr(activeTitle,1,4) "'" substr(activeTitle,4) "`n`n" . A_LineNumber . " " .  RegExReplace(A_LineFile,".*\\") ,1 , 1, 8
     	    ; DetectHiddenWindows,On
 			WinWaitClose,% activeTitle

@@ -62,7 +62,7 @@ Speak2(text, mode := "DEV" ){
 SoundbeepString2Sound( s, mode := "DEV" ){ ;   ;  (DEV, TEST, STAGING, PROD),
     global g_doSound
     if(!g_doSound && mode != "PROD")
-        if !(mode == "DEBUG" && InStr(A_ComputerName,"SL5"))
+        if !(mode == "DEBUG" && g_config.debug.active)
            return
     minPitch := 500
     AHKcode := "#" . "NoTrayIcon `n "
@@ -271,7 +271,7 @@ Class TTS { ; https://autohotkey.com/boards/viewtopic.php?p=247009#p247009
         } catch e{
             ;throw Exception("Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line, -1)
             tip:="Exception:`n" e.What "`n" e.Message "`n" e.File "@" e.Line
-            if(1 && InStr(A_ComputerName,"SL5"))
+            if(1 && g_config.debug.active)
                 tooltip, % tip , 1,1
         }
 	}
@@ -311,7 +311,7 @@ Class TTS { ; https://autohotkey.com/boards/viewtopic.php?p=247009#p247009
         try{
             this.oVoice.Speak("<pitch absmiddle = '" pitch "'/>",0x20)
         } catch e{
-            if(1 && InStr(A_ComputerName,"SL5") ){
+            if(1 && g_config.debug.active ){
                 m := "this.oVoice.Speak failed `n`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
                 ToolTip5sec( m "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 1 , 1 )
                 lll( A_ThisFunc ":" A_LineNumber , A_LineFile , m )

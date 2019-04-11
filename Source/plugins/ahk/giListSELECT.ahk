@@ -34,7 +34,7 @@ SELECT := RegExReplace(SELECTpre, "m)\n", " ")
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, stop_list_change, % ""
 RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_permanentSELECT, % SELECT
 ; MsgBox, % SELECT
-if(0 && InStr(A_ComputerName,"SL5") )
+if(0 && g_config.debug.active )
      Clipboard := SELECT
 
 

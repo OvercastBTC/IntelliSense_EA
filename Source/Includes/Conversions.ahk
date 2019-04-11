@@ -454,7 +454,7 @@ INSERT_function_call_time_millis_since_midnight( aLineFile , aThisFunc , aLineNu
 
 if((g_config.debug.DB.table.performance.INSERT_function_call_time2db
     || doUseNewMethodStartOfImplementing22march2019)
-        && InStr(A_ComputerName,"SL5")){
+        && g_config.debug.active){
     ; nix
     ; msgbox,doUseNewMethodStartOfImplementing22march2019 19-03-24_04-43
 }else

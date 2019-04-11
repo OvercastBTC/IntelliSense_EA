@@ -60,7 +60,7 @@ InitializeListBox(){
    }
       ; to too  to1111  to   too   too  tooltip t t
    ; Gui, ListBoxGui:Font, s%prefs_ListBoxFontSize%, %ListBoxFont% ;
-   if(0 && InStr(A_ComputerName,"SL5"))
+   if(0 && g_config.debug.active)
     ToolTip5sec( g_ListBoxFontSize " = font size of ListBoxGui `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") )
    ; Gui, ListBoxGui:Font, s%g_ListBoxFontSize%, %ListBoxFont%
    ;Gui, ListBoxGui:Font, s%g_ListBoxFontSize% cRed Bold, %ListBoxFont% ; https://autohotkey.com/docs/commands/GuiControl.htm#Font
@@ -102,7 +102,7 @@ InitializeListBox(){
        ; msgbox,% vg_ListBox%A_Index% "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" ; <== Oops . slwas empty ????? 18-12-31_12-53
        Gui, ListBoxGui: Add, ListBox, vg_ListBox%A_Index% R%A_Index% X0 Y0 T%g_ListBoxFontSize% T32 hwndg_ListBoxHwnd%A_Index%
     } catch e{
-        if(0 && InStr(A_ComputerName,"SL5")) ; happens few seconds from script start. only the very first time. 19-03-18_00-53
+        if(0 && g_config.debug.active) ; happens few seconds from script start. only the very first time. 19-03-18_00-53
             toolTip9sec( "Error => ignore it 18-11-12_22-28 `n(" A_ThisLabel " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",50,50 )
     }
 
@@ -129,7 +129,7 @@ ListBoxRigthButtionClick(wParam, lParam, msg, ClickedHwnd){
         openInEditorFromIntern( fileAddress )
     else
         openInEditorFromIntern( actionList )
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(1 && g_config.debug.active)
         ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-42" )
     ;msgbox,`n(%A_LineFile%~%A_LineNumber%)
 }
@@ -211,7 +211,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
       if(g_doListBoxFollowMouse){
             tip=STOP follow listbox mouse `n (from: %A_LineFile%~%A_LineNumber%)
-            if(0 && InStr(A_ComputerName,"SL5"))
+            if(0 && g_config.debug.active)
                 ToolTip1sec(tip)
             g_doListBoxFollowMouse := false ; toggle it. _
             SetTimer,doListBoxFollowMouse,off
@@ -395,11 +395,11 @@ if(0 && calledFromName)
     global g_min_searchWord_length
     if(calledFromName != "~esc" && !g_min_searchWord_length) ; does hav effect ???
     {
-        if(0 && InStr(A_ComputerName,"SL5"))
+        if(0 && g_config.debug.active)
             ToolTip5sec( "! ~esc `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         return
     }
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         ToolTip9sec( calledFromStr "`n" calledFromName "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 ; to too  too too too too msg too tool i tool  tool cal t
@@ -854,7 +854,7 @@ else{
    ret := Floor((Width-ListBoxBaseSizeX)/ g_ListBoxCharacterWidthComputed)
    if(ret < 180){
         ret := 180 ; dirty bug fix 07.11.2018 19:08
-        if(0 && InStr(A_ComputerName,"SL5"))
+        if(0 && g_config.debug.active)
             tooltip,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")", 30, 70
             ; msgbox,% "ret := 100 - dirty bug fix 07.11.2018 19:08 . works???(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
     }
@@ -988,7 +988,7 @@ else if(0){
       MatchEnd := g_MatchStart + (prefs_ListBoxRows - 1)
 
 
-if(0 && InStr(A_ComputerName,"SL5")){
+if(0 && g_config.debug.active){
         isInIn := (instr(actionList,short_RegReadActionList_DebugInfo) || instr(RegReadActionList_DebugInfo,short_actionList) )
          tooltip,% "RecomputeMatchesTimer: " g_Word "(" StrLen(g_Word) ") (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")" ((!isInIn) ? "Oops: al=" RegExReplace(actionList,".*\\") "<> reg=" RegExReplace(RegReadActionList_DebugInfo,".*\\") : RegExReplace(actionList,".*\\") ) ,1,-20
          ; tes
@@ -1031,7 +1031,7 @@ if(0 && InStr(A_ComputerName,"SL5")){
 
       g_ListBoxContentWidth := ListBoxActualSizeW - ScrollBarWidth - BorderWidthX
       g_ListBoxContentWidth *= 4 ; seems has same effect then factor 2
-      if(0 && InStr(A_ComputerName,"SL5"))
+      if(0 && g_config.debug.active)
         ToolTip, % g_ListBoxContentWidth "`n = g_ListBoxContentWidth `n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 500,1,5
 
       if(g_ListBoxContentWidth < 600)
@@ -1171,7 +1171,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
       If ( (ListBoxPosY + g_ListBoxMaxWordHeight ) > MonBottom ){
          ListBoxPosY := CaretYorMouseYfallback() - ListBoxActualSizeH
          g_ListBoxFlipped := true
-         if(1 && InStr(A_ComputerName,"SL5"))
+         if(1 && g_config.debug.active)
             ToolTip2sec(g_ListBoxFlipped "`n=g_ListBoxFlipped`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
       }
       

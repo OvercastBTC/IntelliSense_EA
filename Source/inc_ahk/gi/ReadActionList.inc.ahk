@@ -46,7 +46,7 @@ ReadInTheActionList(sql_template_dir, calledFromStr){ ;Read in the actionList
 	global g_min_searchWord_length
 	; Speak(A_lineNumber,"PROD")
 	
-	if(1 && InStr(A_ComputerName,"SL5"))
+	if(1 && g_config.debug.active)
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, % A_ThisFunc , % calledFromStr
 	
 	Critical, On
@@ -82,7 +82,7 @@ ReadActionList( calledFromStr ){
 	
 	global g_config
 	
-	if(1 && InStr(A_ComputerName,"SL5"))
+	if(1 && g_config.debug.active)
 		Speak("ReadActionList sucessful started","PROD")
     	; Speak( A_lineNumber ,"PROD")
 	
@@ -104,7 +104,7 @@ ReadActionList( calledFromStr ){
 	
 	
 	if(!actionList){
-		if(1 && InStr(A_ComputerName,"SL5")){
+		if(1 && g_config.debug.active){
 			Speak(A_lineNumber,"PROD")
 			; MsgBox,262160,% ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		}
@@ -133,7 +133,7 @@ ReadActionList( calledFromStr ){
 		if(itsAGeneratedList_DIRTY_BUGFIX){
 			actionList := substr( actionList, 1 , strlen(actionList) -StrLen(postFixGenerated_DIRTY_BUGFIX) )
 			actionList .= ".ahk._Generated.ahk"
-			if(1 && InStr(A_ComputerName,"SL5")){
+			if(1 && g_config.debug.active){
 				ToolTip2sec( "Oops : " postFixGenerated_DIRTY_BUGFIX "`n`n" actionList "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 				sleep,9000
 			}
@@ -143,14 +143,14 @@ ReadActionList( calledFromStr ){
 	}
 	
 	if(!itsAGeneratedList){
-		if(0 && InStr(A_ComputerName,"SL5"))
+		if(0 && g_config.debug.active)
 			Speak(A_LineNumber ": Not a Generated List" ,"PROD") ; bug entecekt actionList 12.11.2018 11:02 todo:
 		fileEx := FileExist( actionList postFixGenerated ) ; If no file is found, an empty string is returned.
 		; found a bug in Autohotkey version: v1.1.30.01 - November 11, 2018 https://www.autohotkey.com/boards/viewtopic.php?f=14&t=60288&p=254653#p254653
 		; already reported heere: https://autohotkey.com/board/topic/89401-ahk-syntax-for-function-call-drives-me-crazy/
 		if(fileEx){
 			actionList .= postFixGenerated ; quick fix 14.11.2018 11:14
-			if(0 && InStr(A_ComputerName,"SL5") && !InStr(actionList,"isNotAProject")){
+			if(0 && g_config.debug.active && !InStr(actionList,"isNotAProject")){
 				Speak(A_LineNumber ": Not a Generated List but Generated List exist" ,"PROD") ; bug entecekt actionList 12.11.2018 11:02 todo:
 			    ; clipboard := actionList " `n fileEx= " fileEx "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 				msg =
@@ -168,7 +168,7 @@ ReadActionList( calledFromStr ){
 				
     			; ..\actionLists\ChromeWidgetWin1\PRIVATE_Turek_Gmail.ahk._Generated
 			}
-		}else if(1 && InStr(A_ComputerName,"SL5")){
+		}else if(1 && g_config.debug.active){
 			m =
 			(
 			! FileExist( actionList postFixGenerated )
@@ -186,7 +186,7 @@ ReadActionList( calledFromStr ){
 	;\____ itsAGeneratedList __ 190118203552 __ 18.01.2019 20:35:52 __/
 	
 	
-	if(1 && InStr(A_ComputerName,"SL5"))
+	if(1 && g_config.debug.active)
 		Speak(A_LineNumber " " regExReplace(actionList,".*\\") ,"PROD")
     ; clipboard := actionList
 	
@@ -196,7 +196,7 @@ ReadActionList( calledFromStr ){
 	
 	; global g_config ; ["FuzzySearch"]["enable"]
 	
-	if(1 && InStr(A_ComputerName,"SL5"))
+	if(1 && g_config.debug.active)
 		speak(A_ThisFunc)
 	
     ;/Â¯Â¯Â¯Â¯ \.ahk Â¯Â¯ 181025172431 Â¯Â¯ 25.10.2018 17:24:31 Â¯Â¯\
@@ -212,7 +212,7 @@ ReadActionList( calledFromStr ){
         )
 		log .= "`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		log .= "`n 19-01-16_18-88"
-		if(1 && InStr(A_ComputerName,"SL5"))
+		if(1 && g_config.debug.active)
 			feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), log )
             ;msgBox,% log " ==> RETURN `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	}
@@ -235,16 +235,16 @@ ReadActionList( calledFromStr ){
 	FileGetTime, FileGet_actionListModified, %actionList%, M
 	FormatTime, FileGet_actionListModified, %FileGet_actionListModified%, yyyy-MM-dd HH:mm:ss
 	if(!FileGet_actionListModified){
-		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+		if(1 && g_config.debug.active && activeTitle == "isNotAProject")
 			ToolTip4sec(" Oops  !FileGet_actionListModified (" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
 ; SELECT distinct replace(actionList, rtrim(actionList, replace(actionList, '\', '')), '') || '|rr|' || '|ahk|RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList, ' || substr(actionList, 1, length(actionList)-4) || ' `nRegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_permanentSELECT, `nMsgBox, , OK  :-) actionList was set, to a permanent list. valid as long as this window exists , 2' FROM actionLists WHERE actionList Like '%g_Word%' Limit 10  ; 		return
 	}
 	FileGetSize, FileGet_actionListSize, %actionList%
 	if(!FileGet_actionListSize){
-		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+		if(1 && g_config.debug.active && activeTitle == "isNotAProject")
 			ToolTip4sec(" Oops  !FileGet_actionListSize (" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
 		
-		if(1 && InStr(A_ComputerName,"SL5"))
+		if(1 && g_config.debug.active)
 			Speak("Return in " A_LineNumber , "PROD" )
 		
 		return
@@ -276,7 +276,7 @@ ReadActionList( calledFromStr ){
             at = %at%
             %SELECT%
             )
-			if(1 && InStr(A_ComputerName,"SL5")){
+			if(1 && g_config.debug.active){
 				toolTip2sec( "ups !g_actionListID `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 				; Msgbox,% ":-( Oops `n " m " !g_actionListID ==> return false `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			}
@@ -404,7 +404,7 @@ from: actionList.ahk~%A_LineNumber%
 	isTblWordsEmpty = %isTblWordsEmpty%
 	DatabaseRebuilt = %DatabaseRebuilt%
 	)
-	if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+	if(1 && g_config.debug.active && activeTitle == "isNotAProject")
 		ToolTip4sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", "")  )
 	
 	if(0 && inStr(actionList, "playground" )){
@@ -425,7 +425,7 @@ from: actionList.ahk~%A_LineNumber%
 		
 		INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 		SELECT := "SELECT actionListmodified, actionListsize FROM actionLists WHERE actionList = '" actionList "';"
-		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+		if(1 && g_config.debug.active && activeTitle == "isNotAProject")
 			ToolTip4sec(msg "`n`n" SELECT "`n" A_LineNumber . " " . RegExReplace(A_LineFile, ".*\\", ""),1,1  )
             ;ifwinactive,ahk_class SunAwtFrame
 		INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
@@ -475,7 +475,7 @@ if(g_config.ToolTip[1])
 			ToolTip9sec( FileGet_actionListModified " ## " actionListLastModified "`n" actionList "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			
 			
-			if(0 && InStr(actionList, "Turek") && InStr(A_ComputerName,"SL5"))
+			if(0 && InStr(actionList, "Turek") && g_config.debug.active)
 				MsgBox,262160,% isModified "= isModified`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% actionList "=actionList `n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			
 ;/Â¯Â¯Â¯Â¯ plausibilty Â¯Â¯ 190117203319 Â¯Â¯ 17.01.2019 20:33:19 Â¯Â¯\
@@ -486,7 +486,7 @@ if(g_config.ToolTip[1])
 	; }
 ;\____ plausibilty __ 190117203325 __ 17.01.2019 20:33:25 __/
 			
-			if(0 && InStr(A_ComputerName,"SL5")){
+			if(0 && g_config.debug.active){
 				tip =
                 (
                 isModified=%isModified%
@@ -546,7 +546,7 @@ if(g_config.ToolTip[1])
 				changed "%actionListFileName%" (%A_LineFile%~%A_LineNumber%)
 				)
 				;tooltip,% tip,1,1
-				if(1 && InStr(A_ComputerName,"SL5"))
+				if(1 && g_config.debug.active)
 					ToolTip4sec(tip "`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " ,1,1)
 				else
 					ToolTip4sec("update database`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " ,1,1)
@@ -580,7 +580,7 @@ actionList = >>>>>%actionList%<<<<
 g_ScriptTitle = %g_ScriptTitle%
 g_actionListID = %g_actionListID%
             )
-			if(1 && InStr(A_ComputerName,"SL5") ){
+			if(1 && g_config.debug.active ){
 				; msgbox, %tip% `n(%A_LineFile%~%A_LineNumber%)
 				closeInSeconds := 5
 				ToolTip5sec( tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
@@ -600,7 +600,7 @@ g_actionListID = %g_actionListID%
 ; tool tool tool tooltip
 	
 ; msgbox,% LoadActionList "= LoadActionList(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-	if(0 && InStr(A_ComputerName,"SL5")){
+	if(0 && g_config.debug.active){
 		tip =
             				(
             				LoadActionList = "%LoadActionList%"
@@ -635,7 +635,7 @@ g_actionListID = %g_actionListID%
       ; ParseWords := JEE_StrUtf8BytesToText( ParseWords ) ; 26.09.2018 18:40 this function was the reason while Ã¤ Ã¼ Ã¶ was not woring
       ; JEE_StrUtf8BytesToText 26.09.2018 18:40 was the reason why german Ã¤Ã¼Ã¶ not was workig :) Now all sources are in UTF8.
 		
-		if(0 && InStr(A_ComputerName,"SL5"))
+		if(0 && g_config.debug.active)
 			msgbox, % A_ThisFunc ":" A_LineNumber  "does this happens`?? 18-11-17_09-41 ==> yes it does: 18-11-17"
 		if(addListOpenAction_ifNotAlreadyInTheList(ParseWords,actionList)){
 			;/¯¯¯¯ beginnings ¯¯ 181117101035 Â¯Â¯ 17.11.2018 10:10:35 Â¯Â¯\
@@ -692,7 +692,7 @@ g_actionListID = %g_actionListID%
 		
 		if(!g_isListBoxDisabled)
 			DestroyListBox()
-		if(0 && InStr(A_ComputerName,"SL5"))
+		if(0 && g_config.debug.active)
 			ToolTip9sec( "DestroyListBox() `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
             ; ToolTip9sec( "CloseListBox `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		; ParseWords := addListOpenAction_ifNotAlreadyInTheList(ParseWords,actionList)
@@ -743,7 +743,7 @@ g_actionListID = %g_actionListID%
 ; msgbox,% isModified
 		if (actionListLastModified && FileGet_actionListModified && FileGet_actionListSize && isModified ) {
 			UPDATE := "UPDATE actionLists SET actionListmodified = '" FileGet_actionListModified "', actionListsize = '" FileGet_actionListSize "' WHERE actionList = '" actionList "';"
-			if(0 && InStr(A_ComputerName,"SL5") )
+			if(0 && g_config.debug.active )
 				feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "Query(UPDATE): " UPDATE )
 			try{
 				;g_actionListDB.Query(UPDATE)
@@ -795,7 +795,7 @@ g_actionListID = %g_actionListID%
                 FileGet_actionListModified = %FileGet_actionListModified%
                 FileGet_actionListSize = %FileGet_actionListSize%
                 )
-			if(InStr(A_ComputerName,"SL5"))
+			if(g_config.debug.active)
 				tooltip,% "Problem Oops `n" m "`n (" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 			return false
 		}
@@ -832,7 +832,7 @@ g_actionListID = %g_actionListID%
 		}
 ; -- here we are inside ReadActionList(calledFromStr)
 		
-		if(InStr(A_ComputerName,"SL5"))
+		if(g_config.debug.active)
 			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read actionListLearnedTXTaddress``n" actionListLearnedTXTaddress "``n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ") `n Sleep,2000 `n }  ")
 		else
 			DynaRun("#" . "NoTrayIcon `n" . "loop,20 `n { `n Tooltip,read actionListLearnedTXTaddress ``n" actionListLearnedTXTaddress "``n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ") `n Sleep,100 `n }  ")
@@ -853,7 +853,7 @@ g_actionListID = %g_actionListID%
 		{
 		    ; thats the place where actually typed word are addet !!!!!!
 		    ; while you are typing every word goes in here: 18-10-02_18-11
-			if(1 && InStr(A_ComputerName,"SL5"))
+			if(1 && g_config.debug.active)
 				Msgbox,% "never triggerd. so we could delte it ????(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		    ; ^-- this mesage box never triggerd. so we could delte it.
 		    ; kÃ¤sewurst

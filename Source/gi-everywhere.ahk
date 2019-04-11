@@ -129,7 +129,7 @@ if(itsProbablyNewInstallation){
      existMinify = %FileExist1%
      existConfig = %FileExist2%
      )
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         msgBox,% msg "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 }
 ;\____ itsProbablyNewInstallation __ 190119180246 __ 19.01.2019 18:02:46 __/
@@ -141,7 +141,7 @@ if(itsProbablyNewInstallation){
 ;/¯¯¯¯ global ¯¯ 190113082459 ¯¯ 13.01.2019 08:24:59 ¯¯\
 #Include %A_ScriptDir%\inc_ahk\global_variables_declaration_without_initialization.inc.ahk
 
-if(0 && InStr(A_ComputerName,"SL5"))
+if(0 && g_config.debug.active)
     g_minBytesNeedetToAskBevoreChangingActionList := 812345 ; <== Minimum bytes. then will be asked before the change 20.03.2018 18:22
 
 global g_TimeMilli_SincePriorMouseClick := A_TickCount
@@ -199,7 +199,7 @@ for lang,is_codeRunner_exist in g_config.codeRunner_fileExist
     if(!is_codeRunner_exist){
         infoText .= "not exist:    " lang "`n"
     }
-if(!InStr(A_ComputerName,"SL5"))
+if(!g_config.debug.active)
 if(infoText){
     ToolTip3sec( "Information (not a Error): `n`nNot all of your CodeRunner exist: `n`n`n" infoText "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,100,14 )
 }
@@ -355,7 +355,7 @@ if(g_config.debug.DB.table.performance.onLoad == "empty")
 ;\____ global __ 190113082444 __ 13.01.2019 08:24:44 __/
 ;\____ global __ 190113082444 __ 13.01.2019 08:24:44 __/
 
-if(1 && InStr(A_ComputerName,"SL5"))
+if(1 && g_config.debug.active)
 	Speak("sound check sucessful. you could config it with: g_doSound ","PROD")
 
 
@@ -576,7 +576,7 @@ RegRead, g_ListBoxY, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_ListBoxY
 Hotkey, WheelUp, off
 Hotkey, WheelDown, off
 Hotkey, #s, off ; toggle_RealisticDelayDynamic()
-if(1 && InStr(A_ComputerName,"SL5"))
+if(1 && g_config.debug.active)
     Hotkey, #s, on ; toggle_RealisticDelayDynamic()
 ; #IfWinActive,AHK Studio ahk_class #32770
 ; Hotkey, ^s, on
@@ -774,7 +774,7 @@ if(g_config.debug.DB.table.performance.onLoad == "empty")
 ; RegRead, g_min_searchWord_length, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_min_searchWord_length
 ; regwrite/regread: data normalization of true and false ??? https://autohotkey.com/boards/viewtopic.php?f=76&t=59740
  ; RegWrite , RegSave
-if(0 && !g_min_searchWord_length && InStr(A_ComputerName,"SL5")){
+if(0 && !g_min_searchWord_length && g_config.debug.active){
     todo =
     (
     if g_min_searchWord_length == 0
@@ -1016,7 +1016,7 @@ If (A_TimeSincePriorHotkey < 500 && A_TimeSincePriorHotkey > 80 ){ ; 50 was to s
 ; may helpful: https://autohotkey.com/board/topic/56493-easiest-way-to-detect-double-clicks/
 
 
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         msgbox,% "toggle Listbox `n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
 ;
@@ -1061,7 +1061,7 @@ If (A_TimeSincePriorHotkey < 500 && A_TimeSincePriorHotkey > 80 ){ ; 50 was to s
         }
         RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, g_min_searchWord_length, %g_min_searchWord_length% ; RegWrite , RegSave
     }
-     if(InStr(A_ComputerName,"SL5")){
+     if(g_config.debug.active){
          setTitleMatchMode,2
      if(WinActive( "ahk_class SunAwtFrame" )){ ; idea use this shortcut also
      Sleep,30
@@ -1224,7 +1224,7 @@ result := Loop_Parse_ParseWords( s )
 ; AddWordToList(rootCmdTypeObj,strDebug4insert:="",strDebugByRef:="",1,1, s , 0,"ForceLearn",LearnedWordsCount, rootCmdTypeObj.is_IndexedAhkBlock)
 
     DynaRun(AHKcode AHKcode2)
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         msgbox,% AHKcode2 "`n saved to " sActionListWithoutGenerated_withExt "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     ; tooltip,% AHKcode2 "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 
@@ -1338,7 +1338,7 @@ return
 reload
 return
 ; test
-;if(1 && InStr(A_ComputerName,"SL5")){
+;if(1 && g_config.debug.active){
 if(1){
     setRegistry_toDefault()
     msg := "" "`n"
@@ -1499,7 +1499,7 @@ SetTitleMatchMode,regEx
 #IfWinActive,i).*(Autohotkey|\.ahk|IntelliSense)
 ; #IfWinActive,
 ^+esc:: ; exit-all-scripts. usefull in developer mode
-    if(1 && InStr(A_ComputerName,"SL5") ){
+    if(1 && g_config.debug.active ){
      setRegistry_toDefault()
      exit_all_scripts()
      ; MsgBox, `n (%A_LineFile%~%A_LineNumber%)
@@ -1528,7 +1528,7 @@ RecomputeMatchesTimer:
         ; actionList := RegReadActionList_DebugInfo ; todo: not pretty 18-12-28_08-27 quck and dirty
         gosub,checkInRegistryChangedActionListAddress
     }
-   if(0 && InStr(A_ComputerName,"SL5")){
+   if(0 && g_config.debug.active){
        isInIn := (instr(actionList,short_RegReadActionList_DebugInfo) || instr(RegReadActionList_DebugInfo,short_actionList) )
         tooltip,% "RecomputeMatchesTimer: " g_Word "(" StrLen(g_Word) ") (" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")" ((!isInIn) ? "Oops: al=" RegExReplace(actionList,".*\\") "<> reg=" RegExReplace(RegReadActionList_DebugInfo,".*\\") : RegExReplace(actionList,".*\\") ) ,1,-20
         ; tes
@@ -1681,7 +1681,7 @@ return
 
 lbl_Help_AutoHotkey_online:
     t := "open `n`n autohotkey help online`n`n ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1689,7 +1689,7 @@ lbl_Help_AutoHotkey_online:
 return
 lbl_HelpOnline_EditCreate_actionList:
     t := "open `n`n g-IntelliSense Edit/Create actionList`n`n in myjetbrains.com ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1697,7 +1697,7 @@ lbl_HelpOnline_EditCreate_actionList:
 return
 lbl_HelpOnline_Search_Keywords:
     t := "open `n`n g-IntelliSense Search Keywords`n`n in myjetbrains.com ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1705,7 +1705,7 @@ lbl_HelpOnline_Search_Keywords:
 return
 lbl_HelpOnline_features:
     t := "open `n`n g-IntelliSense Features`n`n in myjetbrains.com ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1714,7 +1714,7 @@ lbl_HelpOnline_features:
 return
 lbl_HelpOnline_shortcut:
     t := "open `n`n g-IntelliSense about Shortcuts`n`n in myjetbrains.com ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1723,7 +1723,7 @@ lbl_HelpOnline_shortcut:
 return
 lbl_HelpOnline_issues_open:
     t := "open `n`n g-IntelliSense open issues `n`n in myjetbrains.com ?"
-    if(!InStr(A_ComputerName,"SL5"))
+    if(!g_config.debug.active)
         msgbox, ,% t,% t "`n`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
     IfMsgBox, Cancel
        return
@@ -1737,7 +1737,7 @@ return
 
 PauseResumeScript:
 if (g_PauseState == "Paused"){
-    if(1 && !InStr(A_ComputerName,"SL5"))
+    if(1 && !g_config.debug.active)
         Msgbox,g_PauseState == "Paused"`n (%A_LineFile%~%A_LineNumber%)
    g_PauseState =
    Pause, Off
@@ -1863,7 +1863,7 @@ return
 ;/¯¯¯¯ checkActionListAHKfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
 ;/¯¯¯¯ checkActionListAHKfile_sizeAndModiTime ¯¯ 181023101000 ¯¯ 23.10.2018 10:10:00 ¯¯\
 checkActionListAHKfile_sizeAndModiTime:
-    if(0 && !actionList && InStr(A_ComputerName,"SL5")){
+    if(0 && !actionList && g_config.debug.active){
         Speak(A_ThisLabel, "PROD" )  ;  (DEV, TEST, STAGING, PROD),
         tooltip,% actionList,1,1,9
     }
@@ -1877,7 +1877,7 @@ checkActionListAHKfile_sizeAndModiTime:
 
 
 ;        Speak(A_LineNumber ":" A_thisFunc A_ThisLabel)
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         SoundbeepString2Sound("a")
 
 
@@ -1893,7 +1893,7 @@ checkActionListAHKfile_sizeAndModiTime:
             actionList .= ".ahk" ; what a mess. sometime must be cleaned up here ;) 19-03-18_16-01
             return
         }else{
-        if(1 && InStr(A_ComputerName,"SL5")){ ; 23.10.2018 10:08 was used
+        if(1 && g_config.debug.active){ ; 23.10.2018 10:08 was used
             msg := ">" actionList "<  `n `n is this deadlink? never used? (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
             ;feedbackMsgBox(msg,msg,1,1)
             tooltip,% msg,1,1
@@ -1914,7 +1914,7 @@ checkActionListAHKfile_sizeAndModiTime:
 
         %A_ThisLabel% = A_ThisLabel
         )
-        if(1 && InStr(A_ComputerName,"SL5")){
+        if(1 && g_config.debug.active){
             tooltip,% "ups" msg "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
             ; todo: thats proably not so a big problem.
         }
@@ -2015,7 +2015,7 @@ checkActionListAHKfile_sizeAndModiTime:
             msgbox,% msg "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
         }
         ; compu hall Rüb
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             Speak(A_LineNumber ": ReadInTheActionList")
         ReadInTheActionList(g_config["sql"]["template"]["dir"], "checkActionListAHKfile_sizeAndModiTime:" doReadActionListTXTfileSTR " " A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
         ;ParseWordsCount := ReadActionList(calledFromStr) ; there is also update and select of time of the actionList
@@ -2097,7 +2097,7 @@ return
 
         ;/¯¯¯¯ actionListNewTemp_withoutExt ¯¯ 181031091909 ¯¯ 31.10.2018 09:19:09 ¯¯\
 get_Action_Lists_without_Extension_and_send_warning(actionListNewTemp,log := ""){
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), actionListNewTemp "`n" log )
             ;msgBox,% log " ==> RETURN `n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
@@ -2109,7 +2109,7 @@ get_Action_Lists_without_Extension_and_send_warning(actionListNewTemp,log := "")
                         actionListNewTemp_withoutExt := SubStr( actionListNewTemp, 1, -4 )
                     msg .= actionListNewTemp_withoutExt " <== repaired`n" ; inside checkInRegistryChangedActionListAddress
                     msg .= " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-                    if(1 && InStr(A_ComputerName,"SL5"))
+                    if(1 && g_config.debug.active)
                         ToolTip2sec( msg, 30, - 140 )
                         ; feedbackMsgBox(msg,msg,1,1)
                     if(!fileExist(actionListNewTemp_withoutExt ".ahk")){
@@ -2120,11 +2120,11 @@ get_Action_Lists_without_Extension_and_send_warning(actionListNewTemp,log := "")
                         isNotYet_actionList := actionListNewTemp_withoutExt
                         RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, isNotYet_actionList1795,% isNotYet_actionList
                         actionList := actionList_isNotAProject
-                        if(0 && InStr(A_ComputerName,"SL5")) {
+                        if(0 && g_config.debug.active) {
                             Speak(A_LineNumber ":  isNotAProject","PROD")
                             sleep,1000
                         }
-                        if(1 && InStr(A_ComputerName,"SL5")){
+                        if(1 && g_config.debug.active){
                             ; msgBox,% ":( ERROR: " msg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
                             ; feedbackMsgBox(msg,msg,1,1)
                             ToolTip3sec( msg, 30, - 140 )
@@ -2359,7 +2359,7 @@ return
 recreateListBox_IfFontSizeChangedAndTimeIdle(g_ListBoxFontSize, newListBoxFontSize){
   if ( A_TimeIdlePhysical < 1000 * 0.5 )
     return false
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(1 && g_config.debug.active)
         Sound("recreateListBox_IfFontSizeChangedAndTimeIdle. " RegExReplace(A_LineFile,".*\\") )
     if(g_ListBoxFontSize <> newListBoxFontSize ){
         g_ListBoxFontSize := newListBoxFontSize ; ; to to
@@ -2551,8 +2551,8 @@ check_actionList_GUI_is_hanging_or_freezed:
     ; ToolTip,%g_ListBoxTitle% = g_ListBoxTitle `n %elapsedSec% = elapsedSec `n (%A_LineFile%~%A_LineNumber%)
     ;MsgBox, % tip "`n`n" elapsedMilli  "millisec = " elapsedSec "sec have elapsed. (" RegExReplace(A_LineFile,".*\\") "~" A_LineNumber ")"
 
-    if( (   elapsedSec == 25 && InStr(A_ComputerName,"SL5")
-         || elapsedSec == 25 && !InStr(A_ComputerName,"SL5") )
+    if( (   elapsedSec == 25 && g_config.debug.active
+         || elapsedSec == 25 && !g_config.debug.active )
         && itsProbablyNewInstallation
         && A_TimeIdleKeyboard > 1500 ){ ; if BoxGui is long time opend and noct used. maybe user dont know what todo with it?
      ;winclose, % g_ListBoxTitle
@@ -2567,7 +2567,7 @@ some tips from assistent:
  Resize Font by MouseWheel,
  Choose item by CTRL + Nr.
      )
-     if(1 && InStr(A_ComputerName,"SL5")){
+     if(1 && g_config.debug.active){
 
         RegRead, stop_list_change, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, stop_list_change ; todo: 02.03.2018 12:55 18-03-02_12-55
     	RegRead, ALinfoOnley, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, actionList
@@ -2699,7 +2699,7 @@ show_ListBox_Id:
         }
         if(1 && g_show_ListBox_Id_EMTY_COUNT >= 2){ ; the only think that helps today 24.10.2018 15:11
             RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, Reload , % A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " A_now
-            ; if(1 && InStr(A_ComputerName,"SL5"))
+            ; if(1 && g_config.debug.active)
             ;    sleep,2000
             Msgbox,reload`n(%A_LineFile%~%A_LineNumber%)
             ; reload ;  [^;\n]*[ ]*\breload\b\n <= cactive reloads 18-10-28_11-47

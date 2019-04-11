@@ -20,7 +20,7 @@ setRegistry_actionList( actionListNewTemp_withoutExt, actionListKey := "actionLi
         actionListNewTemp_withoutExt := SubStr( actionListNewTemp_withoutExt, 1, -4 )
 
     if( SubStr( actionListNewTemp_withoutExt , -0 ) == "\" ){
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             ToolTip9sec( "UPS actionList`n is FOLDER (" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         return false
     }
@@ -29,7 +29,7 @@ setRegistry_actionList( actionListNewTemp_withoutExt, actionListKey := "actionLi
     ; msggb
 
     if(!actionListNewTemp_withoutExt){
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             ToolTip9sec( "UPS !actionList`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         return false
     }
@@ -53,7 +53,7 @@ setRegistry_actionList( actionListNewTemp_withoutExt, actionListKey := "actionLi
 
 
 
-    if(1 && InStr(A_ComputerName,"SL5")){
+    if(1 && g_config.debug.active){
         y := 1
 		MouseGetPos,x,y
 		if(y<100)

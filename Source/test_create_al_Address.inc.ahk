@@ -124,7 +124,7 @@ actionListReg =
 ;/¯¯¯¯ Ctrl+Shift+F5 ¯¯ 181201095247 ¯¯ 01.12.2018 09:52:47 ¯¯\
 ; Ctrl+Shift+F5
 ^+f5:: ; exit-all-scripts and restart
-    ;if(1 && InStr(A_ComputerName,"SL5")){
+    ;if(1 && g_config.debug.active){
 WinClose,temp.ahk ahk_class #32770
 Reload
 return

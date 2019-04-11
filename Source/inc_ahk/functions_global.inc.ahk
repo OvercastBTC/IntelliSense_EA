@@ -1661,7 +1661,7 @@ DynaRun(TempScript, pipename=""){
 
  MsgBox,262208,% ":)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
-    if(false && InStr(A_ComputerName,"SL5") )
+    if(false && g_config.debug.active )
         ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") tokden:19-01-16_18-40" ) ; token becouse somtimes lineNumber is wrong
 
     setTitleMatchMode, 2
@@ -1670,12 +1670,12 @@ DynaRun(TempScript, pipename=""){
         ; which error should that fix?
         ; which difficulty`?
         ; ==> then some script i not usabal with gi. nearly all GUIs ant also AHK_Studio
-        if(false && InStr(A_ComputerName,"SL5") )
+        if(false && g_config.debug.active )
             feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "19-01-16_17-53" )
         return false
     }
     if(winExist("fn_functions_global_" A_ThisFunc)){
-        if(false && InStr(A_ComputerName,"SL5") ) ; whats this ????
+        if(false && g_config.debug.active ) ; whats this ????
             feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), "19-01-16_17-51" )
         ; sleep,1000
         return false
@@ -1699,7 +1699,7 @@ DynaRun(TempScript, pipename=""){
     TempScript := TempScriptPre TempScript "`n"
     ;msgbox,% TempScript
 
-		if(0 && InStr(A_ComputerName,"SL5") )
+		if(0 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ") 19-01-16_18-41" )
 
 	static _:="uint",@:="Ptr"

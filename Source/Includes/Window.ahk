@@ -103,7 +103,7 @@ value: >%titClean%< ?= >%flagTitle_giListSELECT_running%<
      }
 }
 ; test test 
-if(0 && InStr(A_ComputerName,"SL5")){
+if(0 && g_config.debug.active){
    tip = 
    (
       titClean == flagTitle_giListSELECT_running ????
@@ -174,7 +174,7 @@ check_permanentSELECT_changedInRegistry(ByRef g_permanentSELECT
 ; to
 
       msg := " ReadActionList now `n"
-    if(1 && InStr(A_ComputerName,"SL5"))
+    if(1 && g_config.debug.active)
       ToolTip4sec( msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",900,1,14 )
       ; msgbox, ,% msg "(" A_LineNumber ")", % msg "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",2
 
@@ -316,7 +316,7 @@ global g_activeClassOLD
    if(false && !actionListDirBase)
        msgbox,!actionListDirBase `n(%A_LineFile%~%A_LineNumber%)
 
-    if(0 && InStr(A_ComputerName,"SL5")){
+    if(0 && g_config.debug.active){
         FormatTime, timestampHHmmss, %A_now%,HH:mm:ss
         ToolTip,% timestampHHmmss " " g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " ", 880 , 1 , 6
     }
@@ -345,7 +345,7 @@ msg := "actionList = >" actionList "<`n `n actionListNEW = >" actionListNEW "< `
 ; too tooltip, `n (from: %A_LineFile%~%A_LineNumber%)
 
     setTrayIcon("create_al_Address")
-    if(1 && InStr(A_ComputerName,"SL5") ){
+    if(1 && g_config.debug.active ){
         lll( A_LineNumber, A_ScriptName, "start create_al_Address")
     }
 
@@ -673,7 +673,7 @@ CheckForActive(ActiveProcess,activeTitle){
    global stop_list_change
 
 
-    if(0 && InStr(A_ComputerName,"SL5")){
+    if(0 && g_config.debug.active){
         FormatTime, timestampHHmmss, %A_now%,HH:mm:ss
         ToolTip,% timestampHHmmss " " g_WinChangedEventHook " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " ", 590 , 1 , 5
         SoundbeepString2Sound(A_ThisFunc)
@@ -700,7 +700,7 @@ while(A_Index < 100 && (!actionListReg || actionListReg == actionList)){
 actionList := actionListReg
 WinGetClass, g_activeClassOLD, A ; todo: needet becouse inside is: activeClass := activeClassManipulation(activeClass, activeTitle)
 sleep,1000
-if(1 && InStr(A_ComputerName,"SL5")){
+if(1 && g_config.debug.active){
     WinSet, AlwaysOnTop, On, title1902121943
     FormatTime, timestampHHmmss, %A_now%,HH:mm:ss
     GuiControl, , D, %timestampHHmmss% %return_from_LineNumber%:%actionList% | %activeTitle%

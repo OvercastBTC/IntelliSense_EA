@@ -169,7 +169,7 @@ global g_ignReg
 ; toolTipGui(actionList "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")" ,,,"_",A_LineNumber,"Purple")  ; x will be offset if y is symbolic
 
 
-if(1 && InStr(A_ComputerName,"SL5") ){
+if(1 && g_config.debug.active ){
 	g_ignReg["feedbackMsgBox"]["tit"]  := ( Aindex >= 1 ) ? ".^" : "." ; ".^"  means ingnores nothing
 	g_ignReg["saveLogFiles"]["scriptName"] := ".^" ; g_ignReg["feedbackMsgBox"]["tit"]
 }else{
@@ -212,7 +212,7 @@ if( !rootLineObj.Aindex
 if( rootLineObj.Aindex == contLineObj.Aindex ){ ; maybe cont is empty thats ok then. 
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ">ROOT>'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",rootLineObj, rootCmdTypeObj, rootCollectObj, rootDoObj) s )
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc "`n" Aindex ":'" ALoopField "'=ALoopField`n" ObjSToStrTrim(s:="",contLineObj, contCmdTypeObj, contCollectObj, contDoObj) s )
-	if(1 && InStr(A_ComputerName,"SL5") ){
+	if(1 && g_config.debug.active ){
 		ToolTip, % "Oops should not happen 18-11-15_14-10 " rootLineObj.Aindex " == " contLineObj.Aindex
 		msgbox, % "Oops should not happen 18-11-15_14-10 " rootLineObj.Aindex " == " contLineObj.Aindex
 	}
@@ -359,7 +359,7 @@ if(rootDoObj.collectBlock && ( Aindex <> rootLineObj.Aindex ) ){
 	
 	if(contLineObj.Aindex <= rootLineObj.Aindex &&  contLineObj.Aindex){ ; contLineObj.Aindex  is at the beginning empty
 		m := contLineObj.Aindex " < " rootLineObj.Aindex	
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
 			ToolTip, % m " never happens ??? 18-11-15_00" "`n(" actionList ">" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 	}
 	
@@ -693,7 +693,7 @@ Loop_Parse_ParseWords(ByRef ParseWords){
 	
         ; ALoopField  := RegExReplace(ALoopField, "^\s+" , "" ) ; like ltrim or the same? 06.11.2017 18:28
         ;	if(RegExMatch( ALoopField , "i)^([^; ]*[^\n]+\|rr\|[ ]*$",  m )){
-        ;		; if(0 && InStr(A_ComputerName,"SL5"))
+        ;		; if(0 && g_config.debug.active)
         ;		speak("Synonym found","PROD")
 	
         ; regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
@@ -767,7 +767,7 @@ if(!rootCmdTypeObj.is_r && RegExMatch( rootLineObj.value , regIs_multiline_r ,  
 
 if(0){
 	   ; deprecated since 22.10.2018 12:13
-	if(InStr(A_ComputerName,"SL5"))
+	if(g_config.debug.active)
 		msgBox,% ALoopField "??? deprecated since 22.10.2018 12:13(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	regIs_r_synonym := "^([^\|\n]+?)\|r\|[ ]*$"
 	if(RegExMatch( ALoopField , regIs_r_synonym ,  m )){
@@ -784,7 +784,7 @@ regExRunner := "[a-zA-Z_]{3,45}"
 if(RegExMatch( rootLineObj.value , "i)^([^; ]*[^\n]+\|rr\|[ ]*$",  m )){
 	rootCmdTypeObj.is_rr := true
 	rootCmdTypeObj.is_synonym := true
-	if(1 && InStr(A_ComputerName,"SL5")){
+	if(1 && g_config.debug.active){
 			; speak("Synonym found","PROD")
 		tooltip,% ALoopField "`nSynonym found :)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		msgbox,% ALoopField "`nSynonym found :)`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":)`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -816,7 +816,7 @@ if(RegExMatch( rootLineObj.value , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )
 		if(m2 == "q"){
 			rootCmdTypeObj.is_rr := true
 			rootCmdTypeObj.is_synonym := true
-			if(1 && InStr(A_ComputerName,"SL5"))
+			if(1 && g_config.debug.active)
 				speak("Synonym found","PROD")
 		}else
 			rootCollectObj.value := m2 ; A_LineNumber "ö"
@@ -832,7 +832,7 @@ if(RegExMatch( rootLineObj.value , "i)^([^; ]*[^\n]+\|ahk\|)([^\s]?)[ ]*$",  m )
 	; if(RegExMatch( rootLineObj.value , "i)^([^; ]*[^\n]+\|rr\|)(ahk\|)[ ]*$",  m )){
 if(RegExMatch( rootLineObj.value , "i)^([^; ]*[^\n]+\|rr\|)(" regExRunner "\|)[ ]*$",  m )){
 	msg := "Maybe an ERROR?"
-	if(1 && InStr(A_ComputerName,"SL5")){
+	if(1 && g_config.debug.active){
 		speak("Maybe an ERROR?","PROD")
 		MsgBox,262160,% msg ":(`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ,% ":(`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 		sleep,2000
@@ -1600,7 +1600,7 @@ if(rootCmdTypeObj.is_multiline_r || rootCmdTypeObj.is_r){
 ;\____ is_multiline_r __ 181125204711 __ 25.11.2018 20:47:11 __/
 
 
-if(1 && InStr(A_ComputerName,"SL5")){
+if(1 && g_config.debug.active){
 	if(0 && instr(AddWord,"|r|")){
 		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc , AIndex ":" )
 		m := % " AddWord == ""|r|"" `n`n`n " actionList " `n`n`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
@@ -1687,7 +1687,7 @@ lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc
 
 if(1 && !CheckValid(AddWord,ForceLearn, is_IndexedAhkBlock)){
         ; msgbox,% ">>" AddWord "<<`n is NOT valid(" A_LineNumber ": " A_ThisFunc " " RegExReplace(A_LineFile, ".*\\") ")"
-	if(1 && InStr(A_ComputerName,"SL5")){
+	if(1 && g_config.debug.active){
 		lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": " fromLine ":" AddWord )			
 			; lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": " fromLine ":" INSERT_INTO_words )			
 		Speak(" not valid:" AddWord "( from:" A_LineNumber  ")","PROD")
@@ -1836,11 +1836,11 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 			}
 			
 			strDebug4insert .= Trim(AddWord," `t`r`n") "`n"  ; interesting for debugging
-			if(1 && InStr(A_ComputerName,"SL5")){
+			if(1 && g_config.debug.active){
 				lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": " INSERT_INTO_words )
 			}
 			; ############ here it runs :) 18-11-12_18-46
-			if(0 && InStr(A_ComputerName,"SL5")){
+			if(0 && g_config.debug.active){
                     ;if(1 && instr(rootLineObj.value,"nasenbar")){
 				Speak(A_LineNumber "" ,"PROD")
 				msgbox,% "never used???? 18-11-12_18-41" INSERT_INTO_words "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
@@ -1875,7 +1875,7 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 {
       ; If this is an on-the-fly learned word
 	AddWordInList := g_actionListDB.Query("SELECT * FROM wordsre WHERE word = '" . AddWord_Transformed . "';")
-	if(0 && InStr(A_ComputerName,"SL5"))
+	if(0 && g_config.debug.active)
 		msgbox,% AddWord_Transformed  " was ist das????`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	lll( A_LineNumber , A_LineFile "-id" g_actionListID "-" A_ThisFunc  , A_ThisFunc ": " fromLine ":" AddWord )
 	
@@ -1934,7 +1934,7 @@ if( g_actionListDone == "0"){ ;if this is read from the actionList ; 1 ||
 				}
 			}
 			strDebug4insert .= Trim(AddWord," `t`r`n") "`n"  ; interesting for debugging
-			if(0 && InStr(A_ComputerName,"SL5")){
+			if(0 && g_config.debug.active){
 				Speak(A_LineNumber ":" INSERT_INTO_words ,"PROD")
 				msgbox,% "never used????" INSERT_INTO_words "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
 			}
@@ -2578,7 +2578,7 @@ actionList = '%actionList%' ;
 		if( instr(sqlLastError, "no such table") ){
             ;if(A_TickCount < 1000){
 			tip := "`n Now do RebuildDatabase(sql_template_dir) because of " sqlLastError "`n g_actionListDB=" g_actionListDB
-			if(1 && InStr(A_ComputerName,"SL5"))
+			if(1 && g_config.debug.active)
 				ToolTip5sec(tip "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			RebuildDatabase(sql_template_dir) ; works ? 22.10.2018 05:23 todo:
 			; Reported by Terka 18-11-05: https://www.autohotkey.com/boards/viewtopic.php?f=6&t=45684&p=254473#p254473

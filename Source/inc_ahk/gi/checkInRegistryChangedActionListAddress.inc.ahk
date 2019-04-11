@@ -5,7 +5,7 @@
 ; called from \Window.ahk > WinChanged( :
 ; SetTimer,checkInRegistryChangedActionListAddress,on
 checkInRegistryChangedActionListAddress:
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         Speak(A_ThisLabel, "PROD" )  ;  (DEV, TEST, STAGING, PROD),
     ; return ; it seems we need this function ????? 18-12-27_20-50
 
@@ -21,13 +21,13 @@ if(g_config.actionList.onlyThisList){
 
     ;toolTip2sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     if(g_doListBoxFollowMouse){
-        if(0 && InStr(A_ComputerName,"SL5"))
+        if(0 && g_config.debug.active)
             ToolTip9sec( "g_doListBoxFollowMouse`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"1,1,20 )
         ; soundBeep,2000
         return
     }
     if(g_itsProbablyArecentUpdate){
-        if(0 && InStr(A_ComputerName,"SL5"))
+        if(0 && g_config.debug.active)
             ToolTip9sec( "g_itsProbablyArecentUpdate`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1,20 )
         ; soundBeep,4000
         return
@@ -37,14 +37,14 @@ if(g_config.actionList.onlyThisList){
         milliesTried_getNewListFromRegistry := 0
         g_itsProbablyArecentUpdate := true ; may the registry not changing anymore. this is the last try
         ; msgbox,% "(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             ToolTip9sec( "milliesTried_getNewListFromRegistry`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")",1,1,20 )
         return
     }
 
 
 
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         SoundbeepString2Sound("a")
 
 
@@ -58,7 +58,7 @@ if(g_config.actionList.onlyThisList){
         temp := g_config["list"]["change"]["stopRexExTitle"]
         tip = stopRexExTitle is >%temp%< %actionList%
         ToolTip5sec(tip " (" A_LineNumber " " lineFileName . " )",1,-33 )
-        if(0 && InStr(A_ComputerName,"SL5"))
+        if(0 && g_config.debug.active)
             Speak("Return in " A_LineNumber, "PROD" )
         else
             Speak("Return in " A_LineNumber)
@@ -93,7 +93,7 @@ if(g_config.actionList.onlyThisList){
         If(WinExist("actionListChangedInRegistry") ){
                 g_FLAGmsgbox := true
                 Speak("Return in " A_LineNumber)
-                if(0 && InStr(A_ComputerName,"SL5"))
+                if(0 && g_config.debug.active)
                     Speak("Return in " A_LineNumber, "PROD" )
                 return ; no update jet
         }
@@ -117,7 +117,7 @@ if(g_config.actionList.onlyThisList){
             sleep,9000
             ; reload
             RecomputeMatches(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")) ; in checkInRegistryChangedActionListAddress
-            if(0 && InStr(A_ComputerName,"SL5"))
+            if(0 && g_config.debug.active)
                 Speak("Return in " A_LineNumber, "PROD" )
             else
                 Speak("Return in " A_LineNumber)
@@ -134,7 +134,7 @@ if(g_config.actionList.onlyThisList){
         ; dirty bugFix
         actionListNewTemp_withoutExt := SubStr( actionListNewTemp_withoutExt,1 , -4 )
         setRegistry_actionList( actionListNewTemp_withoutExt )
-        if(0 && InStr(A_ComputerName,"SL5")){
+        if(0 && g_config.debug.active){
             m := "dirty bugfix. It is more common to specify the list without extension "
             Speak(m " in " A_LineNumber , "PROD")
             ToolTip9sec(m "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
@@ -170,7 +170,7 @@ if(g_config.actionList.onlyThisList){
     ; if(!isRegListChanged || !actionListNewTemp_withoutExt || A_TimeIdle < 1333){
     if(!isRegListChanged || !actionListNewTemp_withoutExt ){
         ; happens if already correct loadet
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             Speak("Return in " A_LineNumber ": probably correct loadet. wahrscheinlich richtig geladen.")
             ; Speak("Return in " A_LineNumber " probably correct loadet", "PROD" )
         return
@@ -219,14 +219,14 @@ checkInRegistryChangedActionListAddress_inc
          exitApp
     }
     ; actionListNewTemp_withoutExt := actionListDirBase "\" actionListNewTemp_withoutExt
-    if(0 && InStr(A_ComputerName,"SL5")){
+    if(0 && g_config.debug.active){
         ; clipboard := actionListNewTemp_withoutExt " (" RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
         ToolTip4sec( "clipboard := actionList`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
     }
     ;/¯¯¯¯ !fileExist ¯¯ 190211093902 ¯¯ 11.02.2019 09:39:02 ¯¯\
     if(!fileExist(actionListNewTemp_withoutExt ".ahk")){ ; addet 01.11.2018 10:48
         m := "not exist."
-        if(0 && InStr(A_ComputerName,"SL5")){
+        if(0 && g_config.debug.active){
             Speak(m "Return in " A_LineNumber " Registry is empty", "PROD")
             c =
             (
@@ -248,7 +248,7 @@ checkInRegistryChangedActionListAddress_inc
             ; msgbox,%actionListNewTemp_withoutExt% `n(%A_LineFile%~%A_LineNumber%)
         }
         if(actionListNewTemp_RAW){
-            if(1 && InStr(A_ComputerName,"SL5"))
+            if(1 && g_config.debug.active)
                 Speak(m "Return in " A_LineNumber ". " actionListNewTemp_RAW, "PROD")
             ;toolTip2sec(actionListNewTemp_RAW "`n`n" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") )
             ;clipboard := actionListNewTemp_withoutExt
@@ -265,7 +265,7 @@ checkInRegistryChangedActionListAddress_inc
 
         actionListNewTemp_withoutExt := actionList_isNotAProject_withoutExt ; as long as nothing else would be found
         ; msgbox,%actionListNewTemp_withoutExt% `n(%A_LineFile%~%A_LineNumber%)
-        if(0 && InStr(A_ComputerName,"SL5")){
+        if(0 && g_config.debug.active){
             Speak(m "Return in " A_LineNumber " Registry is empty", "PROD")
             sleep,1000
         }
@@ -278,7 +278,7 @@ checkInRegistryChangedActionListAddress_inc
         )
         ;
         ; msgbox,% m  " `n`n AL NOT exist(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             ToolTip2sec("pls Fix:  ...multi_clone writes sometimles AL with extension into registry. ..._Generated.ahk ..." A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
         actionListNewTemp_withoutExt := get_Action_Lists_without_Extension_and_send_warning(actionListNewTemp_withoutExt)
         if( !fileExist(actionListNewTemp_withoutExt ".ahk") ){
@@ -293,22 +293,22 @@ checkInRegistryChangedActionListAddress_inc
 global-IntelliSense-everywhere-Nightly-Build [G:\fre\git\github\global-IntelliSense-everywhere-Nightly-Build] - ...\Source\gi-everywhere.ahk [global-IntelliSense-everywhere-Nightly-Build] - IntelliJ IDEA (Administrator)
             )
             Speak("Return in " A_LineNumber " file not exist")
-            if(0 && InStr(A_ComputerName,"SL5"))
+            if(0 && g_config.debug.active)
                 Speak("Return in " A_LineNumber " file not exist", "PROD" )
 
 
 
             clipboard := activeTitle
-            if(1 && InStr(A_ComputerName,"SL5"))
+            if(1 && g_config.debug.active)
                 MsgBox,% activeTitle "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
             EnableKeyboardHotKeys()
             EnableWinHook()
-            if(1 && InStr(A_ComputerName,"SL5"))
+            if(1 && g_config.debug.active)
                 Speak("Return in " A_LineNumber , "PROD" )
             return
         }
         Speak("Return in " A_LineNumber)
-        if(1 && InStr(A_ComputerName,"SL5"))
+        if(1 && g_config.debug.active)
             Speak("Return in " A_LineNumber, "PROD" )
         return
         ; ToolTip2sec(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
@@ -407,7 +407,7 @@ Sleep,3000
             WinWait,actionListChangedInRegistry,,1
             ;msgbox,18-03-02_17-42 %AHKcodeMsgBox%
             tooltip,
-            if(1 && InStr(A_ComputerName,"SL5"))
+            if(1 && g_config.debug.active)
                 Speak("Return in " A_LineNumber , "PROD" )
             return ; no update jet
         }
@@ -422,7 +422,7 @@ Sleep,3000
    if( !FileExist(actionListNewTemp_withoutExt ".ahk") ){
         msg := "actionList >"actionListNewTemp_withoutExt ".ahk< `n = actionListNewTemp_withoutExt (=clipBoard) `n actionList NOT exist"
         msg := ":( ERROR: " msg "`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-        if(1 && InStr(A_ComputerName,"SL5")){
+        if(1 && g_config.debug.active){
             ; clipBoard := removesSymbolicLinksFromFileAdress(A_ScriptDir "\" actionListNewTemp_withoutExt ".ahk")
             ToolTip3sec(msg "`n" A_LineNumber . " " . RegExReplace(A_LineFile,".*\\")  . " " . Last_A_This,1,1)
              Msgbox,% ":( ERROR: " msg "`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
@@ -452,7 +452,7 @@ Sleep,3000
         actionList := actionListNewTemp_withoutExt ".ahk"
 
 
-if(0 && InStr(A_ComputerName,"SL5")
+if(0 && g_config.debug.active
 && InStr(actionList,"._Generated.ahk._Generated.ahk")){
              ToolTip5sec(";] Oopsfound ._Generated.ahk._Generated.ahk => ._Generated.ahk `n`n" actionList "`n" A_LineNumber RegExReplace(A_LineFile,".*\\"), 1,1 )
 
@@ -514,7 +514,7 @@ if(0 && InStr(A_ComputerName,"SL5")
 
     if(0 && actionListOLD <> actionList && !instr(actionList,"\isNotAProject" ) && speakedLastActionList <> actionList ){
         Speak(actionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         Speak(actionListFileName " found ", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
     speakedLastActionList := actionList
 
@@ -531,7 +531,7 @@ if(0 && InStr(A_ComputerName,"SL5")
 
 
 
-        if(0 && InStr(A_ComputerName,"SL5") && actionListFileName == "AutoHotkey_Community"){
+        if(0 && g_config.debug.active && actionListFileName == "AutoHotkey_Community"){
 
 
 
@@ -563,7 +563,7 @@ actionListOLD_actionList:
     ; g_actionListID := getActionListID(sql_template_dir, actionList) ; 24.03.2018 23:02
 
     if(!g_actionListID := getActionListID(g_config["sql"]["template"]["dir"], actionList)){ ; 24.03.2018 23:02
-		if(0 && InStr(A_ComputerName,"SL5")) ; prob no error. whey not
+		if(0 && g_config.debug.active) ; prob no error. whey not
 			Speak("actionListID Not Exist!", "PROD" )  ;  (DEV, TEST, STAGING, PROD),
         ; happen for eg if i calling the autohotkey webseite. 19-01-09_19-31
     }
@@ -621,7 +621,7 @@ if(g_config.infoBox[1]["showName"]){
 
 ; Tooltip Tooltip
 
-if(0 && InStr(A_ComputerName,"SL5")) ; prob no error. whey not
+if(0 && g_config.debug.active) ; prob no error. whey not
 	Speak("Now Read actionList: " actionList, "PROD" )  ;  (DEV, TEST, STAGING, PROD),
 ParseWordsCount := ReadActionList(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"))
 

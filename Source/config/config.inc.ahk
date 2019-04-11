@@ -37,7 +37,7 @@ g_config.actionList := {
 ;/¯¯¯¯ debug ¯¯ 190410200413 ¯¯ 10.04.2019 20:04:13 ¯¯\
 doUseNewMethodStartOfImplementing22march2019 := false
 g_config.debug := {
-	active: true,
+	active: (true && InStr(A_ComputerName,"SL5")) ? true : false,
 	window: {
 		onChange: {
 			tooltip: true,

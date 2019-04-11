@@ -328,7 +328,7 @@ else if(1 && errStr:=err_CheckValid())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 
 
-else if(1 && InStr(A_ComputerName,"SL5") && errStr:=err_string_ahk_line())
+else if(1 && g_config.debug.active && errStr:=err_string_ahk_line())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 
 
@@ -342,7 +342,7 @@ else if(1 && errStr:=err_multi_r_content())
 else if(1 && err_multi_rr_stop_by_is_r())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 
-else if(1 && InStr(A_ComputerName,"SL5") && errStr:=err_multi_r_content())
+else if(1 && g_config.debug.active && errStr:=err_multi_r_content())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 ;^---- its using selecs without inserts before. so its only works if inserts are finsished before 18-12-25_15-14
 
@@ -353,7 +353,7 @@ else if(1 && test_do_indexFollowingLines4search())
 else if(false && errStr:=test_dontDeleteComments())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 
-else if(1 && InStr(A_ComputerName,"SL5") && errStr:=test_synonym())
+else if(1 && g_config.debug.active && errStr:=test_synonym())
 	countErrors++ ; Msgbox,% A_LineNumber  ;
 ;^---- its using selecs without inserts before. so its only works if inserts are finsished before 18-12-25_15-14
 

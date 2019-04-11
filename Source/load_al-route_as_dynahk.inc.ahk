@@ -69,7 +69,7 @@ if(actionList_inClassFolder_Exist)
 ;    ahkSource .= "#" "Include *i " actionListFilterPath2Abs "  `; thats the subfolder actionList inside class `n"
  ;   ahkSource .= "#" "Include *i " actionListFilterPath2 . "  `; thats the subfolder  wordlost inside class `n"
 
-if(!actionListNEW && InStr(A_ComputerName,"SL5")){
+if(!actionListNEW && g_config.debug.active){
     msg =
     (
     ERROR
@@ -111,7 +111,7 @@ DetectHiddenWindows,On
 SetTitleMatchMode,2
 IfWinNotExist,temp.ahk ahk_class #32770
 {
-	if(activeTitle == "giListSELECT" && InStr(A_ComputerName,"SL5") )
+	if(activeTitle == "giListSELECT" && g_config.debug.active )
 		MsgBox,% ahkSource "`n" actionList "`n(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 	FileWriteAndRun( ahkSource , A_ThisFunc A_LineNumber ".temp.ahk" ) ; TODO: wozu ? 13.08.2017 10:52
 } else {
@@ -123,9 +123,9 @@ IfWinNotExist,temp.ahk ahk_class #32770
 		msg=:-O WinExist temp.ahk `n `n %A_LineFile%~%A_LineNumber% ==> WinWaitClose
 		SetTitleMatchMode,2
 		WinWaitClose,temp.ahk ahk_class #32770
-		if(1 || !InStr(A_ComputerName,"SL5") )
+		if(1 || !g_config.debug.active )
 			winclose,temp.ahk ahk_class #32770
-		if(1 && InStr(A_ComputerName,"SL5") ){
+		if(1 && g_config.debug.active ){
 			if(!WinExist(":Oops"))
 				feedbackMsgBox("Oops ",msg,1,1)
 		}

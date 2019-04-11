@@ -33,7 +33,7 @@ else if(instr(activeTitle,"actionListChangedInRegistry")){ ; Position 1 is the f
 	tooltip,WinWaitNotActive xxyyzzee
 	WinWaitNotActive,actionListChangedInRegistry ahk_class AutoHotkeyGUI
 	tooltip,
-	if(0 && InStr(A_ComputerName,"SL5")){
+	if(0 && g_config.debug.active){
 		ToolTip,% "(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")", 250,1,17
 		Speak("Hallo " A_LineNumber,"PROD")
 	}
@@ -116,9 +116,9 @@ createIfFileNotExist_al_route_InNewDir(actionListDir, actionListFilterPath,ahkCo
         ;~ FileAppend, , % actionListFilterPath
 	}
 	g_lineNumberFeedback  := "(" A_ThisFunc "~" A_LineNumber "~" RegExReplace(A_LineFile,".*\\") ")"
-	if(1 && InStr(A_ComputerName,"SL5"))
+	if(1 && g_config.debug.active)
 		tooltip,% "FileAppend " g_lineNumberFeedback
-	if(1 && InStr(A_ComputerName,"SL5") )
+	if(1 && g_config.debug.active )
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 	FileAppend, % ahkCode , % actionListFilterPath
 	return true
@@ -207,7 +207,7 @@ actionListNEWactivate( ByRef actionListDir
    ; From here we only use actionListNEWarchivePath
    ; Next time this variable is used here: simplifyNameOfActionListNEWstep1( actionListNEW ) {  in line 256   12.07.2017 21:07
 
-		if(0 && InStr(A_ComputerName,"SL5") && !WinExist("1:" )){
+		if(0 && g_config.debug.active && !WinExist("1:" )){
 			msg =
 (
 actionListNEWarchivePath = '%actionListNEWarchivePath%'
@@ -236,7 +236,7 @@ actionListDir = '%actionListDir%'
    ; actionListActivePath := gi_everywhereSourcePath .  "\" . actionListActive
 		actionListActivePath := A_ScriptDir . "\" . actionListActive
 
-		if(0 && InStr(A_ComputerName,"SL5")){
+		if(0 && g_config.debug.active){
             clipboard := A_ThisFunc ": actionListActivePath= " actionListActivePath
             clipboard .= "`n actionListNEW= " actionListNEW
             exampleLog =
@@ -316,7 +316,7 @@ actionListDir = '%actionListDir%'
 			calledFromStr := A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 			Include := "Include"
 
-			if(1 && InStr(A_ComputerName,"SL5"))
+			if(1 && g_config.debug.active)
 				RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 
 			FileAppend, % initialActionList , % actionListNEWarchivePath
@@ -603,7 +603,7 @@ includeFileSContentWillBeNeedsSaved := %includeFileSContentWillBeNeedsSaved%
 actionListGeneratedModifiedTime =
 %actionListGeneratedModifiedTime%
 )
-							if(0 && InStr(A_ComputerName,"SL5"))
+							if(0 && g_config.debug.active)
 								msgbox,% m "`n(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 
                      ; continue ; include is old. older.
@@ -635,7 +635,7 @@ actionListGeneratedModifiedTime =
 ; loop throw alls include files
 ; Loop % Array.MaxIndex()   ; More traditional approach.
 
-				if(InStr(A_ComputerName,"SL5"))
+				if(g_config.debug.active)
 					tooltip,% actionList ": Message for SL5: includeFileSContentWillBeNeedsSaved(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 
 				for fileId, includeFilePath in includeFilePathArray ; Recommended approach in most cases.
@@ -678,7 +678,7 @@ actionListGeneratedModifiedTime =
 ; lll(A_LineNumber, A_LineFile,A_ThisFunc ": "   "'" . actionListGeneratedPath . "' = actionListGeneratedPath `n'" . actionListNEWarchivePath . " = actionListNEWarchivePath " )
 
 			if(includeFileSContentWillBeNeedsSaved ){
-				if(0 && InStr(A_ComputerName,"SL5"))
+				if(0 && g_config.debug.active)
 					msgbox,% "(" A_LineNumber " " RegExReplace(A_LineFile, ".*\\", "") ")"
 				save_actionListGeneratedPath(actionListGeneratedPath,includeFileSContent,actionListNEWarchivePath)
 			}
@@ -1234,7 +1234,7 @@ Clipboard = selfPerformanceTest2
 		winTC := sayHelloFunctionInc . " ahk_class AutoHotkey"
 		if(winExist(winTC)){
 			WinClose,% winTC
-            if(1 && InStr(A_ComputerName,"SL5") ){
+            if(1 && g_config.debug.active ){
                 tip := "Wait WinWaitClose`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")"
                 tooltip, % tip , 1,1
 			}
@@ -1694,14 +1694,14 @@ ___open actionList|rr||ahk|openInEditor,%actionListFileName%
 			FileDelete, %actionListGeneratedPath%
 		Sleep,60
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"FileAppend too " actionListGeneratedPath)
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
 			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 		FileAppend,% includeFileSContent, % actionListGeneratedPath
     ; Sleep,20
 		FileRead, fileContent, %actionListNEWarchivePath%
     ;Sleep,20
 		lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"FileAppend too " actionListGeneratedPath)
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
 			RegWrite, REG_SZ, HKEY_CURRENT_USER, SOFTWARE\sl5net\gi, FileAppend , % A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\")
 		FileAppend,% fileContent, % actionListGeneratedPath
 		if(false)lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"SAVED: " . actionListGeneratedPath)

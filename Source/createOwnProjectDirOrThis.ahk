@@ -12,7 +12,7 @@ g_config := {}
 ; #Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahkSTATIC.ahk
 ; # Include *i %A_ScriptDir%\inc_ahk\minify\config.minify.inc.ahk ; update_configMinify_incAhkFile()
 
-if(0 && InStr(A_ComputerName,"SL5") )
+if(0 && g_config.debug.active )
     g_doSound := true
 
 
@@ -201,7 +201,7 @@ if( !FileExist( globalClassTxtAddress ) ){
     Msgbox,ups ==> EXIT `n (%A_LineFile%~%A_LineNumber%) )
     EXIT
 }
-if(1 && InStr(A_ComputerName,"SL5")){
+if(1 && g_config.debug.active){
     ToolTip5sec("FileAppend (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
     msgBox,% "FileAppend : (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 }

@@ -1168,7 +1168,7 @@ closeAllOtherAHK(){
 ;msgbox, % WList.count() "`n" WList
 	if(WList>=3) {
 		doCloseAllAhk := true
-		if(!InStr(A_ComputerName,"SL5")){
+		if(!g_config.debug.active){
 			MsgBox, 4, close all other AHK? and restart them later? time out in 5 seconds then all ahk will closed, % text, 5
 			IfMsgBox Timeout
 				doCloseAllAhk := true

@@ -451,7 +451,7 @@ SendWord(WordIndex, ByRef g_Word){
 INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\") , A_ThisFunc , A_LineNumber)
 	
 	if(!actionList){
-	    if(1 && InStr(A_ComputerName,"SL5")){
+	    if(1 && g_config.debug.active){
             msg =
             (
     >%actionListFolderOfThisActionList%< NOT exist
@@ -727,7 +727,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
                     ;\____ Synonym __ 181021060220 __ 21.10.2018 06:02:20 __/
 					id += 1 ; we are in synonym lets search DOWN ; new since 21.10.2018 06:03
 					lineOfIndex := getLineOfIndex(id)
-					if(0 && InStr(A_ComputerName,"SL5"))
+					if(0 && g_config.debug.active)
 						MsgBox,% lineOfIndex " - (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 					if(lineOfIndex =="") ; empty lines are allowed. when its terminating?
 						continue
@@ -743,7 +743,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 					}
 					
 				}
-				if(1 && InStr(A_ComputerName,"SL5") ){
+				if(1 && g_config.debug.active ){
 					tooltip,% lineOfIndex " - (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
                 ; hapens by using a simple replaec like: alsdkasd|rlkjlkj   30.10.2018 22:12
 				}
@@ -820,7 +820,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
     ; Msgbox,% msg "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 				
 ;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
-				if(0 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+				if(0 && g_config.debug.active && activeTitle == "isNotAProject")
 					ToolTip4sec("is this the right position? bakcspace is not ocrreclty deleing typed. may deleting to muhc??? (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
 				
     ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
@@ -868,19 +868,19 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 					if(!line)
 						break
 					ahkBlock .= line "`n"
-					if(1 && InStr(A_ComputerName,"SL5") )
+					if(1 && g_config.debug.active )
 						ToolTip4sec(line " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
             ; MsgBox,% id ": " line " rX[key]= " rX["key"] "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 				}
 				AHKcode := ahkBlock
         ; msg := " ahkBlock = `n `n " ahkBlock
-				if(1 && InStr(A_ComputerName,"SL5") )
+				if(1 && g_config.debug.active )
 					MsgBox,% "ahkBlock=" ahkBlock  ", lineOfIndex=" lineOfIndex " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			}
     ;\____ ahkBlock __ 181011155154 __ 11.10.2018 15:51:54 __/
 			
     ; tooltip ,% AHKcode "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
-			if(0 && InStr(A_ComputerName,"SL5") )
+			if(0 && g_config.debug.active )
 				msgbox ,% "sending=" sending "`n AHKcode=`n" AHKcode "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			
 			
@@ -960,7 +960,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
    ;if( !isAHKcode )
 
 	if( doSendSpacesInAHKslow == false ){
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 		SendFull(sending, ForceBackspace)
         
@@ -1187,7 +1187,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 
 		
          ;/¯¯¯¯ ClearAllVars(A_ThisFunc ¯¯ 181028154133 ¯¯ 28.10.2018 15:41:33 ¯¯\
-		if(1 && InStr(A_ComputerName,"SL5") && activeTitle == "isNotAProject")
+		if(1 && g_config.debug.active && activeTitle == "isNotAProject")
 			ToolTip4sec("is this the right position? bakcspace is not ocrreclty deleing typed. may deleting to muhc??? (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") " " Last_A_This)
 		
              ; that fixed the problem, that if i usend ahk ocmmands, they was not triggered without hiting esc-key or so 28.10.2018 15:41
@@ -1196,12 +1196,12 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
          ;\____ ClearAllVars(A_ThisFunc __ 181028154146 __ 28.10.2018 15:41:46 __/
 		
 		
-		if(0 && InStr(A_ComputerName,"SL5") ){
+		if(0 && g_config.debug.active ){
 			tooltip,% "`nAHKcode=`n" AHKcode  "`nAHKcode2=`n" AHKcode2 "(" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 			clipboard := AHKcode2
 		}
 		
-		if(0 && InStr(A_ComputerName,"SL5") )
+		if(0 && g_config.debug.active )
 			msgbox,% AHKcode2 " `n`n gefunden `n`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
 
 
@@ -1552,14 +1552,14 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 ;sendClipboard(sending) ; funny not work here ; 01.04.2018 09:46 18-04-01_09-46
 				
 
-				if(0 && InStr(A_ComputerName,"SL5"))
+				if(0 && g_config.debug.active)
 					ToolTip4sec("A_SendLevel = " A_SendLevel "`n`n" A_LineNumber   " "   RegExReplace(A_LineFile,".*\\")    " "   Last_A_This) ; The built-in variable A_SendLevel contains the current setting.
 				
 ; tool too toolt tooltip, `n (from: %A_LineFile%~%A_LineNumber%)
 ; too too too to too to too too too tooltip, `n (from: %A_LineFile%~%A_LineNumber%)ltip, `n (from: %A_LineFile%~%A_LineNumber%)
 				
 ; RegRead, OutputVar, KeyName , ValueName
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 				if(true){
@@ -1572,9 +1572,10 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 					sec := a_sec
                     ; token := "#token" ((sec<10) ? "0" sec : sec) "#"
                     token := "#token" "" sec "#"
+					; sending .= "`n`n`ntest multi`n`n`n" ; test. Works quite wonderfully 19-04-11_13-50
 					Clipboard := sending token ; " ln=" A_LineNumber "`n`n"
 				    ; AHKcode := ";19-02-12_20-00;;;Critical, On`n"
-				    sleep,1 ; works NOT. is using old clipboard !! 19-04-11_11-27
+				    ; sleep,1 ; works NOT. is using old clipboard !! 19-04-11_11-27
 				    ; sleep,10 ; works 19-04-11_11-26
 				    ; sleep,1000 ; works 19-04-11_11-26
 
@@ -1622,12 +1623,12 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
                  )
 
         
-                    if(0 && InStr(A_ComputerName,"SL5") )
+                    if(0 && g_config.debug.active )
                         ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 					DynaRun(AHKcode) ; <= uese old clipboard. or simple give it more time
 
-		if(0 && InStr(A_ComputerName,"SL5") )
+		if(0 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 				; sleep,2000 ; what for???? ; needet !!! becouse may some the wrong clipboard content is pasted !!!!
@@ -1660,7 +1661,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 			} else
 				Send,{Text}%sending%
 
-		if(1 && InStr(A_ComputerName,"SL5") )
+		if(1 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			
             ;lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"%sending% `n >" . sending . "<  `n token=18-03-13_14-44")
@@ -1668,10 +1669,10 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
         ; Msgbox,sending `n >%sending%< `n (%A_LineFile%~%A_LineNumber%)
 			
 		}else{
-    		if(1 && InStr(A_ComputerName,"SL5") )
+    		if(1 && g_config.debug.active )
                 ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 			SendPlay, %sending% ; First do the backspaces, Then send word (Raw because we want the string exactly as in actionList . ahk)
-            if(1 && InStr(A_ComputerName,"SL5") )
+            if(1 && g_config.debug.active )
                 ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
         ;lll( A_ThisFunc ":" A_LineNumber , A_LineFile ,"%sending% `n >" . sending . "<  `n token=18-03-13_14-44")
         ; Msgbox,sending `n >%sending%< `n (%A_LineFile%~%A_LineNumber%) 

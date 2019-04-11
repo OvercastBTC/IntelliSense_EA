@@ -82,7 +82,7 @@ lll( A_ThisFunc ":" A_LineNumber , A_LineFile)
         return false
     }
 
-    if(1 && InStr(A_ComputerName,"SL5") && SubStr( "test.ahk" , -3 ) <> ".ahk")
+    if(1 && g_config.debug.active && SubStr( "test.ahk" , -3 ) <> ".ahk")
            Msgbox,plausibilty damage `n %m1CorrectedAhkFileAddress% `n `n (%A_LineFile%~%A_LineNumber%)
 	if( SubStr( m1CorrectedAhkFileAddress , -3 ) <> ".ahk" ) ; https://g-intellisense.myjetbrains.com/youtrack/issue/GIS-66
 		m1CorrectedAhkFileAddress .= ".ahk"
@@ -120,7 +120,7 @@ openInEditorFromIntern(m1CorrectedAhkFileAddress){
         (
         >%m1CorrectedAhkFileAddress%< = ...Backup
         )
-        if(1 && InStr(A_ComputerName,"SL5")){
+        if(1 && g_config.debug.active){
             feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( " msg , msg ,1,1)
             ; Msgbox,% msg "`n`n (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
         }
@@ -162,7 +162,7 @@ somme additional info:
     		}
 
     ; m1CorrectedAhkFileAddress := regexreplace(m1CorrectedAhkFileAddress , "i).*(\b[a-z]\:\\)", "$1" )
-    if(0 && InStr(A_ComputerName,"SL5"))
+    if(0 && g_config.debug.active)
         clipboard := m1CorrectedAhkFileAddress
     if(!isFileExist := FileExist(m1CorrectedAhkFileAddress)){
         m1CorrectedAhkFileAddress .= ".ahk" ; try something. why not 19-02-17_18-20
@@ -170,7 +170,7 @@ somme additional info:
     if(!isFileExist := FileExist(m1CorrectedAhkFileAddress)){
         ; if(!isFileExist := FileExist(m1CorrectedAhkFileAddress))
         feedbackMsgBox(A_LineNumber ":" A_ScriptName ,":-( File NOT Exist: File: `n`n`n`n >>" m1CorrectedAhkFileAddress "<<`n`n`n`n" , A_LineNumber,1,1)
-        if(1 && InStr(A_ComputerName,"SL5")){
+        if(1 && g_config.debug.active){
             g_configScriptDir := g_config.ScriptDir
             msg =
             (
@@ -227,7 +227,7 @@ if(!isEditorExist)
     editorAddress = notepad.exe
 runString = "%editorAddress%" "%m1CorrectedAhkFileAddress%"
     ; clipboard := runString
-    if(0 && InStr(A_ComputerName,"SL5")){
+    if(0 && g_config.debug.active){
         feedbackMsgBox(A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\"), editorName ": " runString )
         Msgbox,% runString " (" A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") ")"
     }
@@ -246,7 +246,7 @@ return true
             winkill,`% winTitleError,Error ; thats disturbing opening ahk-studio. if closed ahk-studio opens
             winclose,`% winTitleError,Script file not found ; thats disturbing opening ahk-studio. if closed ahk-studio opens
             winkill,`% winTitleError,Script file not found ; thats disturbing opening ahk-studio. if closed ahk-studio opens
-        	if(1 && InStr(A_ComputerName,"SL5"))
+        	if(1 && g_config.debug.active)
         	    Tooltip,`% A_index " " A_ThisFunc ":" A_LineNumber " " RegExReplace(A_LineFile, ".*\\") , 30,30
             sleep,50
         }
