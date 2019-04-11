@@ -1571,6 +1571,7 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
 					Clipboard := ""
 					sec := a_sec
                     ; token := "#token" ((sec<10) ? "0" sec : sec) "#"
+                    strlenExpected := strlen(sending)
                     token := "#token" "" sec "#"
 					; sending .= "`n`n`ntest multi`n`n`n" ; test. Works quite wonderfully 19-04-11_13-50
 					Clipboard := sending token ; " ln=" A_LineNumber "`n`n"
@@ -1607,26 +1608,52 @@ INSERT_function_call_time_millis_since_midnight( RegExReplace(A_LineFile,".*\\")
                             sleep,`% A_Index
 					    }
 					    if(!isFound){
-                           soundBeep,3000,1000
+                            soundBeep,3000,1000
 					        msgbox,error 19-04-11_11-48
 					        exitApp
 					    }
                     }
-                    cStrlen := c
                     while(A_Index < 22){
                         Clipboard := substr(c,1,-9)
                         sleep,`% A_Index
-                        if(strlen(Clipboard)<>cStrlen)
+                        if(strlen(Clipboard)==%strlenExpected%)
                             break
                     }
 					 Send,^v
-                 )
 
-        
+                 )
+                     ;/¯¯¯¯ protect ¯¯ 190411203647 ¯¯ 11.04.2019 20:36:47 ¯¯\
+                     ; behind clipboard check. protect for third party manipulations
+                     ; chick if sending was destoid by third party manipulations by manimpulated cllpboard
+/*
+                     SoundBeep,4000
+                     while(A_Index < 30){
+                         strlenClipboard := strlen(Clipboard)
+                         if(strlenClipboard <> %strlenExpected%){
+                            Msgbox,`% "ERROR >>" %sending% "<<  >>" Clipboard "<< " strlenClipboard "<>" %strlenExpected% " 19-04-11_20-39"
+                            break
+                          }else
+                             if(Clipboard<>sending)
+                                 Msgbox,`% "ERROR" sending " 19-04-11_20-41"
+                         sleep,10
+                     }
+                     SoundBeep,5000
+                     SoundBeep,5000
+                     SoundBeep,5000
+                     SoundBeep,5000
+                     SoundBeep,5000
+*/
+                     ;\____ protect __ 190411203651 __ 11.04.2019 20:36:51 __/
+
+
+
                     if(0 && g_config.debug.active )
                         ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
 
 					DynaRun(AHKcode) ; <= uese old clipboard. or simple give it more time
+
+sleep,2000
+clipboard  := AHKcode
 
 		if(0 && g_config.debug.active )
             ToolTip9sec( "`n(" A_ThisFunc " " RegExReplace(A_LineFile,".*\\") ":"  A_LineNumber ")" )
