@@ -16,7 +16,7 @@
 !README.md
 !start.ahk
 
-Source
+# Source
 
 # Whitelist folder files files, not subfolders
 # !Source/
@@ -26,10 +26,12 @@ Source
 
 **/*.bak
 **/*.bak.ahk
+
 /**/*.bak.ahk
 **/*.log
 
 Source/Welcome_to_IntelliJ_IDEA_Administrator.ahk
+Source
 Source/**/*.minify.inc.ahk*
 Source/**/*.txt
 Source/**/* Backup
@@ -50,7 +52,11 @@ Source/**/Typing*
 Source/syncSomeAHKLists
 
 # Whitelist files in subfolders, but before, you nee Whitelist the parent folder without subfolders
+# !Source
 !Source/sql/**/*
+# !Source/Lib/**/*
+# !Source/Includes
+# !Source/Includes/Preferences File.ahk
 
 # 9 digits file:
 # Source/\d{9}.temp.FileWrite.txt
@@ -98,5 +104,6 @@ actionLists/**/* *
 actionLists/**/.idea
 actionLists/**/*._Generated.ahk._Generated.ahk
 
+!Source/Lib/**/*
 
 
