@@ -2,6 +2,28 @@
 #NoTrayIcon
 ; Critical , On
 SetWorkingDir %A_ScriptDir%\Source
+
+DetectHiddenWindows,on
+name=gi-everywhere ahk_class AutoHotkey
+while(WinExist(name) && A_Index < 100){
+	ToolTip, %A_Index%: WinClose `n (%A_LineFile%~%A_LineNumber%)
+	WinClose,% name
+	Sleep,20
+}
+while(WinExist(name) && A_Index < 100){
+	ToolTip, %A_Index%: WinKill `n (%A_LineFile%~%A_LineNumber%)
+	WinKill,% name
+	Sleep,20
+}
+
+SetTitleMatchMode,2
+name=gi.ahk ahk_class AutoHotkey
+while(WinExist(name) && A_Index < 9)
+	WinClose,% name
+while(WinExist(name) && A_Index < 9)
+	WinKill,% name
+
+
 run,gi-everywhere.ahk,%A_ScriptDir%\Source
 exitApp
 
