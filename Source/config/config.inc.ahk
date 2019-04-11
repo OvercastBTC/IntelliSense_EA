@@ -51,7 +51,7 @@ g_config.debug := {
 		},
 		table: {
 			performance: {
-				onLoad: "drop",
+				onLoad: "empty",
 				INSERT_function_call_time2db: true
 			}
 		}

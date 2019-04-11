@@ -351,7 +351,7 @@ If !DB.Exec(SQL)
 ;\____ doUseNewMethodStartOfImplementing22march2019 __ 190324044151 __ 24.03.2019 04:41:51 __/
 
 
-if(g_config.debug.DB.table.performance.onLoad == "drop")
+if(g_config.debug.DB.table.performance.onLoad == "empty")
     Rebuild_performance_table()
 
 
@@ -757,7 +757,7 @@ AutoTrim, Off
 
 
 ; RebuildDatabase(g_config["sql"]["template"]["dir"])
-if(g_config.debug.DB.table.performance.onLoad == "drop")
+if(g_config.debug.DB.table.performance.onLoad == "empty")
     Rebuild_performance_table()
 
 
@@ -952,7 +952,7 @@ SoundbeepString2Sound( "test" A_LineFile, "DEBUG" ) ;   ;  (DEV, TEST, STAGING, 
 
 debug(g_config.debug, actionList)
 
-if(g_config.debug.DB.table.performance.onLoad == "drop")
+if(g_config.debug.DB.table.performance.onLoad == "empty")
     Rebuild_performance_table()
 
 

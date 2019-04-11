@@ -2476,6 +2476,15 @@ debug(debug, actionList){
 		WinClose,% needle
 	}else
         openDB_Browser_for_SQLite(ByRef d:="",t:="performance",doClickIntoSearch:=true," ") ; ,search:="huhu|rr||hihi")
+
+ControlClick, x313 y128 ,% needle
+WinActivate,% needle
+IfWinActive,% needle
+	Send,SELECT DISTINCT p.A_ThisFunc,p.small_LineFile FROM performance p
+IfWinActive,% needle
+	Send,{f5}
+
+
 }
 ;\____ debug __ 190410193240 __ 10.04.2019 19:32:40 __/
 
