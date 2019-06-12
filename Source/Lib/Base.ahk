@@ -79,6 +79,7 @@ inheritancePath( obj ){
 	return ipath
 }
 
+; Msgbxod
 
 IsObjectMember(obj, memberStr){
 	if(IsObject(obj)){

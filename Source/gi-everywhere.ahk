@@ -1191,14 +1191,14 @@ s =
 %s%
 `)
 if(true){
-    WinGetActiveTitle, at
+    ; WinGetActiveTitle, at
     inputBox, s, add to actionLists?, add to ``n%sActionListFileName%  ? ``n``n timeoutSec = %timeoutSec% , , 350, 180,,,,%timeoutSec%,`% s
      if ErrorLevel
      {
-        while(A_Index < 10 && !winactive(at)){
-            tooltip, while(!winactive(`%at`%))
+        while(A_Index < 10 && !winactive("%activeTitle%")){
+            tooltip, while(!winactive 19-04-14_12-16
             sleep,`% A_Index
-            WinActivate,`% at
+            WinActivate,%activeTitle%
         }
         return
     }
