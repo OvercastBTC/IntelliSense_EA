@@ -1,5 +1,17 @@
 ﻿# global-IntelliSense-everywhere 
  
+
+## next milestone:
+make it available for linux.
+
+tools that help doing that:
+
+- [autokey](https://github.com/autokey/autokey)
+- [copyQ](https://github.com/hluk/CopyQ)
+
+## desciption of global-IntelliSense-everywhere 
+
+
 English: Automates context-sensitive writing and action.
 Is an unobtrusive IntelliSense for all programs, all websites, all apps, all windows, just everything that runs in Windows.
 
@@ -25,7 +37,7 @@ if you use it, please share your ActionLists with the community.
 - - -
 
 
-Its Sponsored!
+Was Sponsored 2019/2020...!
 This project is sponsored by JetBrains.  JetBrains is a software development company whose mission is to make the strongest, most effective developer tools on earth. Their tools speed up production, freeing developers to grow, discover and create. 
 
 ![JetBrains Logo](https://www.isic.nl/media/1391607/jetbrains.jpg?width=448&height=277&mode=crop&scale=both) 
