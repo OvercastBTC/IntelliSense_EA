@@ -9,6 +9,16 @@ tools that help doing that:
 - [autokey](https://github.com/autokey/autokey)
 - [copyQ](https://github.com/hluk/CopyQ)
 
+
+### collection ideas for prototype
+
+copyq tab notes add "This is the first note."
+https://copyq.readthedocs.io/en/latest/command-line.html
+
+
+https://github.com/hluk/CopyQ/issues/1715
+
+
 ## desciption of global-IntelliSense-everywhere 
 
 
